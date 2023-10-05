@@ -38,16 +38,10 @@ class DashboardView(QWidget):
 
     def edit_property(self):
         selected_property_name = self.get_selected_property()
-        # Retrieve the full property details using selected_property_name
-        # Open the edit dialog with the retrieved details
         dialog = EditPropertyDialog(selected_property_name, self)
         result = dialog.exec_()
         if result == QDialog.Accepted:
-            # Assumes dialog returns edited details
-            new_property_name = dialog.get_new_property_name()  
-            # Update the database and refresh the properties list
-            db_manager = DatabaseManager()
-            db_manager.update_property(selected_property_name, new_property_name)
+            # Just refresh the properties list since the property name is already updated in the database
             self.refresh_properties()
 
     def get_selected_property(self):
