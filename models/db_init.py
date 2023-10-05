@@ -1,7 +1,7 @@
 import sqlite3
 
 def init_db(db_path):
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect('real_estate.db')
     cursor = conn.cursor()
 
     cursor.execute("""

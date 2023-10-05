@@ -1,5 +1,3 @@
-# import_view.py
-
 from PyQt5.QtWidgets import QWidget, QComboBox, QPushButton, QVBoxLayout, QFileDialog
 from models.import_model import ImportModel
 from models.property_model import PropertyModel

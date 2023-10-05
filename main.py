@@ -1,5 +1,3 @@
-# main.py
-
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from views.property_view import PropertyView
 from models.db_init import init_db  # Import the initialization function
@@ -22,7 +20,7 @@ if __name__ == "__main__":
     # Initialize the database. Ensure you use the correct path to your SQLite database
     # For this example, the database is named "real_estate_db.db" and is located in the current working directory.
     # Adjust the path as needed based on your actual file structure.
-    init_db('real_estate_db.db')
+    init_db('real_estate.db')
 
     app = QApplication(sys.argv)
     mainWin = MainWindow()

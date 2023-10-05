@@ -1,5 +1,3 @@
-# import_model.py
-
 import pandas as pd
 from models.property_model import PropertyModel
 from models.unit_model import UnitModel

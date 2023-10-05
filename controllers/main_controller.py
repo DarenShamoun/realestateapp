@@ -1,4 +1,3 @@
-# Code for main_controller.py
 from PyQt5.QtWidgets import QMessageBox
 from views.import_view import ImportView  # Assuming ImportView is saved in views/import_view.py
 from models.import_model import ImportModel  # You might need to create and implement ImportModel

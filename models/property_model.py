@@ -1,5 +1,3 @@
-# property_model.py
-
 import sqlite3
 
 class PropertyModel:
