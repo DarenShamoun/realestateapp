@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QListWidget, QPushButton, QDialog
 from models.db_manager import DatabaseManager
 from dialogs.property_dialog import PropertyDialog
+from dialogs.edit_property_dialog import EditPropertyDialog
 
 class DashboardView(QWidget):
     def __init__(self):
@@ -26,6 +27,8 @@ class DashboardView(QWidget):
         # Apply the layout
         self.setLayout(layout)
 
+        self.refresh_properties()  # Load and display properties on startup
+
     def add_property(self):
         dialog = PropertyDialog(self)
         result = dialog.exec_()
@@ -34,8 +37,24 @@ class DashboardView(QWidget):
             self.refresh_properties()  # Refresh property list after adding new property
 
     def edit_property(self):
-        # TODO: Implement the functionality for editing a property
-        print("Edit Property Button Clicked")
+        selected_property_name = self.get_selected_property()
+        # Retrieve the full property details using selected_property_name
+        # Open the edit dialog with the retrieved details
+        dialog = EditPropertyDialog(selected_property_name, self)
+        result = dialog.exec_()
+        if result == QDialog.Accepted:
+            # Assumes dialog returns edited details
+            new_property_name = dialog.get_new_property_name()  
+            # Update the database and refresh the properties list
+            db_manager = DatabaseManager()
+            db_manager.update_property(selected_property_name, new_property_name)
+            self.refresh_properties()
+
+    def get_selected_property(self):
+        selected_item = self.property_list.currentItem()  # Assumes you're using a QListWidget for property_list
+        selected_property_name = selected_item.text()
+        # Retrieve additional details from database if necessary
+        return selected_property_name
 
     def populate_properties(self, properties):
         # TODO: Query the database to get the list of properties and add them to the property_list
@@ -44,13 +63,7 @@ class DashboardView(QWidget):
 
     def refresh_properties(self):
         self.property_list.clear()
-        
-        db_manager = DatabaseManager()  # Initialize your database manager
-        properties = db_manager.get_properties()  # Get properties from the database
-        
+        db_manager = DatabaseManager()
+        properties = db_manager.get_properties()
         for property in properties:
-            self.property_list.addItem(property['property_name'])
-
-
-
-
+            self.property_list.addItem(property['PropertyName'])
