@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from views.property_view import PropertyView
-from models.db_init import init_db  # Import the initialization function
+from models.db_init import init_db  
+from views.dashboard_view import DashboardView  # Import the DashboardView class
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -10,16 +10,18 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Real Estate Management')
         self.setGeometry(100, 100, 800, 600)  # Set window size and position
 
-        # Initialize the property view and set it as the central widget
-        self.property_view = PropertyView(self)
-        self.setCentralWidget(self.property_view)
+        # Initialize the dashboard view and set it as the central widget
+        self.dashboard_view = DashboardView()
+        self.setCentralWidget(self.dashboard_view)
+
+        # TODO: Query the database to get properties and populate the dashboard
+        properties = []  # Replace this with actual query result
+        self.dashboard_view.populate_properties(properties)
 
 if __name__ == "__main__":
     import sys
     
     # Initialize the database. Ensure you use the correct path to your SQLite database
-    # For this example, the database is named "real_estate_db.db" and is located in the current working directory.
-    # Adjust the path as needed based on your actual file structure.
     init_db('real_estate.db')
 
     app = QApplication(sys.argv)
