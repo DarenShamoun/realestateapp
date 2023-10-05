@@ -6,6 +6,6 @@ class DatabaseManager:
 
     def get_properties(self):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM properties")
+        cursor.execute("SELECT * FROM Properties")  # Adjust the table name to match the actual name in the database
         properties = cursor.fetchall()
         return properties
