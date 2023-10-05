@@ -33,7 +33,6 @@ class DashboardView(QWidget):
         if result == QDialog.Accepted:
             self.refresh_properties()  # Refresh property list after adding new property
 
-
     def edit_property(self):
         # TODO: Implement the functionality for editing a property
         print("Edit Property Button Clicked")

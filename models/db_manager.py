@@ -12,9 +12,6 @@ class DatabaseManager:
     
     def insert_property(self, property_name):
         cursor = self.conn.cursor()
-        
-        # SQL command to insert the new property; adjust as per your table structure
-        cursor.execute("INSERT INTO properties (property_name) VALUES (?)", (property_name,))
-        
-        self.conn.commit()  # Commit the transaction
+        cursor.execute("INSERT INTO Properties (PropertyName) VALUES (?)", (property_name,))
+        self.conn.commit()
 
