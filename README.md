@@ -1,43 +1,72 @@
 ## Real Estate Management Application
-This application is a Flask-based backend for managing real estate properties. It includes a PostgreSQL database for storing property data and Flask-Migrate for database migrations.
 
-## Getting Started
+# Getting Started
 
 # Prerequisites
+
 Python 3
-pip
-Virtual Environment (venv)
+pip (Python package manager)
+Virtual Environment (recommended: virtualenv)
 PostgreSQL
+Node.js and npm
+Git (for version control)
 
-# Installation
-Clone the repository:
-bash
-Copy code
-git clone [https://github.com/DarenShamoun/realestateapp]
-Navigate to the project directory:
-bash
-Copy code
-cd realestateapp
-Create a virtual environment and activate it:
-bash
-Copy code
+# Backend Setup
+- Clone the Repository
+
+git clone [repository-url]
+
+# Set Up a Python Virtual Environment
+
+-Navigate to the project directory
+
 python -m venv venv
-.\venv\Scripts\activate  # On Windows
-source venv/bin/activate  # On Unix or MacOS
-Install required packages:
-bash
-Copy code
-pip install Flask Flask-SQLAlchemy Flask-Migrate psycopg2
-Set up PostgreSQL database and update SQLALCHEMY_DATABASE_URI in app.py with your database credentials.
+.\venv\Scripts\activate  # Windows
+source venv/bin/activate  # Unix/MacOS
 
-# Running the Application
-To run the Flask application:
-bash
-Copy code
+# Install Dependencies
+
+pip install -r requirements.txt
+
+# Set Up the Database
+
+- Install PostgreSQL and create a database.
+- Update SQLALCHEMY_DATABASE_URI in app.py.
+
+# Run Migrations
+
+flask db upgrade
+
+# Start the Flask Server
+
 flask run
-Access the application at http://127.0.0.1:5000/.
 
-# Project Structure
-app.py: Main Flask application file.
-models.py: Contains SQLAlchemy models for the database.
-/venv: Virtual environment for the project.
+# Frontend Setup
+
+- Navigate to the Frontend Directory
+
+cd realestate-frontend
+
+- Install Node Modules
+
+npm install
+
+- Start the React Development Server
+
+npm start
+
+## Running the Application
+
+Flask backend: http://127.0.0.1:5000
+React frontend: http://localhost:3000
+
+## Features
+
+Backend API for real estate data management.
+Frontend interface for data interaction.
+CRUD operations for properties, units, tenants, leases, payments, and expenses.
+
+- Testing
+
+Use Postman for Flask API endpoints.
+Test React components and backend integration.
