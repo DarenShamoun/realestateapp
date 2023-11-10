@@ -1,6 +1,5 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from extensions import db, migrate
 from routes.property_routes import property_bp
 from routes.unit_routes import unit_bp
 from routes.tenant_routes import tenant_bp
@@ -15,8 +14,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:shamoun111@localh
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize Database and Migrate
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+db.init_app(app)
+migrate.init_app(app, db)
 
 # Register Blueprints
 app.register_blueprint(property_bp)
