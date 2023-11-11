@@ -30,6 +30,21 @@ def get_expenses():
         'description': expense.description
     } for expense in expenses]), 200
 
+@expense_bp.route('/expense/<int:id>', methods=['GET'])
+def get_expense(id):
+    expense = Expense.query.get(id)
+    if expense:
+        return jsonify({
+            'id': expense.id,
+            'property_id': expense.property_id,
+            'date': expense.date.strftime('%Y-%m-%d'),
+            'amount': expense.amount,
+            'category': expense.category,
+            'description': expense.description
+        }), 200
+    else:
+        return jsonify({'message': 'Expense not found'}), 404
+
 @expense_bp.route('/expense/<int:id>', methods=['PUT'])
 def update_expense(id):
     expense = Expense.query.get(id)

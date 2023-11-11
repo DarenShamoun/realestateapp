@@ -34,6 +34,23 @@ def get_leases():
         'terms': lease.terms
     } for lease in leases]), 200
 
+@lease_bp.route('/lease/<int:id>', methods=['GET'])
+def get_lease(id):
+    lease = Lease.query.get(id)
+    if lease:
+        return jsonify({
+            'id': lease.id,
+            'unit_id': lease.unit_id,
+            'tenant_id': lease.tenant_id,
+            'start_date': lease.start_date.strftime('%Y-%m-%d'),
+            'end_date': lease.end_date.strftime('%Y-%m-%d'),
+            'monthly_rent': lease.monthly_rent,
+            'deposit': lease.deposit,
+            'terms': lease.terms
+        }), 200
+    else:
+        return jsonify({'message': 'Lease not found'}), 404
+
 @lease_bp.route('/lease/<int:id>', methods=['PUT'])
 def update_lease(id):
     lease = Lease.query.get(id)

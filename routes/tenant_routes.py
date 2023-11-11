@@ -27,6 +27,20 @@ def get_tenants():
         'contact_notes': tenant.contact_notes
     } for tenant in tenants]), 200
 
+@tenant_bp.route('/tenant/<int:id>', methods=['GET'])
+def get_tenant(id):
+    tenant = Tenant.query.get(id)
+    if tenant:
+        return jsonify({
+            'id': tenant.id,
+            'full_name': tenant.full_name, 
+            'primary_phone': tenant.primary_phone, 
+            'secondary_phone': tenant.secondary_phone, 
+            'contact_notes': tenant.contact_notes
+        }), 200
+    else:
+        return jsonify({'message': 'Tenant not found'}), 404
+
 @tenant_bp.route('/tenant/<int:id>', methods=['PUT'])
 def update_tenant(id):
     tenant = Tenant.query.get(id)

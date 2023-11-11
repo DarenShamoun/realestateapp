@@ -16,6 +16,18 @@ def get_properties():
     properties = Property.query.all()
     return jsonify([{'id': prop.id, 'name': prop.name, 'type': prop.property_type} for prop in properties]), 200
 
+@property_bp.route('/property/<int:id>', methods=['GET'])
+def get_property(id):
+    property = Property.query.get(id)
+    if property:
+        return jsonify({
+            'id': property.id,
+            'name': property.name,
+            'property_type': property.property_type
+        }), 200
+    else:
+        return jsonify({'message': 'Property not found'}), 404
+
 @property_bp.route('/property/<int:id>', methods=['PUT'])
 def update_property(id):
     property = Property.query.get(id)

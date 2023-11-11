@@ -25,6 +25,19 @@ def get_units():
         'rent': unit.rent
     } for unit in units]), 200
 
+@unit_bp.route('/unit/<int:id>', methods=['GET'])
+def get_unit(id):
+    unit = Unit.query.get(id)
+    if unit:
+        return jsonify({
+            'id': unit.id,
+            'property_id': unit.property_id, 
+            'unit_number': unit.unit_number, 
+            'rent': unit.rent
+        }), 200
+    else:
+        return jsonify({'message': 'Unit not found'}), 404
+
 @unit_bp.route('/unit/<int:id>', methods=['PUT'])
 def update_unit(id):
     unit = Unit.query.get(id)

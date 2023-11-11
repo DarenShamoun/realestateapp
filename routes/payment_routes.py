@@ -28,6 +28,20 @@ def get_payments():
         'payment_type': payment.payment_type
     } for payment in payments]), 200
 
+@payment_bp.route('/payment/<int:id>', methods=['GET'])
+def get_payment(id):
+    payment = Payment.query.get(id)
+    if payment:
+        return jsonify({
+            'id': payment.id,
+            'lease_id': payment.lease_id,
+            'date': payment.date.strftime('%Y-%m-%d'),
+            'amount': payment.amount,
+            'payment_type': payment.payment_type
+        }), 200
+    else:
+        return jsonify({'message': 'Payment not found'}), 404
+
 @payment_bp.route('/payment/<int:id>', methods=['PUT'])
 def update_payment(id):
     payment = Payment.query.get(id)
