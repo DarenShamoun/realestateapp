@@ -8,6 +8,14 @@ export const getExpenses = async () => {
   return response.json();
 };
 
+export const getExpense = async (id) => {
+  const response = await fetch(`${API_URL}/expense/${id}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
 export const addExpense = async (expenseData) => {
   const response = await fetch(`${API_URL}/expense`, {
     method: 'POST',

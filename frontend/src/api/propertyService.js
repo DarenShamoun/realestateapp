@@ -8,6 +8,14 @@ export const getProperties = async () => {
   return response.json();
 };
 
+export const getProperty = async (id) => {
+  const response = await fetch(`${API_URL}/property/${id}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
 export const addProperty = async (propertyData) => {
   const response = await fetch(`${API_URL}/property`, {
     method: 'POST',

@@ -8,6 +8,14 @@ export const getTenants = async () => {
   return response.json();
 };
 
+export const getTenant = async (id) => {
+  const response = await fetch(`${API_URL}/tenant/${id}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
 export const addTenant = async (tenantData) => {
   const response = await fetch(`${API_URL}/tenant`, {
     method: 'POST',

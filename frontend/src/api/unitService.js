@@ -8,6 +8,14 @@ export const getUnits = async () => {
   return response.json();
 };
 
+export const getUnit = async (id) => {
+  const response = await fetch(`${API_URL}/unit/${id}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
 export const addUnit = async (unitData) => {
   const response = await fetch(`${API_URL}/unit`, {
     method: 'POST',
