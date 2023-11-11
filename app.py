@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from extensions import db, migrate
 from routes.property_routes import property_bp
 from routes.unit_routes import unit_bp
@@ -8,6 +9,7 @@ from routes.payment_routes import payment_bp
 from routes.expense_routes import expense_bp
 
 app = Flask(__name__)
+CORS(app)
 
 # Database Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:shamoun111@localhost/realestateapp'
