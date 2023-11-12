@@ -1,11 +1,12 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { Metadata } from 'next'
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Real Estate App',
-  description: 'Manage and view real estate listings',
+  title: 'Real Estate Management App',
+  description: 'Manage your properties, tenants, leases, and more.',
 };
 
 export default function RootLayout({ children }) {
