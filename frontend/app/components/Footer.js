@@ -1,9 +1,11 @@
+import React from 'react';
+
 const Footer = () => {
   return (
-      <footer className="bg-gray-800 text-white text-center p-4">
-          <p>&copy; {new Date().getFullYear()} Real Estate App. All rights reserved.</p>
-          {/* Add social media links or other information here */}
-      </footer>
+    <footer>
+      {/* Footer content */}
+      <p>&copy; {new Date().getFullYear()} My Next.js Site</p>
+    </footer>
   );
 };
 

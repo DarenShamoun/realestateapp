@@ -1,6 +1,12 @@
 import React from 'react';
-import Dashboard from './dashboard/page';
+import RootLayout from './layout';
 
-export default function Page() {
-    return <Dashboard />;
-}
+const HomePage = () => {
+  return (
+    <RootLayout>
+      <h1>Welcome to the Home Page</h1>
+    </RootLayout>
+  );
+};
+
+export default HomePage;
