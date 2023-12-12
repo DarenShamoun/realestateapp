@@ -4,38 +4,38 @@ const AreaChartPlot = () => {
     const data = [
       {
         "year": "2016",
-        "Iphone": 4000,
-        "Samsung": 2400
+        "expenses": 4000,
+        "profit": 2400
       },
       {
         "year": "2017",
-        "Iphone": 3000,
-        "Samsung": 1398
+        "expenses": 3000,
+        "profit": 1398
       },
       {
         "year": "2018",
-        "Iphone": 2000,
-        "Samsung": 9800
+        "expenses": 2000,
+        "profit": 9800
       },
       {
         "year": "2019",
-        "Iphone": 2780,
-        "Samsung": 3908
+        "expenses": 2780,
+        "profit": 3908
       },
       {
         "year": "2020",
-        "Iphone": 1890,
-        "Samsung": 4800
+        "expenses": 1890,
+        "profit": 4800
       },
       {
         "year": "2021",
-        "Iphone": 2390,
-        "Samsung": 3800
+        "expenses": 2390,
+        "profit": 3800
       },
       {
         "year": "2022",
-        "Iphone": 3490,
-        "Samsung": 4300
+        "expenses": 3490,
+        "profit": 4300
       }
     ]
 
@@ -57,8 +57,8 @@ const AreaChartPlot = () => {
               <XAxis dataKey="year" />
               <YAxis />
               <Tooltip />
-              <Area type="monotone" dataKey="Iphone" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
-              <Area type="monotone" dataKey="Samsung" stroke="#82ca9d" fillOpacity={1} fill="url(#colorPv)" />
+              <Area type="monotone" dataKey="profit" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
+              <Area type="monotone" dataKey="expenses" stroke="#82ca9d" fillOpacity={1} fill="url(#colorPv)" />
             </AreaChart>
           </ResponsiveContainer>
         </>
