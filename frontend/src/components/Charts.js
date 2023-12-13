@@ -1,9 +1,9 @@
 'use client'
-import AreaChartPlot from "./AreaChartPlot";
-import BarChartPlot from "./BarChartPlot";
-import PieChartPlot from "./PieChartPlot";
-import LineChartPlot from "./LineChartPlot";
-import RadarChartPlot from "./RadarChartPlot";
+import AreaChartPlot from "./Charts/AreaChartPlot";
+import BarChartPlot from "./Charts/BarChartPlot";
+import PieChartPlot from "./Charts/PieChartPlot";
+import LineChartPlot from "./Charts/LineChartPlot";
+import RadarChartPlot from "./Charts/RadarChartPlot";
 
 
 const Charts = () => {
