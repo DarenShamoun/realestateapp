@@ -54,7 +54,6 @@ const LineChartPlot = () => {
       </ResponsiveContainer>
     </>
   );
-
 };
   
 export default LineChartPlot;
