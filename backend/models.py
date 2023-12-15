@@ -5,14 +5,35 @@ class Property(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     property_type = db.Column(db.String(50), nullable=False)
+    address = db.Column(db.String(255), nullable=False)  # Added address field
     units = db.relationship('Unit', backref='property', lazy=True)
 
 class Unit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False)
     unit_number = db.Column(db.String(20), nullable=False)
-    rent = db.Column(db.Float, nullable=False)
-    lease = db.relationship('Lease', backref='unit', uselist=False)
+    rent_details = db.relationship('Rent', backref='unit', uselist=False, lazy=True)  # Rent details relationship
+
+    def get_total_rent(self):
+        # Calculates total rent from the associated Rent model
+        if self.rent_details:
+            return self.rent_details.calculate_total_rent()
+        return 0
+
+class Rent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    unit_id = db.Column(db.Integer, db.ForeignKey('unit.id'), nullable=False)
+    # Rent components
+    rent = db.Column(db.Float, nullable=False, default=0)
+    trash = db.Column(db.Float, nullable=False, default=0)
+    water_sewer = db.Column(db.Float, nullable=False, default=0)
+    parking = db.Column(db.Float, nullable=False, default=0)
+    debt = db.Column(db.Float, nullable=False, default=0)
+    breaks = db.Column(db.Float, nullable=False, default=0)
+
+    def calculate_total_rent(self):
+        # Sum of all rent components
+        return self.rent + self.trash + self.water_sewer + self.parking + self.debt + self.breaks
 
 class Tenant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
