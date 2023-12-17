@@ -11,7 +11,6 @@ class Property(db.Model):
     year_built = db.Column(db.Integer, nullable=True)
     square_footage = db.Column(db.Integer, nullable=True)
 
-
 class Unit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False)
@@ -52,7 +51,6 @@ class Tenant(db.Model):
         payments = self.payments
         return [{'amount': payment.amount, 'date': payment.date, 'type': payment.payment_type} for payment in payments]
 
-
 class Lease(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     unit_id = db.Column(db.Integer, db.ForeignKey('unit.id'), nullable=False)
@@ -74,7 +72,6 @@ class Payment(db.Model):
     payment_method = db.Column(db.String(50), nullable=True)
     tenant = db.relationship('Tenant', backref='payments')
     unit = db.relationship('Unit', backref='payments')
-
 
 class Expense(db.Model):
     id = db.Column(db.Integer, primary_key=True)
