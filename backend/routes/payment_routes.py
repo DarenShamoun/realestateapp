@@ -10,9 +10,11 @@ def add_payment():
         data = request.json
         new_payment = Payment(
             lease_id=data['lease_id'],
+            tenant_id=data.get('tenant_id'),
+            unit_id=data.get('unit_id'),
             date=datetime.strptime(data['date'], '%Y-%m-%d'),
             amount=data['amount'],
-            payment_type=data['payment_type']
+            payment_method=data.get('payment_method')
         )
         db.session.add(new_payment)
         db.session.commit()
@@ -27,9 +29,11 @@ def get_payments():
         return jsonify([{
             'id': payment.id,
             'lease_id': payment.lease_id,
+            'tenant_id': payment.tenant_id,
+            'unit_id': payment.unit_id,
             'date': payment.date.strftime('%Y-%m-%d'),
             'amount': payment.amount,
-            'payment_type': payment.payment_type
+            'payment_method': payment.payment_method
         } for payment in payments]), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -42,9 +46,11 @@ def get_payment(id):
             return jsonify({
                 'id': payment.id,
                 'lease_id': payment.lease_id,
+                'tenant_id': payment.tenant_id,
+                'unit_id': payment.unit_id,
                 'date': payment.date.strftime('%Y-%m-%d'),
                 'amount': payment.amount,
-                'payment_type': payment.payment_type
+                'payment_method': payment.payment_method
             }), 200
         else:
             return jsonify({'message': 'Payment not found'}), 404
@@ -58,9 +64,11 @@ def update_payment(id):
         if payment:
             data = request.json
             payment.lease_id = data['lease_id']
+            payment.tenant_id = data.get('tenant_id', payment.tenant_id)
+            payment.unit_id = data.get('unit_id', payment.unit_id)
             payment.date = datetime.strptime(data['date'], '%Y-%m-%d')
             payment.amount = data['amount']
-            payment.payment_type = data['payment_type']
+            payment.payment_method = data.get('payment_method', payment.payment_method)
             db.session.commit()
             return jsonify({'message': 'Payment updated'}), 200
         else:
