@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { getProperties } from '../api/propertyService';
 
 const Properties = () => {
@@ -18,17 +19,18 @@ const Properties = () => {
     <section>
       <div className="flex m-4 gap-2">
         {properties.map(property => (
-          <div key={property.id} className="flex-1 px-2 justify-center w-16 bg-gray-700 shadow rounded h-300px">
-            <div>
-              <p className="text-gray-900 font-bold">{property.name}</p>
-              <p className="py-4 font-bold">${property.income}</p>
-              <p className="text-green-300">{property.growth}</p>
-            </div>
-          </div>
+          <Link key={property.id} href={`/properties/${property.id}`} className="property-card bg-gray-700 shadow rounded p-4 m-2 cursor-pointer">
+              <h3 className="text-white font-bold">{property.name}</h3>
+              <p className="text-gray-300">{property.address}</p>
+              <p className="text-gray-300">{property.property_type}</p>
+              <p className="text-gray-300"> Built in {property.year_built}</p>
+              <p className="text-gray-300">{property.square_footage} Square Feet</p>
+          </Link>
         ))}
       </div>
     </section>
   );
 };
+
 
 export default Properties;
