@@ -26,12 +26,26 @@ def add_unit():
 def get_units():
     try:
         units = Unit.query.all()
-        return jsonify([{
-            'id': unit.id, 
-            'property_id': unit.property_id, 
-            'unit_number': unit.unit_number, 
-            'is_occupied': unit.is_occupied  # Updated to include is_occupied
-        } for unit in units]), 200
+        unit_data = []
+        for unit in units:
+            rent_details = unit.rent_details
+            total_rent = unit.get_total_rent() if rent_details else None
+            unit_data.append({
+                'id': unit.id,
+                'property_id': unit.property_id,
+                'unit_number': unit.unit_number,
+                'is_occupied': unit.is_occupied,
+                'total_rent': total_rent,
+                'rent_details': {
+                    'rent': rent_details.rent if rent_details else 0,
+                    'trash': rent_details.trash if rent_details else 0,
+                    'water_sewer': rent_details.water_sewer if rent_details else 0,
+                    'parking': rent_details.parking if rent_details else 0,
+                    'debt': rent_details.debt if rent_details else 0,
+                    'breaks': rent_details.breaks if rent_details else 0,
+                } if rent_details else {}
+            })
+        return jsonify(unit_data), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -40,11 +54,22 @@ def get_unit(id):
     try:
         unit = Unit.query.get(id)
         if unit:
+            rent_details = unit.rent_details
+            total_rent = unit.get_total_rent() if rent_details else None
             return jsonify({
                 'id': unit.id,
-                'property_id': unit.property_id, 
-                'unit_number': unit.unit_number, 
-                'is_occupied': unit.is_occupied  # Updated to include is_occupied
+                'property_id': unit.property_id,
+                'unit_number': unit.unit_number,
+                'is_occupied': unit.is_occupied,
+                'total_rent': total_rent,
+                'rent_details': {
+                    'rent': rent_details.rent if rent_details else 0,
+                    'trash': rent_details.trash if rent_details else 0,
+                    'water_sewer': rent_details.water_sewer if rent_details else 0,
+                    'parking': rent_details.parking if rent_details else 0,
+                    'debt': rent_details.debt if rent_details else 0,
+                    'breaks': rent_details.breaks if rent_details else 0,
+                } if rent_details else {}
             }), 200
         else:
             return jsonify({'message': 'Unit not found'}), 404
