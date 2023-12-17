@@ -9,7 +9,6 @@ export default function Home() {
     <Sidebar/>
     <main className="flex-grow ml-64 relative">
           <Navbar />
-          <Properties/>
     </main>
     </div>
     </>
