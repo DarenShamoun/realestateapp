@@ -7,7 +7,14 @@ property_bp = Blueprint('property_bp', __name__)
 def add_property():
     try:
         data = request.json
-        new_property = Property(name=data['name'], property_type=data['property_type'], address=data['address'])
+        new_property = Property(
+            name=data['name'],
+            property_type=data['property_type'],
+            address=data['address'],
+            purchase_price=data.get('purchase_price'),
+            year_built=data.get('year_built'),
+            square_footage=data.get('square_footage')
+        )
         db.session.add(new_property)
         db.session.commit()
         return jsonify({'message': 'Property added'}), 201
@@ -19,7 +26,15 @@ def add_property():
 def get_properties():
     try:
         properties = Property.query.all()
-        return jsonify([{'id': prop.id, 'name': prop.name, 'property_type': prop.property_type, 'address': prop.address} for prop in properties]), 200
+        return jsonify([{
+            'id': prop.id,
+            'name': prop.name,
+            'property_type': prop.property_type,
+            'address': prop.address,
+            'purchase_price': prop.purchase_price,
+            'year_built': prop.year_built,
+            'square_footage': prop.square_footage
+        } for prop in properties]), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -32,7 +47,10 @@ def get_property(id):
                 'id': property.id,
                 'name': property.name,
                 'property_type': property.property_type,
-                'address': property.address
+                'address': property.address,
+                'purchase_price': property.purchase_price,
+                'year_built': property.year_built,
+                'square_footage': property.square_footage
             }), 200
         else:
             return jsonify({'message': 'Property not found'}), 404
@@ -48,6 +66,9 @@ def update_property(id):
             property.name = data['name']
             property.property_type = data['property_type']
             property.address = data['address']
+            property.purchase_price = data.get('purchase_price', property.purchase_price)
+            property.year_built = data.get('year_built', property.year_built)
+            property.square_footage = data.get('square_footage', property.square_footage)
             db.session.commit()
             return jsonify({'message': 'Property updated'}), 200
         else:
