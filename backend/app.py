@@ -7,6 +7,7 @@ from routes.tenant_routes import tenant_bp
 from routes.lease_routes import lease_bp
 from routes.payment_routes import payment_bp
 from routes.expense_routes import expense_bp
+from routes.rent_routes import rent_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -26,10 +27,11 @@ app.register_blueprint(tenant_bp)
 app.register_blueprint(lease_bp)
 app.register_blueprint(payment_bp)
 app.register_blueprint(expense_bp)
+app.register_blueprint(rent_bp)
 
 @app.route('/')
-def hello():
-    return 'Hello, World!'
+def welcome():
+    return 'Welcome to the Real Estate Management API!'
 
 if __name__ == '__main__':
     app.run(debug=True)
