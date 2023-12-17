@@ -5,7 +5,7 @@ class Property(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     property_type = db.Column(db.String(50), nullable=False)
-    address = db.Column(db.String(255), nullable=False)  # Added address field
+    address = db.Column(db.String(255), nullable=False)
     units = db.relationship('Unit', backref='property', lazy=True)
     purchase_price = db.Column(db.Float, nullable=True)
     year_built = db.Column(db.Integer, nullable=True)
@@ -15,7 +15,7 @@ class Unit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False)
     unit_number = db.Column(db.String(20), nullable=False)
-    rent_details = db.relationship('Rent', backref='unit', uselist=False, lazy=True)  # Rent details relationship
+    rent_details = db.relationship('Rent', backref='unit', uselist=False, lazy=True)
     is_occupied = db.Column(db.Boolean, default=False)
 
     def get_total_rent(self):
