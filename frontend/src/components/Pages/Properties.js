@@ -6,7 +6,6 @@ import PropertyCard from '@/components/Cards/PropertyCard';
 
 const Properties = () => {
   const [properties, setProperties] = useState([]);
-  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     getProperties().then(data => {
@@ -15,14 +14,6 @@ const Properties = () => {
       console.error('Error fetching properties:', error);
     });
   }, []);
-
-  const handleAddClick = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
 
   return (
     <section>
