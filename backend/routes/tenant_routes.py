@@ -10,7 +10,7 @@ def add_tenant():
         new_tenant = Tenant(
             full_name=data['full_name'], 
             primary_phone=data['primary_phone'], 
-            secondary_phone=data.get('secondary_phone'),  # .get() used for optional field
+            secondary_phone=data.get('secondary_phone'),
             contact_notes=data.get('contact_notes')
         )
         db.session.add(new_tenant)
