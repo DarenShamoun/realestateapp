@@ -45,15 +45,17 @@ const PropertyDetails = ({ propertyId }) => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-white mb-4">{property.name}</h1>
-      <p className="text-lg text-gray-300 mb-6">{property.address}</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {units.map(unit => (
-          <UnitCard key={unit.id} unit={unit} />
-        ))}
-      </div>
-    </div>
+    <section>
+      <div className="flex justify-between items-center p-4">
+          <h2 className="text-2xl text-white font-bold">{property.name}</h2>
+        </div>
+        <p className="text-lg text-gray-300 mb-2 p-4">{property.address}</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+          {units.map(unit => (
+            <UnitCard key={unit.id} unit={unit} />
+          ))}
+        </div>
+    </section>
   );
 };
 
