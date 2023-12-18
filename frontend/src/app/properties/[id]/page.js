@@ -8,7 +8,7 @@ import PropertyDetails from '@/components/PropertyDetails';
 
 const PropertyDetailPage = () => {
   const pathname = usePathname();
-  const propertyId = pathname.split('/').pop(); // Assuming the last segment is the ID
+  const propertyId = pathname.split('/').pop();
 
   return (
     <>

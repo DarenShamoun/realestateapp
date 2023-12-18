@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { getProperties } from '../api/propertyService';
-import AddPropertyModal from './Modals/AddPropertyModal';
+import { getProperties } from '@/api/propertyService';
+import AddPropertyModal from '@/components/Modals/AddPropertyModal';
+import PropertyCard from '@/components/PropertyCard';
 
 const Properties = () => {
   const [properties, setProperties] = useState([]);
@@ -35,18 +35,11 @@ const Properties = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
         {properties.map(property => (
-          <Link key={property.id} href={`/properties/${property.id}`} className="property-card bg-gray-700 shadow rounded p-4 cursor-pointer hover:bg-gray-600 transition ease-in-out duration-150">
-              <h3 className="text-white font-bold">{property.name}</h3>
-              <p className="text-gray-300">{property.address}</p>
-              <p className="text-gray-300">{property.property_type}</p>
-              <p className="text-gray-300">Built in {property.year_built}</p>
-              <p className="text-gray-300">{property.square_footage} Square Feet</p>
-          </Link>
+          <PropertyCard key={property.id} property={property} />
         ))}
       </div>
       <AddPropertyModal show={showModal} onClose={handleCloseModal} />
     </section>
-
   );
 };
 

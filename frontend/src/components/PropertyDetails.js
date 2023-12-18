@@ -1,10 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { getProperty } from '../api/propertyService';
-import { getUnitsByPropertyId } from '../api/unitService';
-import UnitCard from './UnitCard';
+import { getProperty } from '@/api/propertyService';
+import { getUnitsByPropertyId } from '@/api/unitService';
+import UnitCard from '@/components/UnitCard';
 
 const PropertyDetails = ({ propertyId }) => {
   const [property, setProperty] = useState(null);

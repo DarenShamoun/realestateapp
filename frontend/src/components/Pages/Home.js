@@ -1,12 +1,13 @@
 'use client'
-import AreaChartPlot from "./Charts/AreaChartPlot";
-import BarChartPlot from "./Charts/BarChartPlot";
-import PieChartPlot from "./Charts/PieChartPlot";
-import LineChartPlot from "./Charts/LineChartPlot";
-import RadarChartPlot from "./Charts/RadarChartPlot";
+
+import AreaChartPlot from "@/components/Charts/AreaChartPlot";
+import BarChartPlot from "@/components/Charts/BarChartPlot";
+import PieChartPlot from "@/components/Charts/PieChartPlot";
+import LineChartPlot from "@/components/Charts/LineChartPlot";
+import RadarChartPlot from "@/components/Charts/RadarChartPlot";
 
 
-const Charts = () => {
+const Landing = () => {
   return (
     <>
       <section>
@@ -60,4 +61,4 @@ const Charts = () => {
   );
 };
 
-export default Charts;
+export default Landing;
