@@ -14,6 +14,8 @@ class Property(db.Model):
 class Unit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False)
+    tenant_id = db.Column(db.Integer, db.ForeignKey('tenant.id'), nullable=True)
+    tenant = db.relationship('Tenant', backref='units', uselist=False)
     unit_number = db.Column(db.String(20), nullable=False)
     rent_details = db.relationship('Rent', backref='unit', uselist=False, lazy=True)
     is_occupied = db.Column(db.Boolean, default=False)
