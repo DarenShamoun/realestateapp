@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { usePathname } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
-import Navbar from '@/components/Navbar';
+import Sidebar from '@/components/Navigation/Sidebar';
+import Navbar from '@/components/Navigation/Navbar';
 import PropertyDetails from '@/components/PropertyDetails';
 
 const PropertyDetailPage = () => {
