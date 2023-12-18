@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProperty } from '@/api/propertyService';
 import { getUnitsByPropertyId } from '@/api/unitService';
-import UnitCard from '@/components/UnitCard';
+import UnitCard from '@/components/Cards/UnitCard';
 
 const PropertyDetails = ({ propertyId }) => {
   const [property, setProperty] = useState(null);

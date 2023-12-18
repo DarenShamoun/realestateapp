@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProperties } from '@/api/propertyService';
 import AddPropertyModal from '@/components/Modals/AddPropertyModal';
-import PropertyCard from '@/components/PropertyCard';
+import PropertyCard from '@/components/Cards/PropertyCard';
 
 const Properties = () => {
   const [properties, setProperties] = useState([]);
