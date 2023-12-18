@@ -26,9 +26,9 @@ const Sidebar = () => {
               </Link>
             </li>
             <li>
-              <Link href="/expenses">
+              <Link href="/management">
                 <button type="button" className="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-sales" data-collapse-toggle="dropdown-sales">
-                  <span className="flex-1 ml-3 text-left whitespace-nowrap">Expenses</span>
+                  <span className="flex-1 ml-3 text-left whitespace-nowrap">Management</span>
                 </button>
               </Link>
             </li>
