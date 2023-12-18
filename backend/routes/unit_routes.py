@@ -36,12 +36,17 @@ def get_units():
         for unit in units:
             rent_details = unit.rent_details
             total_rent = unit.get_total_rent() if rent_details else None
+            tenant_info = {
+                'id': unit.tenant.id,
+                'full_name': unit.tenant.full_name
+            } if unit.tenant else None
             unit_data.append({
                 'id': unit.id,
                 'property_id': unit.property_id,
                 'unit_number': unit.unit_number,
                 'is_occupied': unit.is_occupied,
                 'total_rent': total_rent,
+                'tenant': tenant_info,
                 'rent_details': {
                     'rent': rent_details.rent if rent_details else 0,
                     'trash': rent_details.trash if rent_details else 0,
@@ -62,12 +67,17 @@ def get_unit(id):
         if unit:
             rent_details = unit.rent_details
             total_rent = unit.get_total_rent() if rent_details else None
+            tenant_info = {
+                'id': unit.tenant.id,
+                'full_name': unit.tenant.full_name
+            } if unit.tenant else None
             return jsonify({
                 'id': unit.id,
                 'property_id': unit.property_id,
                 'unit_number': unit.unit_number,
                 'is_occupied': unit.is_occupied,
                 'total_rent': total_rent,
+                'tenant': tenant_info,
                 'rent_details': {
                     'rent': rent_details.rent if rent_details else 0,
                     'trash': rent_details.trash if rent_details else 0,
@@ -90,7 +100,11 @@ def update_unit(id):
             data = request.json
             unit.property_id = data['property_id']
             unit.unit_number = data['unit_number']
-            unit.is_occupied = data.get('is_occupied', unit.is_occupied)  # Update is_occupied, keeping current value if not provided
+            unit.tenant_id = data.get('tenant_id')
+
+            # Automatically update is_occupied based on tenant presence
+            unit.is_occupied = True if unit.tenant_id else False
+
             db.session.commit()
             return jsonify({'message': 'Unit updated'}), 200
         else:
