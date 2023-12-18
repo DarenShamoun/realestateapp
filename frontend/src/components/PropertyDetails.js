@@ -1,10 +1,14 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { getProperty } from '../api/propertyService';
+import { getUnitsByPropertyId } from '../api/unitService';
+import UnitCard from './UnitCard';
 
 const PropertyDetails = ({ propertyId }) => {
   const [property, setProperty] = useState(null);
+  const [units, setUnits] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -12,10 +16,13 @@ const PropertyDetails = ({ propertyId }) => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const data = await getProperty(propertyId);
-        setProperty(data);
+        const propertyData = await getProperty(propertyId);
+        setProperty(propertyData);
+
+        const unitsData = await getUnitsByPropertyId(propertyId);
+        setUnits(unitsData);
       } catch (error) {
-        console.error('Failed to fetch property:', error);
+        console.error('Failed to fetch property details:', error);
         setError(error);
       }
       setIsLoading(false);
@@ -39,10 +46,14 @@ const PropertyDetails = ({ propertyId }) => {
   }
 
   return (
-    <div>
-      <h1>{property.name}</h1>
-      <p>{property.address}</p>
-      {/* Render more details */}
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold text-white mb-4">{property.name}</h1>
+      <p className="text-lg text-gray-300 mb-6">{property.address}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {units.map(unit => (
+          <UnitCard key={unit.id} unit={unit} />
+        ))}
+      </div>
     </div>
   );
 };

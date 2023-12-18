@@ -22,10 +22,16 @@ def add_unit():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 @unit_bp.route('/unit', methods=['GET'])
 def get_units():
+    property_id = request.args.get('propertyId')
     try:
-        units = Unit.query.all()
+        query = Unit.query
+        if property_id:
+            query = query.filter_by(property_id=property_id)
+
+        units = query.all()
         unit_data = []
         for unit in units:
             rent_details = unit.rent_details

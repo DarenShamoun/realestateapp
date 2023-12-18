@@ -16,6 +16,14 @@ export const getUnit = async (id) => {
   return response.json();
 };
 
+export const getUnitsByPropertyId = async (propertyId) => {
+  const response = await fetch(`${API_URL}/unit?propertyId=${propertyId}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
 export const addUnit = async (unitData) => {
   const response = await fetch(`${API_URL}/unit`, {
     method: 'POST',
