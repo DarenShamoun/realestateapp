@@ -8,6 +8,22 @@ export const getLeases = async () => {
   return response.json();
 };
 
+export const getLeasesByUnitId = async (unitId) => {
+  const response = await fetch(`${API_URL}/lease?unitId=${unitId}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
+export const getLeasesByTenantId = async (tenantId) => {
+  const response = await fetch(`${API_URL}/lease?tenantId=${tenantId}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
 export const getLease = async (id) => {
   const response = await fetch(`${API_URL}/lease/${id}`);
   if (!response.ok) {

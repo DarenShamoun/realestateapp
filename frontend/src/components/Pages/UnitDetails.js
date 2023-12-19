@@ -2,19 +2,30 @@
 
 import React, { useEffect, useState } from 'react';
 import { getUnit } from '@/api/unitService';
-// Import additional services as needed for fetching tenant, payment history, etc.
+import { getTenant } from '@/api/tenantService';
+import { getPaymentsByUnitId } from '@/api/paymentService';
+// Import additional services as needed
 
 const UnitDetails = ({ unitId }) => {
   const [unit, setUnit] = useState(null);
+  const [tenant, setTenant] = useState(null);
+  const [payments, setPayments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch unit details
   useEffect(() => {
     const fetchUnitDetails = async () => {
       try {
         const unitData = await getUnit(unitId);
         setUnit(unitData);
+
+        if (unitData.tenant_id) {
+          const tenantData = await getTenant(unitData.tenant_id);
+          setTenant(tenantData);
+        }
+
+        const paymentsData = await getPaymentsByUnitId(unitId);
+        setPayments(paymentsData);
       } catch (error) {
         setError(error);
       } finally {
@@ -42,6 +53,7 @@ const UnitDetails = ({ unitId }) => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold text-white mb-4">Unit {unit.unit_number}</h1>
+      
       {/* Unit Details Section */}
       <div className="bg-gray-700 shadow rounded p-4 mb-4">
         <h2 className="text-xl text-white">Unit Details</h2>
@@ -51,16 +63,16 @@ const UnitDetails = ({ unitId }) => {
       {/* Tenant Details Section */}
       <div className="bg-gray-700 shadow rounded p-4 mb-4">
         <h2 className="text-xl text-white">Tenant Details</h2>
-        {/* Fetch and display tenant details here */}
+        {/* Display tenant details here */}
       </div>
 
       {/* Payment History Section */}
       <div className="bg-gray-700 shadow rounded p-4 mb-4">
         <h2 className="text-xl text-white">Payment History</h2>
-        {/* Fetch and display payment history here */}
+        {/* Display payment history here */}
       </div>
 
-      {/* Chart Section (Optional) */}
+      {/* Chart Section */}
       <div className="bg-gray-700 shadow rounded p-4">
         <h2 className="text-xl text-white">Financial Overview</h2>
         {/* Incorporate a chart component here */}

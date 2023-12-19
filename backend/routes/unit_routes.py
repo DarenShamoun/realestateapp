@@ -26,10 +26,14 @@ def add_unit():
 @unit_bp.route('/unit', methods=['GET'])
 def get_units():
     property_id = request.args.get('propertyId')
+    tenant_id = request.args.get('tenantId')
+
     try:
         query = Unit.query
         if property_id:
             query = query.filter_by(property_id=property_id)
+        if tenant_id:
+            query = query.filter_by(tenant_id=tenant_id)
 
         units = query.all()
         unit_data = []

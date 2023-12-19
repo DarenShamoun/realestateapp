@@ -23,8 +23,14 @@ def add_expense():
 
 @expense_bp.route('/expense', methods=['GET'])
 def get_expenses():
+    property_id = request.args.get('propertyId')
+
     try:
-        expenses = Expense.query.all()
+        query = Expense.query
+        if property_id:
+            query = query.filter_by(property_id=property_id)
+
+        expenses = query.all()
         return jsonify([{
             'id': expense.id,
             'property_id': expense.property_id,

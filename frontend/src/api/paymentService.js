@@ -8,6 +8,22 @@ export const getPayments = async () => {
   return response.json();
 };
 
+export const getPaymentsByUnitId = async (unitId) => {
+  const response = await fetch(`${API_URL}/payment?unitId=${unitId}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
+export const getPaymentsByTenantId = async (tenantId) => {
+  const response = await fetch(`${API_URL}/payment?tenantId=${tenantId}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
 export const getPayment = async (id) => {
   const response = await fetch(`${API_URL}/payment/${id}`);
   if (!response.ok) {

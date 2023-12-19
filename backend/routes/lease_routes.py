@@ -25,8 +25,17 @@ def add_lease():
 
 @lease_bp.route('/lease', methods=['GET'])
 def get_leases():
+    unit_id = request.args.get('unitId')
+    tenant_id = request.args.get('tenantId')
+
     try:
-        leases = Lease.query.all()
+        query = Lease.query
+        if unit_id:
+            query = query.filter_by(unit_id=unit_id)
+        if tenant_id:
+            query = query.filter_by(tenant_id=tenant_id)
+
+        leases = query.all()
         return jsonify([{
             'id': lease.id,
             'unit_id': lease.unit_id,

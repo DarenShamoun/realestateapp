@@ -24,8 +24,17 @@ def add_payment():
 
 @payment_bp.route('/payment', methods=['GET'])
 def get_payments():
+    unit_id = request.args.get('unitId')
+    tenant_id = request.args.get('tenantId')
+
     try:
-        payments = Payment.query.all()
+        query = Payment.query
+        if unit_id:
+            query = query.filter_by(unit_id=unit_id)
+        if tenant_id:
+            query = query.filter_by(tenant_id=tenant_id)
+
+        payments = query.all()
         return jsonify([{
             'id': payment.id,
             'lease_id': payment.lease_id,
