@@ -29,7 +29,7 @@ const UnitCard = ({ unit, isManagementMode, onEdit, onDelete }) => {
       </div>
     </div>
   ) : (
-    <Link href={`/units/${unit.id}`} className="unit-card bg-gray-700 shadow rounded p-4 cursor-pointer hover:bg-gray-600 transition ease-in-out duration-150">
+    <Link href={`/properties/${unit.property_id}/units/${unit.id}`} className="unit-card bg-gray-700 shadow rounded p-4 cursor-pointer hover:bg-gray-600 transition ease-in-out duration-150">
       {cardContent}
     </Link>
   );
