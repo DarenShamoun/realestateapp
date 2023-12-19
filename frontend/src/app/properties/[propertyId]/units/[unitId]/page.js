@@ -1,13 +1,12 @@
 'use client';
 
 import React from 'react';
-import { usePathname } from 'next/navigation';
 import Sidebar from '@/components/Navigation/Sidebar';
 import Navbar from '@/components/Navigation/Navbar';
-import UnitDetails from '@/components/Pages/UnitDetails'
+import UnitDetails from '@/components/Pages/UnitDetails';
 
-const UnitDetailPage = () => {
-  const pathname = usePathname();
+const UnitDetailPage = ({ params }) => {
+  const { unitId } = params;
 
   return (
     <>
@@ -15,7 +14,7 @@ const UnitDetailPage = () => {
         <Sidebar />
         <main className="flex-grow ml-64 relative">
           <Navbar />
-          <UnitDetails />
+          <UnitDetails unitId={unitId} />
         </main>
       </div>
     </>

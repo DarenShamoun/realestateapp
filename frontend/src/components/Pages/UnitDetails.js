@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { getUnit } from '@/api/unitService';
 import { getTenant } from '@/api/tenantService';
 import { getPaymentsByUnitId } from '@/api/paymentService';
-// Import additional services as needed
 
 const UnitDetails = ({ unitId }) => {
   const [unit, setUnit] = useState(null);
@@ -57,25 +56,41 @@ const UnitDetails = ({ unitId }) => {
       {/* Unit Details Section */}
       <div className="bg-gray-700 shadow rounded p-4 mb-4">
         <h2 className="text-xl text-white">Unit Details</h2>
-        {/* Display unit details here */}
+        <p className="text-gray-300">Property ID: {unit.property_id}</p>
+        <p className="text-gray-300">Is Occupied: {unit.is_occupied ? 'Yes' : 'No'}</p>
+        <p className="text-gray-300">Total Rent: ${unit.total_rent}</p>
+        {/* Other details as needed */}
       </div>
 
       {/* Tenant Details Section */}
       <div className="bg-gray-700 shadow rounded p-4 mb-4">
         <h2 className="text-xl text-white">Tenant Details</h2>
-        {/* Display tenant details here */}
+        {tenant ? (
+          <>
+            <p className="text-gray-300">Name: {tenant.full_name}</p>
+            <p className="text-gray-300">Primary Phone: {tenant.primary_phone}</p>
+            {/* Other tenant details */}
+          </>
+        ) : <p className="text-gray-300">No tenant details available</p>}
       </div>
 
       {/* Payment History Section */}
       <div className="bg-gray-700 shadow rounded p-4 mb-4">
         <h2 className="text-xl text-white">Payment History</h2>
-        {/* Display payment history here */}
+        {payments.length > 0 ? (
+          payments.map((payment, index) => (
+            <div key={index} className="text-gray-300">
+              <p>Date: {payment.date}</p>
+              <p>Amount: ${payment.amount}</p>
+              {/* Other payment details */}
+            </div>
+          ))
+        ) : <p className="text-gray-300">No payment history available</p>}
       </div>
 
       {/* Chart Section */}
       <div className="bg-gray-700 shadow rounded p-4">
         <h2 className="text-xl text-white">Financial Overview</h2>
-        {/* Incorporate a chart component here */}
       </div>
     </div>
   );
