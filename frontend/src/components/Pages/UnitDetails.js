@@ -5,7 +5,7 @@ import { getUnit } from '@/api/unitService';
 import { getTenant } from '@/api/tenantService';
 import { getPaymentsByUnitId } from '@/api/paymentService';
 import { getLeasesByUnitId } from '@/api/leaseService';
-import BarChartPlot from "@/components/Charts/BarChartPlot"; // Assuming you have this component for rendering bar charts
+import BarChartPlot from "@/components/Charts/BarChartPlot";
 
 const UnitDetails = ({ unitId }) => {
   const [unit, setUnit] = useState(null);
