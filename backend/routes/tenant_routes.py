@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from models import db, Tenant
+from models import db, Tenant, Payment
+from sqlalchemy import desc
 
 tenant_bp = Blueprint('tenant_bp', __name__)
 
@@ -45,6 +46,27 @@ def get_tenant(id):
                 'secondary_phone': tenant.secondary_phone, 
                 'contact_notes': tenant.contact_notes
             }), 200
+        else:
+            return jsonify({'message': 'Tenant not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@tenant_bp.route('/tenant/<int:tenant_id>/payments', methods=['GET'])
+def get_tenant_payments(tenant_id):
+    try:
+        tenant = Tenant.query.get(tenant_id)
+        if tenant:
+            payments = Payment.query.filter_by(tenant_id=tenant_id).order_by(desc(Payment.date)).all()
+            payment_history = [{
+                'payment_id': payment.id,
+                'lease_id': payment.lease_id,
+                'unit_id': payment.unit_id,
+                'amount': payment.amount,
+                'date': payment.date.strftime('%Y-%m-%d'),
+                'payment_method': payment.payment_method
+            } for payment in payments]
+
+            return jsonify(payment_history), 200
         else:
             return jsonify({'message': 'Tenant not found'}), 404
     except Exception as e:
