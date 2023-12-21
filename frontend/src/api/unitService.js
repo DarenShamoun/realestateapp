@@ -32,6 +32,22 @@ export const getUnitsByTenantId = async (tenantId) => {
   return response.json();
 };
 
+export const getUnitFinancialSummary = async (id, year, month) => {
+  let url = `${API_URL}/unit/${id}/financial-summary`;
+  
+  // Adding query parameters for year and month
+  const queryParams = new URLSearchParams();
+  if (year) queryParams.append('year', year);
+  if (month) queryParams.append('month', month);
+  if (queryParams.toString()) url += `?${queryParams}`;
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
 export const addUnit = async (unitData) => {
   const response = await fetch(`${API_URL}/unit`, {
     method: 'POST',

@@ -1,23 +1,8 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const getLeases = async () => {
-  const response = await fetch(`${API_URL}/lease`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
-export const getLeasesByUnitId = async (unitId) => {
-  const response = await fetch(`${API_URL}/lease?unitId=${unitId}`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
-export const getLeasesByTenantId = async (tenantId) => {
-  const response = await fetch(`${API_URL}/lease?tenantId=${tenantId}`);
+export const getLeases = async ({ unitId, tenantId } = {}) => {
+  let queryParams = new URLSearchParams({ unitId, tenantId }).toString();
+  const response = await fetch(`${API_URL}/lease?${queryParams}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }

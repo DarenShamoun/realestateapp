@@ -1,23 +1,8 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const getPayments = async () => {
-  const response = await fetch(`${API_URL}/payment`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
-export const getPaymentsByUnitId = async (unitId) => {
-  const response = await fetch(`${API_URL}/payment?unitId=${unitId}`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
-export const getPaymentsByTenantId = async (tenantId) => {
-  const response = await fetch(`${API_URL}/payment?tenantId=${tenantId}`);
+export const getPayments = async (unitId, tenantId, year, month) => {
+  let queryParams = new URLSearchParams({ unitId, tenantId, year, month });
+  const response = await fetch(`${API_URL}/payment?${queryParams}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }

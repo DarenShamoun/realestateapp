@@ -25,15 +25,15 @@ def add_lease():
 
 @lease_bp.route('/lease', methods=['GET'])
 def get_leases():
-    unit_id = request.args.get('unitId')
-    tenant_id = request.args.get('tenantId')
+    unit_id = request.args.get('unitId', type=int)
+    tenant_id = request.args.get('tenantId', type=int)
 
     try:
         query = Lease.query
         if unit_id:
-            query = query.filter_by(unit_id=unit_id)
+            query = query.filter(Lease.unit_id == unit_id)
         if tenant_id:
-            query = query.filter_by(tenant_id=tenant_id)
+            query = query.filter(Lease.tenant_id == tenant_id)
 
         leases = query.all()
         return jsonify([{
@@ -45,7 +45,7 @@ def get_leases():
             'monthly_rent': lease.monthly_rent,
             'deposit': lease.deposit,
             'terms': lease.terms
-        } for lease in leases]), 200
+            } for lease in leases]), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

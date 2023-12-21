@@ -1,7 +1,8 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const getExpenses = async () => {
-  const response = await fetch(`${API_URL}/expense`);
+export const getExpenses = async ({ propertyId, year, month } = {}) => {
+  let queryParams = new URLSearchParams({ propertyId, year, month }).toString();
+  const response = await fetch(`${API_URL}/expense?${queryParams}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
