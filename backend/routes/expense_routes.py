@@ -24,21 +24,29 @@ def add_expense():
 @expense_bp.route('/expense', methods=['GET'])
 def get_expenses():
     property_id = request.args.get('propertyId')
+    year = request.args.get('year', type=int)
+    month = request.args.get('month', type=int)
 
     try:
         query = Expense.query
         if property_id:
-            query = query.filter_by(property_id=property_id)
+            query = query.filter(Expense.property_id == property_id)
+        if year:
+            query = query.filter(db.extract('year', Expense.date) == year)
+        if month:
+            query = query.filter(db.extract('month', Expense.date) == month)
 
         expenses = query.all()
-        return jsonify([{
-            'id': expense.id,
-            'property_id': expense.property_id,
-            'date': expense.date.strftime('%Y-%m-%d'),
-            'amount': expense.amount,
-            'category': expense.category,
-            'description': expense.description
-        } for expense in expenses]), 200
+        return jsonify([
+            {
+                'id': expense.id,
+                'property_id': expense.property_id,
+                'date': expense.date.strftime('%Y-%m-%d'),
+                'amount': expense.amount,
+                'category': expense.category,
+                'description': expense.description
+            } for expense in expenses
+        ]), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

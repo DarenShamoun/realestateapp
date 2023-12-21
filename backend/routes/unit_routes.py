@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, Unit, Property
+from models import db, Unit, Property, Payment
 
 unit_bp = Blueprint('unit_bp', __name__)
 
@@ -10,7 +10,6 @@ def add_unit():
         # Validate if the property exists
         if not Property.query.get(data['property_id']):
             return jsonify({'message': 'Property not found'}), 404
-
         new_unit = Unit(
             property_id=data['property_id'], 
             unit_number=data['unit_number'], 
@@ -27,14 +26,12 @@ def add_unit():
 def get_units():
     property_id = request.args.get('propertyId')
     tenant_id = request.args.get('tenantId')
-
     try:
         query = Unit.query
         if property_id:
             query = query.filter_by(property_id=property_id)
         if tenant_id:
             query = query.filter_by(tenant_id=tenant_id)
-
         units = query.all()
         unit_data = []
         for unit in units:
@@ -95,6 +92,33 @@ def get_unit(id):
             return jsonify({'message': 'Unit not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@unit_bp.route('/unit/<int:id>/financial-summary', methods=['GET'])
+def get_unit_financial_summary(id):
+    year = request.args.get('year', type=int)
+    month = request.args.get('month', type=int)
+
+    try:
+        unit = Unit.query.get(id)
+        if unit:
+            payments_query = Payment.query.filter_by(unit_id=id)
+            if year:
+                payments_query = payments_query.filter(db.extract('year', Payment.date) == year)
+            if month:
+                payments_query = payments_query.filter(db.extract('month', Payment.date) == month)
+            total_payments = sum(payment.amount for payment in payments_query.all())
+
+            return jsonify({
+                'unit_id': id,
+                'year': year,
+                'month': month,
+                'total_payments': total_payments
+            }), 200
+        else:
+            return jsonify({'message': 'Unit not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @unit_bp.route('/unit/<int:id>', methods=['PUT'])
 def update_unit(id):
@@ -105,16 +129,25 @@ def update_unit(id):
             unit.property_id = data['property_id']
             unit.unit_number = data['unit_number']
             unit.tenant_id = data.get('tenant_id')
-
             # Automatically update is_occupied based on tenant presence
             unit.is_occupied = True if unit.tenant_id else False
-
             db.session.commit()
             return jsonify({'message': 'Unit updated'}), 200
         else:
             return jsonify({'message': 'Unit not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@unit_bp.route('/unit/<int:id>/update_balance', methods=['PUT'])
+def update_unit_balance(id):
+    year = request.args.get('year', type=int)
+    month = request.args.get('month', type=int)
+    unit = Unit.query.get(id)
+    if unit:
+        unit.update_balance(year, month)
+        return jsonify({'message': 'Unit balance updated'}), 200
+    else:
+        return jsonify({'message': 'Unit not found'}), 404
 
 @unit_bp.route('/unit/<int:id>', methods=['DELETE'])
 def delete_unit(id):

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, Property
+from models import db, Property, Expense
 
 property_bp = Blueprint('property_bp', __name__)
 
@@ -20,7 +20,6 @@ def add_property():
         return jsonify({'message': 'Property added'}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
 
 @property_bp.route('/property', methods=['GET'])
 def get_properties():
@@ -56,6 +55,57 @@ def get_property(id):
             return jsonify({'message': 'Property not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@property_bp.route('/property/<int:id>/financial-summary', methods=['GET'])
+def get_property_financial_summary(id):
+    year = request.args.get('year', type=int)
+    month = request.args.get('month', type=int)
+
+    try:
+        property = Property.query.get(id)
+        if property:
+            total_income = property.calculate_monthly_income(year, month) if year and month else None
+            expenses_query = Expense.query.filter_by(property_id=id)
+            if year:
+                expenses_query = expenses_query.filter(db.extract('year', Expense.date) == year)
+            if month:
+                expenses_query = expenses_query.filter(db.extract('month', Expense.date) == month)
+            total_expenses = sum(expense.amount for expense in expenses_query.all())
+
+            return jsonify({
+                'property_id': id,
+                'year': year,
+                'month': month,
+                'total_income': total_income,
+                'total_expenses': total_expenses
+            }), 200
+        else:
+            return jsonify({'message': 'Property not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@property_bp.route('/property/<int:property_id>/monthly-income', methods=['GET'])
+def get_monthly_income(property_id):
+    year = request.args.get('year', type=int)
+    month = request.args.get('month', type=int)
+    if not year or not month:
+        return jsonify({'error': 'Year and month query parameters are required.'}), 400
+    property = Property.query.get(property_id)
+    if property:
+        total_income = property.calculate_monthly_income(year, month)
+        return jsonify({'monthly_income': total_income}), 200
+    else:
+        return jsonify({'message': 'Property not found'}), 404
+    
+@property_bp.route('/property/<int:id>/expenses', methods=['GET'])
+def get_property_expenses(id):
+    year = request.args.get('year', type=int)
+    month = request.args.get('month', type=int)
+    expenses = Expense.query.filter_by(property_id=id)
+    expenses = expenses.filter(db.extract('year', Expense.date) == year,
+                               db.extract('month', Expense.date) == month).all()
+    total_expenses = sum(expense.amount for expense in expenses)
+    return jsonify({'property_id': id, 'year': year, 'month': month, 'expenses': total_expenses}), 200
 
 @property_bp.route('/property/<int:id>', methods=['PUT'])
 def update_property(id):
