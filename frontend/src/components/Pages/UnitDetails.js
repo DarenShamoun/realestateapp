@@ -53,6 +53,9 @@ const UnitDetails = ({ unitId }) => {
     return <div>No unit details found.</div>;
   }
 
+  // Function to safely format currency values
+  const formatCurrency = (value) => value ? `$${value.toFixed(2)}` : 'N/A';
+
   // Prepare chart data for the BarChartPlot component
   const paymentChartData = payments.map(payment => ({
     name: new Date(payment.date).toLocaleDateString('en-US'),
@@ -79,10 +82,10 @@ const UnitDetails = ({ unitId }) => {
         </div>
 
         {/* Lease Details Card */}
-        {leases && leases.length > 0 && (
-          <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4">
-            <h2 className="text-xl text-white">Lease Details</h2>
-            {leases.map((lease, index) => (
+        <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4">
+          <h2 className="text-xl text-white">Lease Details</h2>
+          {leases && leases.length > 0 ? (
+            leases.map((lease, index) => (
               <div key={index} className="text-gray-300 mb-2">
                 <p>Start Date: {lease.start_date}</p>
                 <p>End Date: {lease.end_date || 'N/A'}</p>
@@ -90,21 +93,28 @@ const UnitDetails = ({ unitId }) => {
                 <p>Deposit: {lease.deposit ? `$${lease.deposit.toFixed(2)}` : 'N/A'}</p>
                 <p>Terms: {lease.terms || 'N/A'}</p>
               </div>
-            ))}
-          </div>
-        )}
+            ))
+          ) : (
+            <p className="text-gray-300">No current lease agreement.</p>
+          )}
+        </div>
 
         {/* Rent Details Card */}
-        {unit && unit.rent_details && (
+        {unit.rent_details ? (
           <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4">
             <h2 className="text-xl text-white">Rent Details</h2>
-            <p className="text-gray-300">Base Rent: ${unit.rent_details.rent.toFixed(2)}</p>
-            <p className="text-gray-300">Trash: ${unit.rent_details.trash.toFixed(2)}</p>
-            <p className="text-gray-300">Water & Sewer: ${unit.rent_details.water_sewer.toFixed(2)}</p>
-            <p className="text-gray-300">Parking: ${unit.rent_details.parking.toFixed(2)}</p>
-            <p className="text-gray-300">Debt: ${unit.rent_details.debt.toFixed(2)}</p>
-            <p className="text-gray-300">Breaks: ${unit.rent_details.breaks.toFixed(2)}</p>
-            <p className="text-gray-300 font-bold">Total Rent: ${unit.total_rent.toFixed(2)}</p>
+            <p className="text-gray-300">Base Rent: {formatCurrency(unit.rent_details.rent)}</p>
+            <p className="text-gray-300">Trash: {formatCurrency(unit.rent_details.trash)}</p>
+            <p className="text-gray-300">Water & Sewer: {formatCurrency(unit.rent_details.water_sewer)}</p>
+            <p className="text-gray-300">Parking: {formatCurrency(unit.rent_details.parking)}</p>
+            <p className="text-gray-300">Debt: {formatCurrency(unit.rent_details.debt)}</p>
+            <p className="text-gray-300">Breaks: {formatCurrency(unit.rent_details.breaks)}</p>
+            <p className="text-gray-300 font-bold">Total Rent: {formatCurrency(unit.total_rent)}</p>
+          </div>
+        ) : (
+          <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4">
+            <h2 className="text-xl text-white">Rent Details</h2>
+            <p className="text-gray-300">This unit is currently vacant.</p>
           </div>
         )}
       </section>
