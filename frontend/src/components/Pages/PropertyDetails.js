@@ -19,6 +19,7 @@ const PropertyDetails = ({ propertyId }) => {
         setProperty(propertyData);
 
         const unitsData = await getUnitsByPropertyId(propertyId);
+        unitsData.sort((a, b) => a.unit_number.localeCompare(b.unit_number, undefined, {numeric: true}));
         setUnits(unitsData);
       } catch (error) {
         console.error('Failed to fetch property details:', error);
@@ -26,7 +27,6 @@ const PropertyDetails = ({ propertyId }) => {
       }
       setIsLoading(false);
     };
-
     if (propertyId) {
       fetchData();
     }
