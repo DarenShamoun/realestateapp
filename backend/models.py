@@ -68,8 +68,9 @@ class Rent(db.Model):
     breaks = db.Column(db.Float, nullable=False, default=0)
     date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     def calculate_total_rent(self):
-        # Sum of all rent components
-        return self.rent + self.trash + self.water_sewer + self.parking + self.debt + self.breaks
+        # Sum of all rent components with a default of 0 if None
+        return (self.rent or 0) + (self.trash or 0) + (self.water_sewer or 0) + \
+               (self.parking or 0) + (self.debt or 0) + (self.breaks or 0)
 
 class Tenant(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -18,30 +18,46 @@ def add_payment():
             payment_method=data.get('payment_method')
         )
         db.session.add(new_payment)
-        db.session.flush()  # Flush to get the payment ID without committing
 
         # Fetch unit and rent details for the current month
         unit = Unit.query.get(new_payment.unit_id)
-        current_month_rent = unit.calculate_total_rent()
-        amount_paid = new_payment.amount
+        if not unit:
+            db.session.rollback()
+            return jsonify({'error': 'Unit not found'}), 404
 
-        # Calculate balance for the current month
+        # Use get_total_rent method to fetch the current total rent
+        if unit.rent_details:
+            current_month_rent = unit.get_total_rent()
+        else:
+            # Handle cases where rent details are not available
+            current_month_rent = 0
+
+        amount_paid = new_payment.amount
         balance_due = current_month_rent - amount_paid
 
         # Fetch or create rent details for the next month
         next_month = new_payment.date.replace(day=1) + relativedelta(months=1)
         next_month_rent = Rent.query.filter_by(unit_id=unit.id, date=next_month).first()
         if not next_month_rent:
-            next_month_rent = Rent(unit_id=unit.id, date=next_month)
+            next_month_rent = Rent(
+                unit_id=unit.id, 
+                date=next_month,
+                rent=0,
+                trash=0,
+                water_sewer=0,
+                parking=0,
+                debt=0,  # Ensure debt is set to 0 by default
+                breaks=0
+            )
             db.session.add(next_month_rent)
 
         # Adjust the debt in the next month's rent details
         next_month_rent.debt = max(0, next_month_rent.debt + balance_due)
         db.session.commit()
-
         return jsonify({'message': 'Payment added', 'id': new_payment.id}), 201
+
     except Exception as e:
-        db.session.rollback()  # Rollback in case of any error
+        db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
 @payment_bp.route('/payment', methods=['GET'])
