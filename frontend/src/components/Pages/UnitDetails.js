@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { getUnit } from '@/api/unitService';
 import { getTenant } from '@/api/tenantService';
-import { getPaymentsByUnitId } from '@/api/paymentService';
-import { getLeasesByUnitId } from '@/api/leaseService';
+import { getPayments } from '@/api/paymentService';
+import { getLeases } from '@/api/leaseService';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
 
 const UnitDetails = ({ unitId }) => {
@@ -20,16 +20,16 @@ const UnitDetails = ({ unitId }) => {
       try {
         const unitData = await getUnit(unitId);
         setUnit(unitData);
-
+    
         if (unitData.tenant && unitData.tenant.id) {
           const tenantData = await getTenant(unitData.tenant.id);
           setTenant(tenantData);
         }
-
-        const paymentsData = await getPaymentsByUnitId(unitId);
+    
+        const paymentsData = await getPayments({ unitId });
         setPayments(paymentsData);
-
-        const leasesData = await getLeasesByUnitId(unitId);
+    
+        const leasesData = await getLeases({ unitId });
         setLeases(leasesData);
       } catch (error) {
         setError(error);
@@ -134,7 +134,7 @@ const UnitDetails = ({ unitId }) => {
             <h2 className="text-xl text-white mb-4">Financial Overview</h2>
               <div className="h-[300px] bg-gray-700 rounded">
                 <BarChartPlot/>
-              </div>        
+              </div>
           </div>
         </div>
       </section>
