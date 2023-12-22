@@ -1,5 +1,6 @@
 import Sidebar from '@/components/Navigation/Sidebar'
 import Navbar from '@/components/Navigation/Navbar'
+import Calendar from '@/components/Pages/Calendar'
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
     <Sidebar/>
     <main className="flex-grow ml-64 relative">
           <Navbar />
+          <Calendar />
     </main>
     </div>
     </>
