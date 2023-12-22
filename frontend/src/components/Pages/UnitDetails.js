@@ -69,32 +69,38 @@ const UnitDetails = ({ unitId }) => {
 
     const fetchChartData = async () => {
       const lastSixMonths = getLastSixMonths();
-      const newChartData = [];
+      let newChartData = [];
     
       for (const { month, year } of lastSixMonths) {
         try {
           const paymentsData = await getPayments({ unitId, year, month });
           const paymentTotal = paymentsData.reduce((sum, payment) => sum + payment.amount, 0);
     
-          let rentTotal = 0;
+          // Fetch rent data for the month
+          let totalRent = 0;
           try {
             const rentData = await getRentByDate(year, month, null, unitId, null);
-            rentTotal = rentData.length > 0 ? rentData[0].total_rent : 0;
+            totalRent = rentData.length > 0 ? rentData[0].total_rent : 0;
           } catch (rentError) {
-            // If no rent data found for the month, set rentTotal to 0
-            rentTotal = 0;
+            // No rent data found for the month, set totalRent to 0
           }
     
-          const debt = rentTotal - paymentTotal;
-          newChartData.push({ name: `${month}/${year}`, Payment: paymentTotal, Debt: debt });
+          // Add to chart data if there is a payment or rent for the month
+          if (paymentTotal > 0 || totalRent > 0) {
+            newChartData.push({ name: `${month}/${year}`, Payment: paymentTotal, Balance: totalRent });
+          }
         } catch (error) {
           console.error(`Error fetching data for month ${month}, year ${year}:`, error);
         }
       }
     
+      // Reverse the order for past to present display and limit to last six months
+      newChartData = newChartData.reverse().slice(0, 6);
+    
       setChartData(newChartData);
     };
-        
+    
+            
     fetchUnitDetails();
     fetchChartData();
   }, [unitId]);
@@ -102,14 +108,17 @@ const UnitDetails = ({ unitId }) => {
   // Function to safely format currency values
   const formatCurrency = (value) => value ? `$${value.toFixed(2)}` : 'N/A';
 
+  // Interim loading display 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
+  // Displays error codes
   if (error) {
     return <div>Error: {error.message}</div>;
   }
 
+  // Couldnt find the unit
   if (!unit) {
     return <div>No unit details found.</div>;
   }

@@ -5,37 +5,37 @@ const BarChartPlot = ({ data }) => {
     {
         name: "Jan",
         Payment: 4000,
-        Debt: 2400
+        Balance: 2400
     },
     {
         name: "Feb",
         Payment: 5000,
-        Debt: 1500
+        Balance: 1500
     },
     {
         name: "Mar",
         Payment: 6000,
-        Debt: 3000
+        Balance: 3000
     },
     {
         name: "Apr",
         Payment: 6500,
-        Debt: 4500
+        Balance: 4500
     },
     {
         name: "May",
         Payment: 7000,
-        Debt: 2200
+        Balance: 2200
     },
     {
         name: "Jun",
         Payment: 8000,
-        Debt: 3500
+        Balance: 3500
     },
     {
         name: "Jul",
         Payment: 7400,
-        Debt: 5500
+        Balance: 5500
     },
   ];
 
@@ -48,7 +48,7 @@ const BarChartPlot = ({ data }) => {
           <Tooltip />
           <Legend />
           <Bar dataKey="Payment" fill="#82ca9d" />
-          <Bar dataKey="Debt" fill="#FA8072" />
+          <Bar dataKey="Balance" fill="#FA8072" />
         </BarChart>
       </ResponsiveContainer>
     </>
