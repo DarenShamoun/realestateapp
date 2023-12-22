@@ -8,6 +8,13 @@ import { getRentByDate, getRecentRentByUnitId} from '@/api/rentService';
 import { getLeases } from '@/api/leaseService';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
 
+/**
+ * Renders the details of a specific unit.
+ * 
+ * @param {Object} props - The component props.
+ * @param {string} props.unitId - The ID of the unit.
+ * @returns {JSX.Element} The rendered UnitDetails component.
+ */
 const UnitDetails = ({ unitId }) => {
   const [unit, setUnit] = useState(null);
   const [tenant, setTenant] = useState(null);
@@ -17,6 +24,7 @@ const UnitDetails = ({ unitId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Function to get the last six months from the current date
   const getLastSixMonths = () => {
     const months = [];
     let date = new Date();
@@ -26,7 +34,10 @@ const UnitDetails = ({ unitId }) => {
     return months.map(d => ({ month: d.getMonth() + 1, year: d.getFullYear() }));
   };
 
+  // Fetch unit details, tenant details, payment history, and lease details
   useEffect(() => {
+
+    // Fetches unit details, tenant details, payment history, and lease details
     const fetchUnitDetails = async () => {
       try {
         const unitData = await getUnit(unitId);
@@ -67,6 +78,7 @@ const UnitDetails = ({ unitId }) => {
       }
     };
 
+    // Fetches payment and rent data for the last six months
     const fetchChartData = async () => {
       const lastSixMonths = getLastSixMonths();
       let newChartData = [];
