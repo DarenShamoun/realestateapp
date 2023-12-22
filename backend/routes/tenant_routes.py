@@ -6,6 +6,13 @@ tenant_bp = Blueprint('tenant_bp', __name__)
 
 @tenant_bp.route('/tenant', methods=['POST'])
 def add_tenant():
+    """
+    Add a new tenant to the database.
+
+    Returns:
+        A JSON response with a success message and HTTP status code 201 if the tenant is added successfully.
+        A JSON response with an error message and HTTP status code 500 if an error occurs.
+    """
     try:
         data = request.json
         new_tenant = Tenant(
@@ -22,6 +29,13 @@ def add_tenant():
 
 @tenant_bp.route('/tenant', methods=['GET'])
 def get_tenants():
+    """
+    Get all tenants from the database.
+
+    Returns:
+        A JSON response with a list of tenant objects and HTTP status code 200 if successful.
+        A JSON response with an error message and HTTP status code 500 if an error occurs.
+    """
     try:
         tenants = Tenant.query.all()
         return jsonify([{
@@ -36,6 +50,17 @@ def get_tenants():
 
 @tenant_bp.route('/tenant/<int:id>', methods=['GET'])
 def get_tenant(id):
+    """
+    Get a specific tenant from the database by ID.
+
+    Args:
+        id (int): The ID of the tenant.
+
+    Returns:
+        A JSON response with the tenant object and HTTP status code 200 if the tenant is found.
+        A JSON response with a message indicating the tenant is not found and HTTP status code 404 if the tenant is not found.
+        A JSON response with an error message and HTTP status code 500 if an error occurs.
+    """
     try:
         tenant = Tenant.query.get(id)
         if tenant:
@@ -53,6 +78,17 @@ def get_tenant(id):
     
 @tenant_bp.route('/tenant/<int:tenant_id>/payments', methods=['GET'])
 def get_tenant_payments(tenant_id):
+    """
+    Get the payment history of a specific tenant from the database.
+
+    Args:
+        tenant_id (int): The ID of the tenant.
+
+    Returns:
+        A JSON response with the payment history of the tenant and HTTP status code 200 if the tenant is found.
+        A JSON response with a message indicating the tenant is not found and HTTP status code 404 if the tenant is not found.
+        A JSON response with an error message and HTTP status code 500 if an error occurs.
+    """
     try:
         tenant = Tenant.query.get(tenant_id)
         if tenant:
@@ -74,6 +110,17 @@ def get_tenant_payments(tenant_id):
 
 @tenant_bp.route('/tenant/<int:id>', methods=['PUT'])
 def update_tenant(id):
+    """
+    Update a specific tenant in the database.
+
+    Args:
+        id (int): The ID of the tenant.
+
+    Returns:
+        A JSON response with a success message and HTTP status code 200 if the tenant is updated successfully.
+        A JSON response with a message indicating the tenant is not found and HTTP status code 404 if the tenant is not found.
+        A JSON response with an error message and HTTP status code 500 if an error occurs.
+    """
     try:
         tenant = Tenant.query.get(id)
         if tenant:
@@ -91,6 +138,17 @@ def update_tenant(id):
 
 @tenant_bp.route('/tenant/<int:id>', methods=['DELETE'])
 def delete_tenant(id):
+    """
+    Delete a specific tenant from the database.
+
+    Args:
+        id (int): The ID of the tenant.
+
+    Returns:
+        A JSON response with a success message and HTTP status code 200 if the tenant is deleted successfully.
+        A JSON response with a message indicating the tenant is not found and HTTP status code 404 if the tenant is not found.
+        A JSON response with an error message and HTTP status code 500 if an error occurs.
+    """
     try:
         tenant = Tenant.query.get(id)
         if tenant:

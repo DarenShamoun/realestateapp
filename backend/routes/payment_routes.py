@@ -7,6 +7,12 @@ payment_bp = Blueprint('payment_bp', __name__)
 
 @payment_bp.route('/payment', methods=['POST'])
 def add_payment():
+    """
+    Add a new payment to the database.
+
+    Returns:
+        A JSON response with the message and ID of the newly added payment.
+    """
     try:
         data = request.json
         new_payment = Payment(
@@ -62,6 +68,12 @@ def add_payment():
 
 @payment_bp.route('/payment', methods=['GET'])
 def get_payments():
+    """
+    Get a list of payments based on the provided filters.
+
+    Returns:
+        A JSON response with the list of payments.
+    """
     unit_id = request.args.get('unitId')
     tenant_id = request.args.get('tenantId')
     year = request.args.get('year', type=int)
@@ -95,6 +107,15 @@ def get_payments():
 
 @payment_bp.route('/payment/<int:id>', methods=['GET'])
 def get_payment(id):
+    """
+    Get a specific payment by its ID.
+
+    Args:
+        id (int): The ID of the payment.
+
+    Returns:
+        A JSON response with the payment details.
+    """
     try:
         payment = Payment.query.get(id)
         if payment:
@@ -114,6 +135,15 @@ def get_payment(id):
 
 @payment_bp.route('/payment/<int:id>', methods=['PUT'])
 def update_payment(id):
+    """
+    Update a payment by its ID.
+
+    Args:
+        id (int): The ID of the payment.
+
+    Returns:
+        A JSON response with the message indicating the payment has been updated.
+    """
     try:
         payment = Payment.query.get(id)
         if payment:
@@ -133,6 +163,15 @@ def update_payment(id):
 
 @payment_bp.route('/payment/<int:id>', methods=['DELETE'])
 def delete_payment(id):
+    """
+    Delete a payment by its ID.
+
+    Args:
+        id (int): The ID of the payment.
+
+    Returns:
+        A JSON response with the message indicating the payment has been deleted.
+    """
     try:
         payment = Payment.query.get(id)
         if payment:

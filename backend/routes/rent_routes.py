@@ -7,6 +7,12 @@ rent_bp = Blueprint('rent_bp', __name__)
 
 @rent_bp.route('/rent', methods=['POST'])
 def add_rent():
+    """
+    Add rent details to the database.
+
+    Returns:
+        JSON response: {'message': 'Rent details added'}
+    """
     try:
         data = request.json
         rent_date = datetime.strptime(data['date'], '%Y-%m-%d') if 'date' in data else datetime.utcnow()
@@ -28,6 +34,12 @@ def add_rent():
     
 @rent_bp.route('/rent/by-date', methods=['GET'])
 def get_rent_by_date():
+    """
+    Get rent details by date.
+
+    Returns:
+        JSON response: List of rent details matching the specified criteria
+    """
     year = request.args.get('year', type=int)
     month = request.args.get('month', type=int)
     day = request.args.get('day', type=int)
@@ -76,6 +88,12 @@ def get_rent_by_date():
     
 @rent_bp.route('/rent/all', methods=['GET'])
 def get_all_rents():
+    """
+    Get all rent details.
+
+    Returns:
+        JSON response: List of all rent details
+    """
     rents = Rent.query.all()
     rent_list = [{
         'id': rent.id,
@@ -92,6 +110,15 @@ def get_all_rents():
 
 @rent_bp.route('/rent/<int:id>', methods=['GET'])
 def get_rent(id):
+    """
+    Get rent details by ID.
+
+    Args:
+        id (int): The ID of the rent details to retrieve.
+
+    Returns:
+        JSON response: Rent details matching the specified ID
+    """
     try:
         rent = Rent.query.get(id)
         if rent:
@@ -113,6 +140,15 @@ def get_rent(id):
     
 @rent_bp.route('/rent/recent/<int:unit_id>', methods=['GET'])
 def get_recent_rent(unit_id):
+    """
+    Get the most recent rent details for a specific unit.
+
+    Args:
+        unit_id (int): The ID of the unit.
+
+    Returns:
+        JSON response: The most recent rent details for the specified unit
+    """
     recent_rent = Rent.query.filter_by(unit_id=unit_id).order_by(Rent.date.desc()).first()
     if recent_rent:
         return jsonify({
@@ -132,6 +168,12 @@ def get_recent_rent(unit_id):
     
 @rent_bp.route('/rent/monthly', methods=['GET'])
 def get_monthly_rent():
+    """
+    Get the monthly rent details for a specific unit.
+
+    Returns:
+        JSON response: The rent details for the specified month and unit
+    """
     unit_id = request.args.get('unitId', type=int)
     year = request.args.get('year', type=int)
     month = request.args.get('month', type=int)
@@ -158,6 +200,15 @@ def get_monthly_rent():
 
 @rent_bp.route('/rent/<int:id>', methods=['PUT'])
 def update_rent(id):
+    """
+    Update rent details.
+
+    Args:
+        id (int): The ID of the rent details to update.
+
+    Returns:
+        JSON response: {'message': 'Rent details updated'}
+    """
     try:
         rent = Rent.query.get(id)
         if not rent:
@@ -181,6 +232,15 @@ def update_rent(id):
 
 @rent_bp.route('/rent/<int:id>', methods=['DELETE'])
 def delete_rent(id):
+    """
+    Delete rent details.
+
+    Args:
+        id (int): The ID of the rent details to delete.
+
+    Returns:
+        JSON response: {'message': 'Rent details deleted'}
+    """
     try:
         rent = Rent.query.get(id)
         if rent:

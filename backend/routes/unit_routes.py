@@ -5,6 +5,12 @@ unit_bp = Blueprint('unit_bp', __name__)
 
 @unit_bp.route('/unit', methods=['POST'])
 def add_unit():
+    """
+    Add a new unit to the database.
+
+    Returns:
+        JSON response: {'message': 'Unit added'} if successful, {'error': <error_message>} if an exception occurs.
+    """
     try:
         data = request.json
         # Validate if the property exists
@@ -24,6 +30,12 @@ def add_unit():
 
 @unit_bp.route('/unit', methods=['GET'])
 def get_units():
+    """
+    Get a list of units from the database.
+
+    Returns:
+        JSON response: List of unit data if successful, {'error': <error_message>} if an exception occurs.
+    """
     property_id = request.args.get('propertyId')
     tenant_id = request.args.get('tenantId')
     try:
@@ -63,6 +75,15 @@ def get_units():
 
 @unit_bp.route('/unit/<int:id>', methods=['GET'])
 def get_unit(id):
+    """
+    Get a specific unit from the database.
+
+    Args:
+        id (int): The ID of the unit.
+
+    Returns:
+        JSON response: Unit data if found, {'message': 'Unit not found'} if not found, {'error': <error_message>} if an exception occurs.
+    """
     try:
         unit = Unit.query.get(id)
         if unit:
@@ -95,6 +116,15 @@ def get_unit(id):
     
 @unit_bp.route('/unit/<int:id>/financial-summary', methods=['GET'])
 def get_unit_financial_summary(id):
+    """
+    Get the financial summary of a unit for a specific year and month.
+
+    Args:
+        id (int): The ID of the unit.
+
+    Returns:
+        JSON response: Financial summary if unit found, {'message': 'Unit not found'} if not found, {'error': <error_message>} if an exception occurs.
+    """
     year = request.args.get('year', type=int)
     month = request.args.get('month', type=int)
 
@@ -122,6 +152,15 @@ def get_unit_financial_summary(id):
 
 @unit_bp.route('/unit/<int:id>', methods=['PUT'])
 def update_unit(id):
+    """
+    Update a specific unit in the database.
+
+    Args:
+        id (int): The ID of the unit.
+
+    Returns:
+        JSON response: {'message': 'Unit updated'} if successful, {'message': 'Unit not found'} if not found, {'error': <error_message>} if an exception occurs.
+    """
     try:
         unit = Unit.query.get(id)
         if unit:
@@ -140,6 +179,15 @@ def update_unit(id):
     
 @unit_bp.route('/unit/<int:id>/update_balance', methods=['PUT'])
 def update_unit_balance(id):
+    """
+    Update the balance of a specific unit for a given year and month.
+
+    Args:
+        id (int): The ID of the unit.
+
+    Returns:
+        JSON response: {'message': 'Unit balance updated'} if successful, {'message': 'Unit not found'} if not found, {'error': <error_message>} if an exception occurs.
+    """
     year = request.args.get('year', type=int)
     month = request.args.get('month', type=int)
     unit = Unit.query.get(id)
@@ -151,6 +199,15 @@ def update_unit_balance(id):
 
 @unit_bp.route('/unit/<int:id>', methods=['DELETE'])
 def delete_unit(id):
+    """
+    Delete a specific unit from the database.
+
+    Args:
+        id (int): The ID of the unit.
+
+    Returns:
+        JSON response: {'message': 'Unit deleted'} if successful, {'message': 'Unit not found'} if not found, {'error': <error_message>} if an exception occurs.
+    """
     try:
         unit = Unit.query.get(id)
         if unit:

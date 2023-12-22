@@ -5,6 +5,12 @@ property_bp = Blueprint('property_bp', __name__)
 
 @property_bp.route('/property', methods=['POST'])
 def add_property():
+    """
+    Add a new property to the database.
+
+    Returns:
+        A JSON response indicating the success or failure of the operation.
+    """
     try:
         data = request.json
         new_property = Property(
@@ -23,6 +29,12 @@ def add_property():
 
 @property_bp.route('/property', methods=['GET'])
 def get_properties():
+    """
+    Get all properties from the database.
+
+    Returns:
+        A JSON response containing a list of properties.
+    """
     try:
         properties = Property.query.all()
         return jsonify([{
@@ -39,6 +51,15 @@ def get_properties():
 
 @property_bp.route('/property/<int:id>', methods=['GET'])
 def get_property(id):
+    """
+    Get a specific property from the database.
+
+    Args:
+        id (int): The ID of the property.
+
+    Returns:
+        A JSON response containing the property information if found, or an error message if not found.
+    """
     try:
         property = Property.query.get(id)
         if property:
@@ -58,6 +79,15 @@ def get_property(id):
     
 @property_bp.route('/property/<int:id>/financial-summary', methods=['GET'])
 def get_property_financial_summary(id):
+    """
+    Get the financial summary of a property for a specific year and month.
+
+    Args:
+        id (int): The ID of the property.
+
+    Returns:
+        A JSON response containing the financial summary information if the property is found, or an error message if not found.
+    """
     year = request.args.get('year', type=int)
     month = request.args.get('month', type=int)
 
@@ -86,6 +116,15 @@ def get_property_financial_summary(id):
     
 @property_bp.route('/property/<int:property_id>/monthly-income', methods=['GET'])
 def get_monthly_income(property_id):
+    """
+    Get the monthly income of a property for a specific year and month.
+
+    Args:
+        property_id (int): The ID of the property.
+
+    Returns:
+        A JSON response containing the monthly income information if the property is found, or an error message if not found.
+    """
     year = request.args.get('year', type=int)
     month = request.args.get('month', type=int)
     if not year or not month:
@@ -99,6 +138,15 @@ def get_monthly_income(property_id):
     
 @property_bp.route('/property/<int:id>/expenses', methods=['GET'])
 def get_property_expenses(id):
+    """
+    Get the total expenses of a property for a specific year and month.
+
+    Args:
+        id (int): The ID of the property.
+
+    Returns:
+        A JSON response containing the total expenses information if the property is found, or an error message if not found.
+    """
     year = request.args.get('year', type=int)
     month = request.args.get('month', type=int)
     expenses = Expense.query.filter_by(property_id=id)
@@ -109,6 +157,15 @@ def get_property_expenses(id):
 
 @property_bp.route('/property/<int:id>', methods=['PUT'])
 def update_property(id):
+    """
+    Update a property in the database.
+
+    Args:
+        id (int): The ID of the property.
+
+    Returns:
+        A JSON response indicating the success or failure of the operation.
+    """
     try:
         property = Property.query.get(id)
         if property:
@@ -128,6 +185,15 @@ def update_property(id):
 
 @property_bp.route('/property/<int:id>', methods=['DELETE'])
 def delete_property(id):
+    """
+    Delete a property from the database.
+
+    Args:
+        id (int): The ID of the property.
+
+    Returns:
+        A JSON response indicating the success or failure of the operation.
+    """
     try:
         property = Property.query.get(id)
         if property:

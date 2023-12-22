@@ -6,6 +6,12 @@ expense_bp = Blueprint('expense_bp', __name__)
 
 @expense_bp.route('/expense', methods=['POST'])
 def add_expense():
+    """
+    Add a new expense to the database.
+
+    Returns:
+        JSON: A JSON response indicating the success or failure of the operation.
+    """
     try:
         data = request.json
         new_expense = Expense(
@@ -23,6 +29,12 @@ def add_expense():
 
 @expense_bp.route('/expense', methods=['GET'])
 def get_expenses():
+    """
+    Get a list of expenses from the database based on optional filters.
+
+    Returns:
+        JSON: A JSON response containing the list of expenses.
+    """
     property_id = request.args.get('propertyId')
     year = request.args.get('year', type=int)
     month = request.args.get('month', type=int)
@@ -52,6 +64,15 @@ def get_expenses():
 
 @expense_bp.route('/expense/<int:id>', methods=['GET'])
 def get_expense(id):
+    """
+    Get a single expense from the database by its ID.
+
+    Args:
+        id (int): The ID of the expense.
+
+    Returns:
+        JSON: A JSON response containing the expense details.
+    """
     try:
         expense = Expense.query.get(id)
         if expense:
@@ -70,6 +91,15 @@ def get_expense(id):
 
 @expense_bp.route('/expense/<int:id>', methods=['PUT'])
 def update_expense(id):
+    """
+    Update an existing expense in the database.
+
+    Args:
+        id (int): The ID of the expense to be updated.
+
+    Returns:
+        JSON: A JSON response indicating the success or failure of the operation.
+    """
     try:
         expense = Expense.query.get(id)
         if expense:
@@ -88,6 +118,15 @@ def update_expense(id):
 
 @expense_bp.route('/expense/<int:id>', methods=['DELETE'])
 def delete_expense(id):
+    """
+    Delete an expense from the database.
+
+    Args:
+        id (int): The ID of the expense to be deleted.
+
+    Returns:
+        JSON: A JSON response indicating the success or failure of the operation.
+    """
     try:
         expense = Expense.query.get(id)
         if expense:
