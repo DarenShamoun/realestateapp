@@ -1,3 +1,8 @@
+/**
+ * Renders a page displaying a list of properties.
+ * 
+ * @returns {JSX.Element} The rendered Properties component.
+ */
 'use client'
 
 import React, { useEffect, useState } from 'react';

@@ -1,3 +1,8 @@
+/**
+ * Renders the Management page component.
+ * 
+ * @returns {JSX.Element} The rendered Management page component.
+ */
 'use client';
 
 import React from 'react';
@@ -40,7 +45,6 @@ const Management = () => {
       link: '/management/rents',
       description: 'Track rental rates and changes over time.'
     },
-    // Add more sections as needed with appropriate descriptions
   ];
 
   return (

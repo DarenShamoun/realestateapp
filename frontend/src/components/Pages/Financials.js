@@ -1,3 +1,8 @@
+/**
+ * Financials component.
+ * 
+ * @returns {JSX.Element} The rendered Financials component.
+ */
 import React from 'react';
 
 const Financials = () => {

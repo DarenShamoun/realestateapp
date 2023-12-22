@@ -1,3 +1,7 @@
+/**
+ * Renders the Calendar page component.
+ * @returns {JSX.Element} The rendered Calendar page component.
+ */
 import React from 'react';
 
 const Calendar = () => {

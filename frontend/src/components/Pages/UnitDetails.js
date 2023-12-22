@@ -1,3 +1,10 @@
+/**
+ * Renders the details of a specific unit, including tenant details, payment history, lease details, and financial overview.
+ * 
+ * @param {Object} props - The component props.
+ * @param {string} props.unitId - The ID of the unit to display details for.
+ * @returns {JSX.Element} The rendered UnitDetails component.
+ */
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -8,13 +15,6 @@ import { getRentByDate, getRecentRentByUnitId} from '@/api/rentService';
 import { getLeases } from '@/api/leaseService';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
 
-/**
- * Renders the details of a specific unit.
- * 
- * @param {Object} props - The component props.
- * @param {string} props.unitId - The ID of the unit.
- * @returns {JSX.Element} The rendered UnitDetails component.
- */
 const UnitDetails = ({ unitId }) => {
   const [unit, setUnit] = useState(null);
   const [tenant, setTenant] = useState(null);
