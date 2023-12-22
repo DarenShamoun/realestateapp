@@ -111,6 +111,25 @@ def get_rent(id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+@rent_bp.route('/rent/recent/<int:unit_id>', methods=['GET'])
+def get_recent_rent(unit_id):
+    recent_rent = Rent.query.filter_by(unit_id=unit_id).order_by(Rent.date.desc()).first()
+    if recent_rent:
+        return jsonify({
+            'id': recent_rent.id,
+            'unit_id': recent_rent.unit_id,
+            'rent': recent_rent.rent,
+            'trash': recent_rent.trash,
+            'water_sewer': recent_rent.water_sewer,
+            'parking': recent_rent.parking,
+            'debt': recent_rent.debt,
+            'breaks': recent_rent.breaks,
+            'total_rent': recent_rent.calculate_total_rent(),
+            'date': recent_rent.date.strftime('%Y-%m-%d')
+        }), 200
+    else:
+        return jsonify({'message': 'Rent details not found'}), 404
+    
 @rent_bp.route('/rent/monthly', methods=['GET'])
 def get_monthly_rent():
     unit_id = request.args.get('unitId', type=int)

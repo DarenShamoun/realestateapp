@@ -5,6 +5,7 @@ import { getUnit } from '@/api/unitService';
 import { getTenant } from '@/api/tenantService';
 import { getPayments } from '@/api/paymentService';
 import { getLeases } from '@/api/leaseService';
+import { getRecentRentByUnitId } from '@/api/rentService';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
 
 const UnitDetails = ({ unitId }) => {
@@ -20,26 +21,47 @@ const UnitDetails = ({ unitId }) => {
       try {
         const unitData = await getUnit(unitId);
         setUnit(unitData);
-    
+
         if (unitData.tenant && unitData.tenant.id) {
           const tenantData = await getTenant(unitData.tenant.id);
           setTenant(tenantData);
         }
-    
+
         const paymentsData = await getPayments({ unitId });
         setPayments(paymentsData);
-    
+
         const leasesData = await getLeases({ unitId });
         setLeases(leasesData);
+
+        try {
+          const rentData = await getRecentRentByUnitId(unitId);
+          if (rentData) {
+            setUnit(prevState => ({
+              ...prevState,
+              rent_details: rentData,
+              total_rent: rentData.total_rent
+            }));
+          }
+        } catch (rentError) {
+          // Handle the error when rent details are not found
+          setUnit(prevState => ({
+            ...prevState,
+            rent_details: {},
+            total_rent: 0
+          }));
+        }
       } catch (error) {
         setError(error);
       } finally {
         setIsLoading(false);
       }
     };
-
+    
     fetchUnitDetails();
   }, [unitId]);
+
+  // Function to safely format currency values
+  const formatCurrency = (value) => value ? `$${value.toFixed(2)}` : 'N/A';
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -52,9 +74,6 @@ const UnitDetails = ({ unitId }) => {
   if (!unit) {
     return <div>No unit details found.</div>;
   }
-
-  // Function to safely format currency values
-  const formatCurrency = (value) => value ? `$${value.toFixed(2)}` : 'N/A';
 
   // Prepare chart data for the BarChartPlot component
   const paymentChartData = payments.map(payment => ({
@@ -99,10 +118,11 @@ const UnitDetails = ({ unitId }) => {
           )}
         </div>
 
-        {/* Rent Details Card */}
-        {unit.rent_details ? (
-          <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4">
-            <h2 className="text-xl text-white">Rent Details</h2>
+      {/* Rent Details Card */}
+      <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4">
+        <h2 className="text-xl text-white">Rent Details</h2>
+        {unit.rent_details && Object.keys(unit.rent_details).length > 0 ? (
+          <>
             <p className="text-gray-300">Base Rent: {formatCurrency(unit.rent_details.rent)}</p>
             <p className="text-gray-300">Trash: {formatCurrency(unit.rent_details.trash)}</p>
             <p className="text-gray-300">Water & Sewer: {formatCurrency(unit.rent_details.water_sewer)}</p>
@@ -110,13 +130,11 @@ const UnitDetails = ({ unitId }) => {
             <p className="text-gray-300">Debt: {formatCurrency(unit.rent_details.debt)}</p>
             <p className="text-gray-300">Breaks: {formatCurrency(unit.rent_details.breaks)}</p>
             <p className="text-gray-300 font-bold">Total Rent: {formatCurrency(unit.total_rent)}</p>
-          </div>
+          </>
         ) : (
-          <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4">
-            <h2 className="text-xl text-white">Rent Details</h2>
-            <p className="text-gray-300">This unit is currently vacant.</p>
-          </div>
+          <p className="text-gray-300">Rent details not available for this unit.</p>
         )}
+      </div>
       </section>
 
       {/* Payment History and Financial Overview Section */}
