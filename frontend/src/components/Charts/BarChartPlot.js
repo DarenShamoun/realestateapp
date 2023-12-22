@@ -1,54 +1,54 @@
-import { BarChart, XAxis, YAxis, Bar, Tooltip, Legend, ResponsiveContainer} from "recharts";
+import { BarChart, XAxis, YAxis, Bar, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-const BarChartPlot = () => {
-  const data = [
+const BarChartPlot = ({ data }) => {
+  const chartData = data && data.length > 0 ? data : [
     {
         name: "Jan",
-        high: 4000,
-        low: 2400
+        Payment: 4000,
+        Debt: 2400
     },
     {
         name: "Feb",
-        high: 5000,
-        low: 1500
+        Payment: 5000,
+        Debt: 1500
     },
     {
         name: "Mar",
-        high: 6000,
-        low: 3000
+        Payment: 6000,
+        Debt: 3000
     },
     {
         name: "Apr",
-        high: 6500,
-        low: 4500
+        Payment: 6500,
+        Debt: 4500
     },
     {
         name: "May",
-        high: 7000,
-        low: 2200
+        Payment: 7000,
+        Debt: 2200
     },
     {
         name: "Jun",
-        high: 8000,
-        low: 3500
+        Payment: 8000,
+        Debt: 3500
     },
     {
         name: "Jul",
-        high: 7400,
-        low: 5500
+        Payment: 7400,
+        Debt: 5500
     },
   ];
 
   return (
     <>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart width={730} height={250} data={data}>
+        <BarChart width={730} height={250} data={chartData}>
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="high" fill="#82ca9d" />
-          <Bar dataKey="low" fill="#FA8072" />
+          <Bar dataKey="Payment" fill="#82ca9d" />
+          <Bar dataKey="Debt" fill="#FA8072" />
         </BarChart>
       </ResponsiveContainer>
     </>
