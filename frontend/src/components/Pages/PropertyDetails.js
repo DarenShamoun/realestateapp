@@ -1,3 +1,9 @@
+/**
+ * Renders the details of a property, including its name, address, and associated units.
+ * @param {Object} props - The component props.
+ * @param {string} props.propertyId - The ID of the property to display details for.
+ * @returns {JSX.Element} The rendered PropertyDetails component.
+ */
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -12,6 +18,7 @@ const PropertyDetails = ({ propertyId }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Fetch property and units by ID
     const fetchData = async () => {
       setIsLoading(true);
       try {
