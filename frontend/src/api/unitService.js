@@ -35,7 +35,6 @@ export const getUnitsByTenantId = async (tenantId) => {
 export const getUnitFinancialSummary = async (id, year, month) => {
   let url = `${API_URL}/unit/${id}/financial-summary`;
   
-  // Adding query parameters for year and month
   const queryParams = new URLSearchParams();
   if (year) queryParams.append('year', year);
   if (month) queryParams.append('month', month);
