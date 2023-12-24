@@ -11,7 +11,6 @@ class PropertyType(Enum):
 class Property(db.Model):
     """
     Represents a property in the real estate application.
-
     """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
@@ -27,7 +26,6 @@ class Property(db.Model):
 class Unit(db.Model):
     """
     Represents a unit in the real estate application.
-
     """
     id = db.Column(db.Integer, primary_key=True)
     property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False, index=True)
@@ -43,7 +41,6 @@ class Unit(db.Model):
 class Rent(db.Model):
     """
     Represents the rent details for a unit in the real estate application.
-
     """
     id = db.Column(db.Integer, primary_key=True)
     unit_id = db.Column(db.Integer, db.ForeignKey('unit.id'), nullable=False, index=True)
@@ -68,7 +65,6 @@ class RentHistory(db.Model):
 class Tenant(db.Model):
     """
     Represents a tenant in the real estate application.
-
     """
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(100), nullable=False)
@@ -88,7 +84,6 @@ class Tenant(db.Model):
 class Lease(db.Model):
     """
     Represents a lease in the real estate application.
-
     """
     id = db.Column(db.Integer, primary_key=True)
     unit_id = db.Column(db.Integer, db.ForeignKey('unit.id'), nullable=False, index=True)
@@ -112,7 +107,6 @@ class LeaseRenewal(db.Model):
 class Payment(db.Model):
     """
     Represents a payment in the real estate application.
-
     """
     id = db.Column(db.Integer, primary_key=True)
     lease_id = db.Column(db.Integer, db.ForeignKey('lease.id'), nullable=False, index=True)
@@ -131,7 +125,6 @@ class Payment(db.Model):
 class Expense(db.Model):
     """
     Represents an expense in the real estate application.
-
     """
     id = db.Column(db.Integer, primary_key=True)
     property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False, index=True)
