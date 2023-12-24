@@ -8,15 +8,6 @@ export const getRentDetails = async (unitId) => {
   return response.json();
 };
 
-export const getRentByDate = async (year, month, day, unitId, propertyId) => {
-  let queryParams = new URLSearchParams({ year, month, day, unitId, propertyId });
-  const response = await fetch(`${API_URL}/rent/by-date?${queryParams}`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
 export const getRecentRentByUnitId = async (unitId) => {
   const response = await fetch(`${API_URL}/rent/recent/${unitId}`);
   if (!response.ok) {

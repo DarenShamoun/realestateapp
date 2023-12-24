@@ -53,14 +53,10 @@ class Rent(db.Model):
     parking = db.Column(db.Float, nullable=False, default=0)
     debt = db.Column(db.Float, nullable=False, default=0)
     breaks = db.Column(db.Float, nullable=False, default=0)
+    total_rent = db.Column(db.Float, nullable=False, default=0)
     date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    def calculate_total_rent(self):
-        """Calculates the total rent amount."""
-        return (self.rent or 0) + (self.trash or 0) + (self.water_sewer or 0) + \
-               (self.parking or 0) + (self.debt or 0) + (self.breaks or 0)
 
 class RentHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
