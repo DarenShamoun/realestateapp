@@ -8,7 +8,6 @@ class PropertyType(Enum):
     COMMERCIAL = 'commercial'
     INDUSTRIAL = 'industrial'
 
-
 class Property(db.Model):
     """
     Represents a property in the real estate application.
@@ -40,35 +39,6 @@ class Unit(db.Model):
     is_occupied = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    def get_total_rent(self):
-        """Calculates the total rent from the associated Rent model."""
-        if self.rent_details:
-            return self.rent_details.calculate_total_rent()
-        return 0
-
-    def calculate_balance(self, year, month):
-        """Calculates the balance for the unit for a given month and year."""
-        payments = Payment.query.filter_by(unit_id=self.id)
-        payments = payments.filter(db.extract('year', Payment.date) == year,
-                                    db.extract('month', Payment.date) == month).all()
-        total_paid = sum(payment.amount for payment in payments)
-        rent_expected = self.get_total_rent()  # Assuming this returns the monthly rent due
-        balance = rent_expected - total_paid
-        if balance > 0:
-            self.rent_details.debt += balance
-            db.session.commit()
-        return balance
-
-    def update_balance(self, year, month):
-        """Updates the balance and debt based on payment history."""
-        total_paid = sum(payment.amount for payment in self.payments if payment.date.year == year and payment.date.month == month)
-        balance = self.rent_details.calculate_total_rent() - total_paid
-        if balance > 0:
-            self.rent_details.debt += balance
-        elif balance < 0:
-            self.rent_details.debt = max(0, self.rent_details.debt + balance)
-        db.session.commit()
 
 class Rent(db.Model):
     """

@@ -1,213 +1,100 @@
 from flask import Blueprint, request, jsonify
-from models import db, Unit, Property, Payment
+from models import db, Unit, Property
+from services.unit_service import get_total_rent, calculate_balance, update_balance
 
 unit_bp = Blueprint('unit_bp', __name__)
 
+def unit_to_json(unit):
+    rent_details = unit.rent_details
+    return {
+        'id': unit.id,
+        'property_id': unit.property_id,
+        'unit_number': unit.unit_number,
+        'is_occupied': unit.is_occupied,
+        'rent_status': unit.rent_status,
+        'tenant_id': unit.tenant_id,
+        'total_rent': get_total_rent(unit.id) if rent_details else None,
+        'created_at': unit.created_at,
+        'updated_at': unit.updated_at,
+        'rent_details': {
+            'rent': rent_details.rent if rent_details else 0,
+            'trash': rent_details.trash if rent_details else 0,
+            'water_sewer': rent_details.water_sewer if rent_details else 0,
+            'parking': rent_details.parking if rent_details else 0,
+            'debt': rent_details.debt if rent_details else 0,
+            'breaks': rent_details.breaks if rent_details else 0,
+        } if rent_details else {}
+    }
+
 @unit_bp.route('/unit', methods=['POST'])
 def add_unit():
-    """
-    Add a new unit to the database.
-
-    Returns:
-        JSON response: {'message': 'Unit added'} if successful, {'error': <error_message>} if an exception occurs.
-    """
     try:
         data = request.json
-        # Validate if the property exists
         if not Property.query.get(data['property_id']):
             return jsonify({'message': 'Property not found'}), 404
-        new_unit = Unit(
-            property_id=data['property_id'], 
-            unit_number=data['unit_number'], 
-            is_occupied=data.get('is_occupied', False)  # Default to False if not provided
-        )
+        new_unit = Unit(property_id=data['property_id'], unit_number=data['unit_number'], is_occupied=data.get('is_occupied', False))
         db.session.add(new_unit)
         db.session.commit()
         return jsonify({'message': 'Unit added'}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
 @unit_bp.route('/unit', methods=['GET'])
 def get_units():
-    """
-    Get a list of units from the database.
-
-    Returns:
-        JSON response: List of unit data if successful, {'error': <error_message>} if an exception occurs.
-    """
-    property_id = request.args.get('propertyId')
-    tenant_id = request.args.get('tenantId')
     try:
+        property_id = request.args.get('propertyId')
+        tenant_id = request.args.get('tenantId')
         query = Unit.query
         if property_id:
             query = query.filter_by(property_id=property_id)
         if tenant_id:
             query = query.filter_by(tenant_id=tenant_id)
         units = query.all()
-        unit_data = []
-        for unit in units:
-            rent_details = unit.rent_details
-            total_rent = unit.get_total_rent() if rent_details else None
-            tenant_info = {
-                'id': unit.tenant.id,
-                'full_name': unit.tenant.full_name
-            } if unit.tenant else None
-            unit_data.append({
-                'id': unit.id,
-                'property_id': unit.property_id,
-                'unit_number': unit.unit_number,
-                'is_occupied': unit.is_occupied,
-                'total_rent': total_rent,
-                'tenant': tenant_info,
-                'rent_details': {
-                    'rent': rent_details.rent if rent_details else 0,
-                    'trash': rent_details.trash if rent_details else 0,
-                    'water_sewer': rent_details.water_sewer if rent_details else 0,
-                    'parking': rent_details.parking if rent_details else 0,
-                    'debt': rent_details.debt if rent_details else 0,
-                    'breaks': rent_details.breaks if rent_details else 0,
-                } if rent_details else {}
-            })
-        return jsonify(unit_data), 200
+        return jsonify([unit_to_json(unit) for unit in units]), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @unit_bp.route('/unit/<int:id>', methods=['GET'])
 def get_unit(id):
-    """
-    Get a specific unit from the database.
-
-    Args:
-        id (int): The ID of the unit.
-
-    Returns:
-        JSON response: Unit data if found, {'message': 'Unit not found'} if not found, {'error': <error_message>} if an exception occurs.
-    """
     try:
         unit = Unit.query.get(id)
         if unit:
-            rent_details = unit.rent_details
-            total_rent = unit.get_total_rent() if rent_details else None
-            tenant_info = {
-                'id': unit.tenant.id,
-                'full_name': unit.tenant.full_name
-            } if unit.tenant else None
-            return jsonify({
-                'id': unit.id,
-                'property_id': unit.property_id,
-                'unit_number': unit.unit_number,
-                'is_occupied': unit.is_occupied,
-                'total_rent': total_rent,
-                'tenant': tenant_info,
-                'rent_details': {
-                    'rent': rent_details.rent if rent_details else 0,
-                    'trash': rent_details.trash if rent_details else 0,
-                    'water_sewer': rent_details.water_sewer if rent_details else 0,
-                    'parking': rent_details.parking if rent_details else 0,
-                    'debt': rent_details.debt if rent_details else 0,
-                    'breaks': rent_details.breaks if rent_details else 0,
-                } if rent_details else {}
-            }), 200
+            return jsonify(unit_to_json(unit)), 200
         else:
             return jsonify({'message': 'Unit not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
-@unit_bp.route('/unit/<int:id>/financial-summary', methods=['GET'])
-def get_unit_financial_summary(id):
-    """
-    Get the financial summary of a unit for a specific year and month.
-
-    Args:
-        id (int): The ID of the unit.
-
-    Returns:
-        JSON response: Financial summary if unit found, {'message': 'Unit not found'} if not found, {'error': <error_message>} if an exception occurs.
-    """
-    year = request.args.get('year', type=int)
-    month = request.args.get('month', type=int)
-
-    try:
-        unit = Unit.query.get(id)
-        if unit:
-            payments_query = Payment.query.filter_by(unit_id=id)
-            if year:
-                payments_query = payments_query.filter(db.extract('year', Payment.date) == year)
-            if month:
-                payments_query = payments_query.filter(db.extract('month', Payment.date) == month)
-            total_payments = sum(payment.amount for payment in payments_query.all())
-
-            return jsonify({
-                'unit_id': id,
-                'year': year,
-                'month': month,
-                'total_payments': total_payments
-            }), 200
-        else:
-            return jsonify({'message': 'Unit not found'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
 
 @unit_bp.route('/unit/<int:id>', methods=['PUT'])
 def update_unit(id):
-    """
-    Update a specific unit in the database.
-
-    Args:
-        id (int): The ID of the unit.
-
-    Returns:
-        JSON response: {'message': 'Unit updated'} if successful, {'message': 'Unit not found'} if not found, {'error': <error_message>} if an exception occurs.
-    """
     try:
         unit = Unit.query.get(id)
         if unit:
             data = request.json
-            unit.property_id = data['property_id']
-            unit.unit_number = data['unit_number']
-            unit.tenant_id = data.get('tenant_id')
-            # Automatically update is_occupied based on tenant presence
-            unit.is_occupied = True if unit.tenant_id else False
+            unit.property_id = data.get('property_id', unit.property_id)
+            unit.unit_number = data.get('unit_number', unit.unit_number)
+            unit.tenant_id = data.get('tenant_id', unit.tenant_id)
+            unit.is_occupied = data.get('is_occupied', unit.is_occupied)
+            unit.rent_status = data.get('rent_status', unit.rent_status)
             db.session.commit()
-            return jsonify({'message': 'Unit updated'}), 200
+            return jsonify(unit_to_json(unit)), 200
         else:
             return jsonify({'message': 'Unit not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
 @unit_bp.route('/unit/<int:id>/update_balance', methods=['PUT'])
 def update_unit_balance(id):
-    """
-    Update the balance of a specific unit for a given year and month.
-
-    Args:
-        id (int): The ID of the unit.
-
-    Returns:
-        JSON response: {'message': 'Unit balance updated'} if successful, {'message': 'Unit not found'} if not found, {'error': <error_message>} if an exception occurs.
-    """
     year = request.args.get('year', type=int)
     month = request.args.get('month', type=int)
-    unit = Unit.query.get(id)
-    if unit:
-        unit.update_balance(year, month)
-        return jsonify({'message': 'Unit balance updated'}), 200
+    balance = update_balance(id, year, month)
+    if balance is not None:
+        return jsonify({'message': 'Unit balance updated', 'balance': balance}), 200
     else:
-        return jsonify({'message': 'Unit not found'}), 404
+        return jsonify({'message': 'Unit not found or invalid date'}), 404
 
 @unit_bp.route('/unit/<int:id>', methods=['DELETE'])
 def delete_unit(id):
-    """
-    Delete a specific unit from the database.
-
-    Args:
-        id (int): The ID of the unit.
-
-    Returns:
-        JSON response: {'message': 'Unit deleted'} if successful, {'message': 'Unit not found'} if not found, {'error': <error_message>} if an exception occurs.
-    """
     try:
         unit = Unit.query.get(id)
         if unit:
