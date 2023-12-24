@@ -1,5 +1,6 @@
 from models import db, Rent
 from datetime import datetime
+from services.rent_history_service import add_rent_history
 
 def calculate_total_rent(rent):
     """Calculates the total rent amount."""
@@ -10,6 +11,12 @@ def calculate_total_rent(rent):
 def add_rent(data):
     """Adds a new rent record to the database."""
     rent_date = datetime.strptime(data.get('date', datetime.utcnow().strftime('%Y-%m-%d')), '%Y-%m-%d')
+
+    existing_rent = Rent.query.filter_by(
+        unit_id=data['unit_id'],
+        date=rent_date
+    ).first()
+
     rent = Rent(
         unit_id=data['unit_id'],
         rent=data.get('rent', 0),
@@ -22,6 +29,14 @@ def add_rent(data):
     )
     rent.total_rent = calculate_total_rent(rent)
     db.session.add(rent)
+    
+    if existing_rent and existing_rent.rent != rent.rent:
+        add_rent_history(
+            unit_id=rent.unit_id,
+            old_rent=existing_rent.rent,
+            new_rent=rent.rent
+        )
+    
     db.session.commit()
     return rent
 
@@ -43,6 +58,9 @@ def update_rent(id, data):
     rent.breaks = data.get('breaks', rent.breaks)
     
     rent.total_rent = calculate_total_rent(rent)
+    
+    if rent.rent != data.get('rent', rent.rent):
+        add_rent_history(unit_id=rent.unit_id, old_rent=rent.rent, new_rent=data['rent'])
+
     db.session.commit()
     return rent
-
