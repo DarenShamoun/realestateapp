@@ -1,30 +1,8 @@
 from flask import Blueprint, request, jsonify
 from models import db, Unit, Property
-from services.unit_service import get_total_rent, calculate_balance, update_balance
+from services.unit_service import get_total_rent, calculate_balance, update_balance, unit_to_json
 
 unit_bp = Blueprint('unit_bp', __name__)
-
-def unit_to_json(unit):
-    rent_details = unit.rent_details
-    return {
-        'id': unit.id,
-        'property_id': unit.property_id,
-        'unit_number': unit.unit_number,
-        'is_occupied': unit.is_occupied,
-        'rent_status': unit.rent_status,
-        'tenant_id': unit.tenant_id,
-        'total_rent': get_total_rent(unit.id) if rent_details else None,
-        'created_at': unit.created_at,
-        'updated_at': unit.updated_at,
-        'rent_details': {
-            'rent': rent_details.rent if rent_details else 0,
-            'trash': rent_details.trash if rent_details else 0,
-            'water_sewer': rent_details.water_sewer if rent_details else 0,
-            'parking': rent_details.parking if rent_details else 0,
-            'debt': rent_details.debt if rent_details else 0,
-            'breaks': rent_details.breaks if rent_details else 0,
-        } if rent_details else {}
-    }
 
 @unit_bp.route('/unit', methods=['POST'])
 def add_unit():
