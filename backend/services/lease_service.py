@@ -1,7 +1,5 @@
 from models import db, Lease, Unit
 from datetime import datetime
-import logging
-
 
 def add_lease(data):
     new_lease = Lease(
