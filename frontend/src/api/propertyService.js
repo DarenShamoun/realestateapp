@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL; // Ensure this is set in your .env file
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const getProperties = async () => {
   const response = await fetch(`${API_URL}/property`);
