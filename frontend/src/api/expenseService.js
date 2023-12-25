@@ -1,16 +1,8 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const getExpenses = async ({ propertyId, year, month } = {}) => {
-  let queryParams = new URLSearchParams({ propertyId, year, month }).toString();
+export const getExpenses = async ({ propertyId, unitId, year, month } = {}) => {
+  let queryParams = new URLSearchParams({ propertyId, unitId, year, month }).toString();
   const response = await fetch(`${API_URL}/expense?${queryParams}`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
-export const getExpensesByPropertyId = async (propertyId) => {
-  const response = await fetch(`${API_URL}/expense?propertyId=${propertyId}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -40,25 +32,25 @@ export const addExpense = async (expenseData) => {
 };
 
 export const updateExpense = async (id, expenseData) => {
-    const response = await fetch(`${API_URL}/expense/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(expenseData),
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
+  const response = await fetch(`${API_URL}/expense/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(expenseData),
+  });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
 };
-  
+
 export const deleteExpense = async (id) => {
-    const response = await fetch(`${API_URL}/expense/${id}`, {
-      method: 'DELETE'
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
+  const response = await fetch(`${API_URL}/expense/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
 };

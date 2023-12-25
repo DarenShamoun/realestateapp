@@ -95,12 +95,6 @@ class Lease(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-class LeaseRenewal(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    lease_id = db.Column(db.Integer, db.ForeignKey('lease.id'), nullable=False)
-    renewal_date = db.Column(db.DateTime, default=datetime.utcnow)
-    new_end_date = db.Column(db.DateTime)
-
 class Payment(db.Model):
     """
     Represents a payment in the real estate application.
@@ -125,6 +119,7 @@ class Expense(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False, index=True)
+    unit_id = db.Column(db.Integer, db.ForeignKey('unit.id'), index=True, nullable=True)
     date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     amount = db.Column(db.Float, nullable=False)
     category = db.Column(db.String(50), nullable=False)
