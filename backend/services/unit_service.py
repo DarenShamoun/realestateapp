@@ -35,7 +35,7 @@ def delete_unit(unit_id):
 def get_total_rent(unit_id):
     unit = Unit.query.get(unit_id)
     if unit and unit.rent_details:
-        return unit.rent_details.calculate_total_rent()
+        return unit.rent_details.total_rent
     return 0
 
 def calculate_balance(unit_id, year, month):
