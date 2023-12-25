@@ -1,6 +1,70 @@
 from models import Property, Payment, Expense, db
 from sqlalchemy import extract
 
+from models import db, Property, Expense, Unit, Payment
+from sqlalchemy import extract
+from datetime import datetime
+
+def property_to_json(property):
+    """
+    Converts a Property object to a JSON representation.
+    """
+    return {
+        'id': property.id,
+        'name': property.name,
+        'property_type': property.property_type.name,
+        'address': property.address,
+        'purchase_price': property.purchase_price,
+        'year_built': property.year_built,
+        'square_footage': property.square_footage,
+        'created_at': property.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        'updated_at': property.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+    }
+
+def add_property_service(data):
+    new_property = Property(
+        name=data['name'],
+        property_type=data['property_type'],
+        address=data['address'],
+        purchase_price=data.get('purchase_price'),
+        year_built=data.get('year_built'),
+        square_footage=data.get('square_footage')
+    )
+    db.session.add(new_property)
+    db.session.commit()
+    return property_to_json(new_property)
+
+def get_all_properties_service():
+    properties = Property.query.all()
+    return [property_to_json(property) for property in properties]
+
+def get_property_by_id_service(property_id):
+    property = Property.query.get(property_id)
+    if property:
+        return property_to_json(property)
+    return None
+
+def update_property_service(property_id, data):
+    property = Property.query.get(property_id)
+    if property:
+        property.name = data.get('name', property.name)
+        property.property_type = data.get('property_type', property.property_type)
+        property.address = data.get('address', property.address)
+        property.purchase_price = data.get('purchase_price', property.purchase_price)
+        property.year_built = data.get('year_built', property.year_built)
+        property.square_footage = data.get('square_footage', property.square_footage)
+        db.session.commit()
+        return property_to_json(property)
+    return None
+
+def delete_property_service(property_id):
+    property = Property.query.get(property_id)
+    if property:
+        db.session.delete(property)
+        db.session.commit()
+        return True
+    return False
+
 def calculate_monthly_income(property_id, year, month):
     total_income = 0
     property = Property.query.get(property_id)
