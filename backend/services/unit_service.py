@@ -1,6 +1,37 @@
 from models import Unit, Payment, db
 from sqlalchemy import extract
 
+def add_unit(data):
+    new_unit = Unit(**data)
+    db.session.add(new_unit)
+    db.session.commit()
+    return new_unit
+
+def get_all_units():
+    return Unit.query.all()
+
+def get_unit_by_id(unit_id):
+    return Unit.query.get(unit_id)
+
+def update_unit(unit_id, data):
+    unit = get_unit_by_id(unit_id)
+    if not unit:
+        return None
+
+    for key, value in data.items():
+        setattr(unit, key, value)
+
+    db.session.commit()
+    return unit
+
+def delete_unit(unit_id):
+    unit = get_unit_by_id(unit_id)
+    if unit:
+        db.session.delete(unit)
+        db.session.commit()
+        return True
+    return False
+
 def get_total_rent(unit_id):
     unit = Unit.query.get(unit_id)
     if unit and unit.rent_details:
