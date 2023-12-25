@@ -1,13 +1,7 @@
 from extensions import db
 from datetime import datetime
-from enum import Enum
 from sqlalchemy_utils import EmailType
-
-class PropertyType(Enum):
-    """Represents the type of a property."""
-    RESIDENTIAL = 'residential'
-    COMMERCIAL = 'commercial'
-    INDUSTRIAL = 'industrial'
+from sqlalchemy.schema import CheckConstraint
 
 class Property(db.Model):
     """
@@ -15,7 +9,10 @@ class Property(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
-    property_type = db.Column(db.Enum(PropertyType), nullable=False)
+    property_type = db.Column(db.String(50), nullable=False)
+    __table_args__ = (
+        CheckConstraint(property_type.in_(['RESIDENTIAL', 'COMMERCIAL', 'INDUSTRIAL'])),
+    )    
     address = db.Column(db.String(255), nullable=False)
     units = db.relationship('Unit', backref='property', lazy=True)
     purchase_price = db.Column(db.Float, nullable=True)
