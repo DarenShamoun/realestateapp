@@ -33,3 +33,20 @@ def tenant_to_json(tenant):
         'email': tenant.email,
         'contact_notes': tenant.contact_notes
     }
+
+def get_all_tenants():
+    """Retrieves all tenant records from the database."""
+    return Tenant.query.all()
+
+def get_tenant_by_id(tenant_id):
+    """Retrieves a tenant record by its ID."""
+    return Tenant.query.get(tenant_id)
+
+def delete_tenant(tenant_id):
+    """Deletes a tenant record by its ID."""
+    tenant = get_tenant_by_id(tenant_id)
+    if tenant:
+        db.session.delete(tenant)
+        db.session.commit()
+        return True
+    return False

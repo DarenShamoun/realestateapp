@@ -39,7 +39,7 @@ export const addTenant = async (tenantData) => {
   return response.json();
 };
 
-export const updateTenant = async (id, tenantData) => {
+export const updateTenant = async (id, tenantData) => { 
     const response = await fetch(`${API_URL}/tenant/${id}`, {
       method: 'PUT',
       headers: {

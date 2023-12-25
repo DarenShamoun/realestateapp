@@ -1,6 +1,13 @@
 from flask import Blueprint, request, jsonify
-from models import db, Tenant
-from services.tenant_service import add_tenant, get_tenant_payments, update_tenant, tenant_to_json
+from services.tenant_service import (
+    add_tenant, 
+    get_all_tenants, 
+    get_tenant_by_id, 
+    get_tenant_payments, 
+    update_tenant, 
+    delete_tenant, 
+    tenant_to_json
+)
 
 tenant_bp = Blueprint('tenant_bp', __name__)
 
@@ -16,7 +23,7 @@ def add_tenant_route():
 @tenant_bp.route('/tenant', methods=['GET'])
 def get_tenants():
     try:
-        tenants = Tenant.query.all()
+        tenants = get_all_tenants()
         return jsonify([tenant_to_json(tenant) for tenant in tenants]), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -24,7 +31,7 @@ def get_tenants():
 @tenant_bp.route('/tenant/<int:id>', methods=['GET'])
 def get_tenant(id):
     try:
-        tenant = Tenant.query.get(id)
+        tenant = get_tenant_by_id(id)
         if tenant:
             return jsonify(tenant_to_json(tenant)), 200
         else:
@@ -58,12 +65,8 @@ def update_tenant_route(id):
 @tenant_bp.route('/tenant/<int:id>', methods=['DELETE'])
 def delete_tenant_route(id):
     try:
-        tenant = Tenant.query.get(id)
-        if tenant:
-            db.session.delete(tenant)
-            db.session.commit()
+        if delete_tenant(id):
             return jsonify({'message': 'Tenant deleted'}), 200
-        else:
-            return jsonify({'message': 'Tenant not found'}), 404
+        return jsonify({'message': 'Tenant not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500

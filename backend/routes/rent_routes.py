@@ -1,5 +1,14 @@
 from flask import Blueprint, request, jsonify
-from services.rent_service import add_rent, get_all_rents, get_rent_by_id, get_recent_rent, get_monthly_rent, update_rent, delete_rent, rent_to_json
+from services.rent_service import (
+    add_rent, 
+    get_all_rents, 
+    get_rent_by_id, 
+    get_recent_rent, 
+    get_monthly_rent, 
+    update_rent, 
+    delete_rent, 
+    rent_to_json
+)
 
 rent_bp = Blueprint('rent_bp', __name__)
 
