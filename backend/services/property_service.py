@@ -1,25 +1,8 @@
 from models import Property, Payment, Expense, db
 from sqlalchemy import extract
 
-from models import db, Property, Expense, Unit, Payment
+from models import db, Property, Expense, Payment
 from sqlalchemy import extract
-from datetime import datetime
-
-def property_to_json(property):
-    """
-    Converts a Property object to a JSON representation.
-    """
-    return {
-        'id': property.id,
-        'name': property.name,
-        'property_type': property.property_type.name,
-        'address': property.address,
-        'purchase_price': property.purchase_price,
-        'year_built': property.year_built,
-        'square_footage': property.square_footage,
-        'created_at': property.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-        'updated_at': property.updated_at.strftime('%Y-%m-%d %H:%M:%S')
-    }
 
 def add_property_service(data):
     new_property = Property(
@@ -109,3 +92,19 @@ def calculate_property_expenses(property_id, year, month):
     except Exception as e:
         # Log the exception as needed
         return None
+
+def property_to_json(property):
+    """
+    Converts a Property object to a JSON representation.
+    """
+    return {
+        'id': property.id,
+        'name': property.name,
+        'property_type': property.property_type,
+        'address': property.address,
+        'purchase_price': property.purchase_price,
+        'year_built': property.year_built,
+        'square_footage': property.square_footage,
+        'created_at': property.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        'updated_at': property.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+    }

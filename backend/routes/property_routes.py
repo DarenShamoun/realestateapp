@@ -84,7 +84,7 @@ def update_property_route(id):
 def delete_property_route(id):
     try:
         if delete_property_service(id):
-            return '', 204
+            return jsonify({'message': 'Property successfully deleted'}), 200
         return jsonify({'message': 'Property not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500

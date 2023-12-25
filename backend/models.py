@@ -48,7 +48,7 @@ class Rent(db.Model):
     parking = db.Column(db.Float, nullable=False, default=0)
     debt = db.Column(db.Float, nullable=False, default=0)
     breaks = db.Column(db.Float, nullable=False, default=0)
-    total_rent = db.Column(db.Float, nullable=False, default=0)
+    total_rent = db.Column(db.Float, nullable=False, default=0.0)
     date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
