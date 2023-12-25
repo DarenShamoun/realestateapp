@@ -3,7 +3,6 @@ from datetime import datetime
 from enum import Enum
 from sqlalchemy_utils import EmailType
 
-
 class PropertyType(Enum):
     """Represents the type of a property."""
     RESIDENTIAL = 'residential'

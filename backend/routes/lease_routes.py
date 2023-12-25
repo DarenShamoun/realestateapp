@@ -1,5 +1,12 @@
 from flask import Blueprint, request, jsonify
-from services.lease_service import add_lease, get_all_leases, get_lease_by_id, update_lease, delete_lease, lease_to_json
+from services.lease_service import (
+    add_lease, 
+    get_all_leases, 
+    get_lease_by_id, 
+    update_lease, 
+    delete_lease, 
+    lease_to_json
+)
 
 lease_bp = Blueprint('lease_bp', __name__)
 

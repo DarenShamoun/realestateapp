@@ -1,5 +1,12 @@
 from flask import Blueprint, request, jsonify
-from services.expense_service import add_expense, get_expenses, get_expense_by_id, update_expense, delete_expense, expense_to_json
+from services.expense_service import (
+    add_expense, 
+    get_expenses,
+    get_expense_by_id, 
+    update_expense, 
+    delete_expense, 
+    expense_to_json
+)
 
 expense_bp = Blueprint('expense_bp', __name__)
 
