@@ -40,7 +40,6 @@ def add_rent(data):
     db.session.commit()
     return rent
 
-
 def update_rent(id, data):
     """Updates an existing rent record."""
     rent = Rent.query.get(id)
@@ -64,3 +63,16 @@ def update_rent(id, data):
 
     db.session.commit()
     return rent
+
+def rent_to_json(rent):
+    return {
+        'id': rent.id,
+        'unit_id': rent.unit_id,
+        'rent': rent.rent,
+        'trash': rent.trash,
+        'water_sewer': rent.water_sewer,
+        'parking': rent.parking,
+        'debt': rent.debt,
+        'breaks': rent.breaks,
+        'date': rent.date.strftime('%Y-%m-%d')
+    }

@@ -2,23 +2,9 @@ from flask import Blueprint, request, jsonify
 from models import db, Rent, Unit, Property
 from datetime import datetime
 import sqlalchemy as sa
-from services.rent_service import add_rent, update_rent
-
+from services.rent_service import add_rent, update_rent, rent_to_json
 
 rent_bp = Blueprint('rent_bp', __name__)
-
-def rent_to_json(rent):
-    return {
-        'id': rent.id,
-        'unit_id': rent.unit_id,
-        'rent': rent.rent,
-        'trash': rent.trash,
-        'water_sewer': rent.water_sewer,
-        'parking': rent.parking,
-        'debt': rent.debt,
-        'breaks': rent.breaks,
-        'date': rent.date.strftime('%Y-%m-%d')
-    }
 
 @rent_bp.route('/rent', methods=['POST'])
 def add_rent_route():

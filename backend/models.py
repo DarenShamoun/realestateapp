@@ -1,6 +1,8 @@
 from extensions import db
 from datetime import datetime
 from enum import Enum
+from sqlalchemy_utils import EmailType
+
 
 class PropertyType(Enum):
     """Represents the type of a property."""
@@ -70,16 +72,11 @@ class Tenant(db.Model):
     full_name = db.Column(db.String(100), nullable=False)
     primary_phone = db.Column(db.String(20), nullable=False)
     secondary_phone = db.Column(db.String(20))
-    email = db.Column(db.String(100))
+    email = db.Column(EmailType)
     contact_notes = db.Column(db.Text)
     leases = db.relationship('Lease', backref='tenant', lazy=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    def get_payment_history(self):
-        """Returns a summary of the tenant's payment history."""
-        payments = self.payments
-        return [{'amount': payment.amount, 'date': payment.date, 'type': payment.payment_type} for payment in payments]
 
 class Lease(db.Model):
     """

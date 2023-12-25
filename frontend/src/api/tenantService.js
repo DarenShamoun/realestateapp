@@ -16,8 +16,9 @@ export const getTenant = async (id) => {
   return response.json();
 };
 
-export const getTenantPayments = async (tenantId) => {
-  const response = await fetch(`${API_URL}/tenant/${tenantId}/payments`);
+export const getTenantPayments = async (tenantId, startDate, endDate) => {
+  const queryParams = new URLSearchParams({ startDate, endDate });
+  const response = await fetch(`${API_URL}/tenant/${tenantId}/payments?${queryParams}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
