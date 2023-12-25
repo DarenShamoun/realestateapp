@@ -46,30 +46,22 @@ def update_lease(id, data):
     return lease
 
 def update_unit_occupancy(unit_id):
-    logging.basicConfig(level=logging.DEBUG)
     unit = Unit.query.get(unit_id)
-    logging.debug(f"Updating occupancy for Unit ID: {unit_id}")
-
     if unit:
         active_lease = Lease.query.filter(
             Lease.unit_id == unit_id,
-            ((Lease.end_date == None) | (Lease.end_date >= datetime.utcnow())),
+            (Lease.end_date == None) | (Lease.end_date >= datetime.utcnow()),
             Lease.status == 'Active'
         ).order_by(Lease.start_date.desc()).first()
 
         if active_lease:
-            logging.debug(f"Active lease found: {active_lease.id}")
             unit.is_occupied = True
             unit.tenant_id = active_lease.tenant_id
         else:
-            logging.debug("No active lease found.")
             unit.is_occupied = False
             unit.tenant_id = None
 
         db.session.commit()
-        logging.debug(f"Unit updated: {unit.is_occupied}, Tenant ID: {unit.tenant_id}")
-    else:
-        logging.debug(f"No unit found with ID: {unit_id}")
 
 def delete_lease(lease_id):
     lease = Lease.query.get(lease_id)
