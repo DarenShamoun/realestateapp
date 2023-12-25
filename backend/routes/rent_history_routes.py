@@ -1,16 +1,10 @@
 from flask import Blueprint, jsonify
-from models import RentHistory
+from services.rent_history_service import get_rent_history_by_unit, rent_history_to_json
 
 rent_history_bp = Blueprint('rent_history_bp', __name__)
 
 @rent_history_bp.route('/rent-history/<int:unit_id>', methods=['GET'])
 def get_rent_history(unit_id):
     """Get rent history for a specific unit."""
-    histories = RentHistory.query.filter_by(unit_id=unit_id).all()
-    return jsonify([{
-        'id': history.id,
-        'unit_id': history.unit_id,
-        'old_rent': history.old_rent,
-        'new_rent': history.new_rent,
-        'change_date': history.change_date.strftime('%Y-%m-%d')
-    } for history in histories]), 200
+    histories = get_rent_history_by_unit(unit_id)
+    return jsonify([rent_history_to_json(history) for history in histories]), 200
