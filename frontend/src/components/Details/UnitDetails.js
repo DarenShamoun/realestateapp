@@ -7,6 +7,16 @@ import LeaseDetails from './LeaseDetails';
 import RentDetails from './RentDetails';
 import PaymentHistory from './PaymentHistory';
 
+// Function to get the last six months from the current date
+const getLastSixMonths = () => {
+  const months = [];
+  let date = new Date();
+  for (let i = 0; i < 6; i++) {
+    months.push(new Date(date.setMonth(date.getMonth() - 1)));
+  }
+  return months.map(d => ({ month: d.getMonth() + 1, year: d.getFullYear() }));
+};
+
 const UnitDetails = ({ unitId }) => {
   const { unit, tenant, payments, leases, isLoading, error } = useUnitDetails(unitId);
 
