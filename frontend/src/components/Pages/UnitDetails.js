@@ -59,10 +59,13 @@ const UnitDetails = ({ unitId }) => {
       try {
         const rentData = await getRecentRentByUnitId(unitId);
         if (rentData) {
+          const rentDate = new Date(rentData.date);
+          const formattedDate = rentDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit' });
           setUnit(prevState => ({
             ...prevState,
             rent_details: rentData,
-            total_rent: rentData.total_rent
+            total_rent: rentData.total_rent,
+            rent_date: formattedDate // Store the formatted date
           }));
         }
       } catch (rentError) {
@@ -181,8 +184,8 @@ const UnitDetails = ({ unitId }) => {
 
       {/* Rent Details Card */}
       <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4">
-        <h2 className="text-xl text-white">Rent Details</h2>
-        {unit.rent_details && Object.keys(unit.rent_details).length > 0 ? (
+        <h2 className="text-xl text-white">Rent Details {unit?.rent_date ? `(${unit.rent_date})` : ''}</h2>
+        {unit?.rent_details && Object.keys(unit.rent_details).length > 0 ? (
           <>
             <p className="text-gray-300">Base Rent: {formatCurrency(unit.rent_details.rent)}</p>
             <p className="text-gray-300">Trash: {formatCurrency(unit.rent_details.trash)}</p>
