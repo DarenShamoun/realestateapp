@@ -37,82 +37,83 @@ const UnitDetails = ({ unitId }) => {
   // Fetch unit details, tenant details, payment history, and lease details
   useEffect(() => {
 
-    // Fetches unit details, tenant details, payment history, and lease details
-    const fetchUnitDetails = async () => {
+  // Fetches unit details, tenant details, payment history, and lease details
+  const fetchUnitDetails = async () => {
+    try {
+      const unitData = await getUnit(unitId);
+      setUnit(unitData);
+
+      if (unitData.tenant_id) {
+        const tenantData = await getTenant(unitData.tenant_id);
+        setTenant(tenantData);
+      } else {
+        setTenant(null); // Reset tenant data if no tenant_id is present
+      }
+  
+      const paymentsData = await getPayments({ unitId });
+      setPayments(paymentsData);
+
+      const leasesData = await getLeases({ unitId });
+      setLeases(leasesData);
+
       try {
-        const unitData = await getUnit(unitId);
-        setUnit(unitData);
-
-        if (unitData.tenant && unitData.tenant.id) {
-          const tenantData = await getTenant(unitData.tenant.id);
-          setTenant(tenantData);
-        }
-
-        const paymentsData = await getPayments({ unitId });
-        setPayments(paymentsData);
-
-        const leasesData = await getLeases({ unitId });
-        setLeases(leasesData);
-
-        try {
-          const rentData = await getRecentRentByUnitId(unitId);
-          if (rentData) {
-            setUnit(prevState => ({
-              ...prevState,
-              rent_details: rentData,
-              total_rent: rentData.total_rent
-            }));
-          }
-        } catch (rentError) {
-          // Handle the error when rent details are not found
+        const rentData = await getRecentRentByUnitId(unitId);
+        if (rentData) {
           setUnit(prevState => ({
             ...prevState,
-            rent_details: {},
-            total_rent: 0
+            rent_details: rentData,
+            total_rent: rentData.total_rent
           }));
         }
-      } catch (error) {
-        setError(error);
-      } finally {
-        setIsLoading(false);
+      } catch (rentError) {
+        // Handle the error when rent details are not found
+        setUnit(prevState => ({
+          ...prevState,
+          rent_details: {},
+          total_rent: 0
+        }));
       }
-    };
-
-    // Fetches payment and rent data for the last six months
-    const fetchChartData = async () => {
-      const lastSixMonths = getLastSixMonths();
-      let newChartData = [];
+    } catch (error) {
+      setError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
     
-      for (const { month, year } of lastSixMonths) {
+  // Fetches payment and rent data for the last six months
+  const fetchChartData = async () => {
+    const lastSixMonths = getLastSixMonths();
+    let newChartData = [];
+  
+    for (const { month, year } of lastSixMonths) {
+      try {
+        const paymentsData = await getPayments({ unitId, year, month });
+        const paymentTotal = paymentsData.reduce((sum, payment) => sum + payment.amount, 0);
+  
+        // Fetch rent data for the month
+        let totalRent = 0;
         try {
-          const paymentsData = await getPayments({ unitId, year, month });
-          const paymentTotal = paymentsData.reduce((sum, payment) => sum + payment.amount, 0);
-    
-          // Fetch rent data for the month
-          let totalRent = 0;
-          try {
-            const rentData = await getRentByDate(year, month, null, unitId, null);
-            totalRent = rentData.length > 0 ? rentData[0].total_rent : 0;
-          } catch (rentError) {
-            // No rent data found for the month, set totalRent to 0
-          }
-    
-          // Add to chart data if there is a payment or rent for the month
-          if (paymentTotal > 0 || totalRent > 0) {
-            newChartData.push({ name: `${month}/${year}`, Payment: paymentTotal, Balance: totalRent });
-          }
-        } catch (error) {
-          console.error(`Error fetching data for month ${month}, year ${year}:`, error);
+          const rentData = await getRentByDate(year, month, null, unitId, null);
+          totalRent = rentData.length > 0 ? rentData[0].total_rent : 0;
+        } catch (rentError) {
+          // No rent data found for the month, set totalRent to 0
         }
+  
+        // Add to chart data if there is a payment or rent for the month
+        if (paymentTotal > 0 || totalRent > 0) {
+          newChartData.push({ name: `${month}/${year}`, Payment: paymentTotal, Balance: totalRent });
+        }
+      } catch (error) {
+        console.error(`Error fetching data for month ${month}, year ${year}:`, error);
       }
-    
-      // Reverse the order for past to present display and limit to last six months
-      newChartData = newChartData.reverse().slice(0, 6);
-    
-      setChartData(newChartData);
-    };
-    
-            
+    }
+  
+    // Reverse the order for past to present display and limit to last six months
+    newChartData = newChartData.reverse().slice(0, 6);
+  
+    setChartData(newChartData);
+  };
+
     fetchUnitDetails();
     fetchChartData();
   }, [unitId]);
