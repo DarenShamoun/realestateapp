@@ -49,9 +49,11 @@ def get_rent_by_id(id):
     """Retrieves a rent record by its ID."""
     return Rent.query.get(id)
 
-def get_recent_rent(lease_id):
-    """Retrieves the most recent rent record for a specific lease."""
-    return Rent.query.filter_by(lease_id=lease_id).order_by(Rent.date.desc()).first()
+def get_recent_rent(unit_id):
+    """Retrieves the most recent rent record for a specific unit."""
+    return Rent.query.join(Lease, Lease.id == Rent.lease_id)\
+                     .filter(Lease.unit_id == unit_id)\
+                     .order_by(Rent.date.desc()).first()
 
 def get_monthly_rent(lease_id, year, month):
     """Retrieves rent for a specific month and year for a lease."""

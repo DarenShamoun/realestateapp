@@ -27,6 +27,9 @@ def get_expenses_route():
         'year': request.args.get('year', type=int),
         'month': request.args.get('month', type=int)
     }
+
+    filters = {k: v for k, v in filters.items() if v is not None}
+
     try:
         expenses = get_expenses(filters)
         return jsonify([expense_to_json(expense) for expense in expenses]), 200

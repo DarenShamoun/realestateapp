@@ -20,10 +20,11 @@ export const useUnitDetails = (unitId) => {
         setUnit(unitData);
 
         if (unitData.tenant_id) {
-          const tenantData = await getTenant(unitData.tenant_id);
+          const leaseData = await getLease(unitData.id);
+          const tenantData = await getTenant(leaseData.tenant_id);
           setTenant(tenantData);
         }
-
+        
         const paymentsData = await getPayments({ unitId });
         setPayments(paymentsData);
 
