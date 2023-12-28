@@ -1,4 +1,4 @@
-from models import db, Rent
+from models import db, Rent, Lease
 from datetime import datetime
 from services.rent_history_service import add_rent_history
 
@@ -14,27 +14,29 @@ def calculate_total_rent(rent):
     ])
 
 def add_rent(data):
-    rent_date = datetime.strptime(data.get('date', datetime.utcnow().strftime('%Y-%m-%d')), '%Y-%m-%d')
+    lease = Lease.query.get(data['lease_id'])
+    if not lease:
+        raise ValueError("Lease not found")
 
-    # Check if there's existing rent for the same date and unit
-    existing_rent = Rent.query.filter_by(unit_id=data['unit_id'], date=rent_date).first()
+    rent_date = datetime.strptime(data.get('date', datetime.utcnow().strftime('%Y-%m-%d')), '%Y-%m-%d')
+    existing_rent = Rent.query.filter_by(lease_id=data['lease_id'], date=rent_date).first()
 
     rent = Rent(
-        unit_id=data['unit_id'],
+        lease_id=data['lease_id'],
         rent=data.get('rent', 0),
         trash=data.get('trash', 0),
         water_sewer=data.get('water_sewer', 0),
         parking=data.get('parking', 0),
         debt=data.get('debt', 0),
         breaks=data.get('breaks', 0),
-        date=datetime.strptime(data.get('date'), '%Y-%m-%d')
+        date=rent_date
     )
     rent.total_rent = calculate_total_rent(rent)
     db.session.add(rent)
 
     # Adding rent history if rent value changes
     if existing_rent and existing_rent.rent != data.get('rent', 0):
-        add_rent_history(unit_id=rent.unit_id, old_rent=existing_rent.rent, new_rent=data.get('rent', 0))
+        add_rent_history(lease_id=lease.id, old_rent=existing_rent.rent, new_rent=data.get('rent', 0))
 
     db.session.commit()
     return rent
@@ -47,13 +49,13 @@ def get_rent_by_id(id):
     """Retrieves a rent record by its ID."""
     return Rent.query.get(id)
 
-def get_recent_rent(unit_id):
-    """Retrieves the most recent rent record for a specific unit."""
-    return Rent.query.filter_by(unit_id=unit_id).order_by(Rent.date.desc()).first()
+def get_recent_rent(lease_id):
+    """Retrieves the most recent rent record for a specific lease."""
+    return Rent.query.filter_by(lease_id=lease_id).order_by(Rent.date.desc()).first()
 
-def get_monthly_rent(unit_id, year, month):
-    """Retrieves rent for a specific month and year for a unit."""
-    return Rent.query.filter_by(unit_id=unit_id).filter(
+def get_monthly_rent(lease_id, year, month):
+    """Retrieves rent for a specific month and year for a lease."""
+    return Rent.query.filter_by(lease_id=lease_id).filter(
         db.extract('year', Rent.date) == year,
         db.extract('month', Rent.date) == month
     ).first()
@@ -92,10 +94,13 @@ def delete_rent(id):
     return False
 
 def rent_to_json(rent):
-    """Converts a Rent object to a JSON representation."""
+    lease = Lease.query.get(rent.lease_id)
+    unit_id = lease.unit_id if lease else None
+
     return {
         'id': rent.id,
-        'unit_id': rent.unit_id,
+        'lease_id': rent.lease_id,
+        'unit_id': unit_id,
         'rent': rent.rent,
         'trash': rent.trash,
         'water_sewer': rent.water_sewer,
@@ -103,5 +108,7 @@ def rent_to_json(rent):
         'debt': rent.debt,
         'breaks': rent.breaks,
         'total_rent': rent.total_rent,
-        'date': rent.date.strftime('%Y-%m-%d')
+        'date': rent.date.strftime('%Y-%m-%d'),
+        'created_at': rent.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        'updated_at': rent.updated_at.strftime('%Y-%m-%d %H:%M:%S')
     }

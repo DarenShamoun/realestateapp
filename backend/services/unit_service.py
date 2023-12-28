@@ -1,5 +1,6 @@
-from models import Unit, Payment, db
+from models import Unit, Payment, Rent, db
 from sqlalchemy import extract
+from datetime import datetime
 
 def add_unit(data):
     new_unit = Unit(**data)
@@ -33,9 +34,18 @@ def delete_unit(unit_id):
     return False
 
 def get_total_rent(unit_id):
+    current_month = datetime.now().month
+    current_year = datetime.now().year
     unit = Unit.query.get(unit_id)
     if unit:
-        return sum(lease.rent.total_rent for lease in unit.lease_details if lease.rent)
+        total_rent = 0
+        for lease in unit.lease_details:
+            # Assuming each lease can have multiple rents
+            rent_records = lease.rents
+            for rent in rent_records:
+                if rent.date.year == current_year and rent.date.month == current_month:
+                    total_rent += rent.total_rent
+        return total_rent
     return 0
 
 def calculate_balance(unit_id, year, month):

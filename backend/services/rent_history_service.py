@@ -1,8 +1,13 @@
-from models import db, RentHistory
+from models import db, RentHistory, Lease
 from datetime import datetime
 
-def add_rent_history(unit_id, old_rent, new_rent):
+def add_rent_history(lease_id, old_rent, new_rent):
     """Adds a new rent history record to the database."""
+    lease = Lease.query.get(lease_id)
+    if not lease:
+        raise ValueError("Lease not found")
+    unit_id = lease.unit_id
+
     rent_history = RentHistory(
         unit_id=unit_id,
         old_rent=old_rent,
@@ -12,6 +17,10 @@ def add_rent_history(unit_id, old_rent, new_rent):
     db.session.add(rent_history)
     db.session.commit()
     return rent_history
+
+def get_all_rent_histories():
+    """Retrieves all rent history records from the database."""
+    return RentHistory.query.all()
 
 def get_rent_history_by_unit(unit_id):
     """Retrieves rent history records for a specific unit."""
