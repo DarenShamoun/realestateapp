@@ -21,12 +21,17 @@ def add_payment_route():
 
 @payment_bp.route('/payment', methods=['GET'])
 def get_payments_route():
+    # Extract query parameters
     filters = {
         'unit_id': request.args.get('unitId', type=int),
         'tenant_id': request.args.get('tenantId', type=int),
         'year': request.args.get('year', type=int),
         'month': request.args.get('month', type=int)
     }
+
+    # Remove None values from filters
+    filters = {k: v for k, v in filters.items() if v is not None}
+
     try:
         payments = get_payments(filters)
         return jsonify([payment_to_json(payment) for payment in payments]), 200
