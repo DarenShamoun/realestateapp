@@ -29,10 +29,18 @@ export const useUnitDetails = (unitId) => {
             setTenant(tenantData);
           }
         }
+
+        const lastSixMonths = getLastSixMonths();
         
         const paymentsData = await getPayments({ unitId });
-        setPayments(paymentsData);
-  
+        const filteredPayments = paymentsData
+        .filter(payment => lastSixMonths.some(date => 
+          new Date(payment.date).getMonth() === date.month - 1 && 
+          new Date(payment.date).getFullYear() === date.year))
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        setPayments(filteredPayments);
+    
         const rentData = await getRecentRentByUnitId(unitId);
         if (rentData) {
           unitData.rent_details = rentData;
@@ -49,6 +57,17 @@ export const useUnitDetails = (unitId) => {
     };
     fetchUnitDetails();
   }, [unitId]);
+
+  // Function to get the last six months from the current date
+const getLastSixMonths = () => {
+  const months = [];
+  let date = new Date();
+  for (let i = 0; i < 6; i++) {
+    months.push({ month: date.getMonth() + 1, year: date.getFullYear() });
+    date.setMonth(date.getMonth() - 1);
+  }
+  return months;
+};
   
   return { unit, tenant, payments, leases, isLoading, error };
 };
