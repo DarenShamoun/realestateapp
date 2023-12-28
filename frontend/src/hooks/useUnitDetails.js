@@ -23,7 +23,6 @@ export const useUnitDetails = (unitId) => {
         setLeases(leasesData);
   
         if (leasesData && leasesData.length > 0) {
-          // Assuming you want the tenant of the most recent lease
           const recentLease = leasesData[0]; 
           if (recentLease.tenant_id) {
             const tenantData = await getTenant(recentLease.tenant_id);
