@@ -17,6 +17,15 @@ def get_rent_history_by_unit(unit_id):
     """Retrieves rent history records for a specific unit."""
     return RentHistory.query.filter_by(unit_id=unit_id).all()
 
+def delete_rent_history(id):
+    """Deletes a rent history record by its ID."""
+    rent_history = RentHistory.query.get(id)
+    if rent_history:
+        db.session.delete(rent_history)
+        db.session.commit()
+        return True
+    return False
+
 def rent_history_to_json(rent_history):
     """Converts a RentHistory object to a JSON representation."""
     return {
