@@ -18,26 +18,31 @@ export const useUnitDetails = (unitId) => {
       try {
         const unitData = await getUnit(unitId);
         setUnit(unitData);
-
-        if (unitData.tenant_id) {
-          const leaseData = await getLease(unitData.id);
-          const tenantData = await getTenant(leaseData.tenant_id);
-          setTenant(tenantData);
+  
+        const leasesData = await getLeases({ unitId });
+        setLeases(leasesData);
+  
+        if (leasesData && leasesData.length > 0) {
+          // Assuming you want the tenant of the most recent lease
+          const recentLease = leasesData[0]; 
+          if (recentLease.tenant_id) {
+            const tenantData = await getTenant(recentLease.tenant_id);
+            setTenant(tenantData);
+          }
         }
         
         const paymentsData = await getPayments({ unitId });
         setPayments(paymentsData);
-
-        const leasesData = await getLeases({ unitId });
-        setLeases(leasesData);
-
+  
         const rentData = await getRecentRentByUnitId(unitId);
         if (rentData) {
           unitData.rent_details = rentData;
           unitData.total_rent = rentData.total_rent;
           setUnit(unitData);
         }
+  
       } catch (err) {
+        console.error('Error fetching unit details:', err);
         setError(err);
       } finally {
         setIsLoading(false);
@@ -45,6 +50,6 @@ export const useUnitDetails = (unitId) => {
     };
     fetchUnitDetails();
   }, [unitId]);
-
+  
   return { unit, tenant, payments, leases, isLoading, error };
 };
