@@ -7,7 +7,7 @@ import RentDetails from './RentDetails';
 import PaymentHistory from './PaymentHistory';
 
 const UnitDetails = ({ unitId }) => {
-  const { unit, tenant, payments, leases, rents, isLoading, error } = useUnitDetails(unitId);
+  const { unit, tenant, payments, leases, currentMonthRent, isLoading, error } = useUnitDetails(unitId);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -30,9 +30,9 @@ const UnitDetails = ({ unitId }) => {
         <TenantDetails tenant={tenant} />
         <LeaseDetails leases={leases} />
         <RentDetails 
-          rentDetails={rents[0]} 
-          totalRent={rents[0].total_rent} 
-          rentDate={rents[0].date} 
+          rentDetails={currentMonthRent} 
+          totalRent={currentMonthRent?.total_rent} 
+          rentDate={currentMonthRent?.date} 
         />
       </section>
   

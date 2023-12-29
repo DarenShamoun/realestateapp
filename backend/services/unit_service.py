@@ -22,7 +22,7 @@ def get_units(filters=None):
             tenant_id = filters['tenant_id']
             query = query.join(Unit.lease_details).filter(Lease.tenant_id == tenant_id)
 
-    return query.all()
+    return Unit.query.all()
 
 def update_unit(unit_id, data):
     unit = get_units(unit_id)

@@ -10,13 +10,16 @@ export const useUnitDetails = (unitId) => {
   const [tenant, setTenant] = useState(null);
   const [payments, setPayments] = useState([]);
   const [leases, setLeases] = useState([]);
-  const [rents, setRents] = useState([]);
+  const [currentMonthRent, setCurrentMonthRent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchUnitDetails = async () => {
       try {
+        const currentMonth = new Date().getMonth() + 1;
+        const currentYear = new Date().getFullYear();
+
         const unitData = await getUnits({ unitId });
         setUnit(unitData);
   
@@ -27,31 +30,19 @@ export const useUnitDetails = (unitId) => {
           const recentLease = leasesData[0]; 
           if (recentLease.tenant_id) {
             const tenantData = await getTenants(recentLease.tenant_id);
-            setTenant(tenantData[0]);          
+            setTenant(tenantData[0]);
           }
         }
 
-        const lastSixMonths = getLastSixMonths();
-        
-        const paymentsData = await getPayments({ unitId });
-        const filteredPayments = paymentsData
-          .filter(payment => lastSixMonths.some(date => 
-            new Date(payment.date).getMonth() === date.month - 1 && 
-            new Date(payment.date).getFullYear() === date.year))
-          .sort((a, b) => new Date(b.date) - new Date(a.date));
-        setPayments(filteredPayments);
-    
-        const rentFilters = { unit_id: unitId };
+        const rentFilters = { unit_id: unitId, month: currentMonth, year: currentYear };
         const rentsData = await getRents(rentFilters);
-        setRents(rentsData);
 
-        const recentRent = rentsData.length > 0 ? rentsData[0] : null;
-        if (recentRent) {
-          unitData.rent_details = recentRent;
-          unitData.total_rent = recentRent.total_rent;
-          setUnit(unitData);
+        if (rentsData.length > 0) {
+          setCurrentMonthRent(rentsData[0]);
         }
-  
+
+        const paymentsData = await getPayments({ unitId });
+        setPayments(paymentsData);
       } catch (err) {
         console.error('Error fetching unit details:', err);
         setError(err);
@@ -62,15 +53,5 @@ export const useUnitDetails = (unitId) => {
     fetchUnitDetails();
   }, [unitId]);
 
-  const getLastSixMonths = () => {
-    const months = [];
-    let date = new Date();
-    for (let i = 0; i < 6; i++) {
-      months.push({ month: date.getMonth() + 1, year: date.getFullYear() });
-      date.setMonth(date.getMonth() - 1);
-    }
-    return months;
-  };
-  
-  return { unit, tenant, payments, leases, rents, isLoading, error };
+  return { unit, tenant, payments, leases, currentMonthRent, isLoading, error };
 };

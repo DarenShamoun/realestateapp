@@ -27,11 +27,11 @@ def get_units_route():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@unit_bp.route('/unit/<int:id>', methods=['PUT'])
-def update_unit_route(id):
+@unit_bp.route('/unit/<int:unit_id>', methods=['PUT'])
+def update_unit_route(unit_id):
     data = request.json
     try:
-        updated_unit = update_unit(id, data)
+        updated_unit = update_unit(unit_id, data)
         if updated_unit:
             return jsonify(unit_to_json(updated_unit)), 200
         else:
@@ -39,10 +39,10 @@ def update_unit_route(id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@unit_bp.route('/unit/<int:id>', methods=['DELETE'])
-def delete_unit_route(id):
+@unit_bp.route('/unit/<int:unit_id>', methods=['DELETE'])
+def delete_unit_route(unit_id):
     try:
-        if delete_unit(id):
+        if delete_unit(unit_id):
             return jsonify({'message': 'Unit deleted'}), 200
         else:
             return jsonify({'message': 'Unit not found'}), 404
