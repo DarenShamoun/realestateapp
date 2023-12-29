@@ -27,11 +27,12 @@ export const useUnitDetails = (unitId) => {
           const recentLease = leasesData[0]; 
           if (recentLease.tenant_id) {
             const tenantData = await getTenants(recentLease.tenant_id);
-            setTenant(tenantData);
+            setTenant(tenantData[0]);          
           }
         }
 
         const lastSixMonths = getLastSixMonths();
+        
         const paymentsData = await getPayments({ unitId });
         const filteredPayments = paymentsData
           .filter(payment => lastSixMonths.some(date => 
