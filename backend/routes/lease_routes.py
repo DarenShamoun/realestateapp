@@ -27,23 +27,24 @@ def get_leases_route():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@lease_bp.route('/lease/<int:id>', methods=['PUT'])
-def update_lease_route(id):
+@lease_bp.route('/lease/<int:lease_id>', methods=['PUT'])
+def update_lease_route(lease_id):
     data = request.json
     try:
-        lease = update_lease(id, data)
+        lease = update_lease(lease_id, data)
         if lease:
             return jsonify(lease_to_json(lease)), 200
-        return jsonify({'message': 'Lease not found'}), 404
+        else:
+            return jsonify({'message': 'Lease not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-@lease_bp.route('/lease/<int:id>', methods=['DELETE'])
-def delete_lease_route(id):
+@lease_bp.route('/lease/<int:lease_id>', methods=['DELETE'])
+def delete_lease_route(lease_id):
     try:
-        if delete_lease(id):
+        if delete_lease(lease_id):
             return jsonify({'message': 'Lease deleted'}), 200
-        return jsonify({'message': 'Lease not found'}), 404
+        else:
+            return jsonify({'message': 'Lease not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500

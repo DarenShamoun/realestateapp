@@ -23,8 +23,8 @@ export const addLease = async (leaseData) => {
   return response.json();
 };
 
-export const updateLease = async (id, leaseData) => {
-    const response = await fetch(`${API_URL}/lease/${id}`, {
+export const updateLease = async (lease_id, leaseData) => {
+    const response = await fetch(`${API_URL}/lease/${lease_id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -36,9 +36,9 @@ export const updateLease = async (id, leaseData) => {
     }
     return response.json();
 };
-  
-export const deleteLease = async (id) => {
-    const response = await fetch(`${API_URL}/lease/${id}`, {
+
+export const deleteLease = async (lease_id) => {
+    const response = await fetch(`${API_URL}/lease/${lease_id}`, {
       method: 'DELETE'
     });
     if (!response.ok) {

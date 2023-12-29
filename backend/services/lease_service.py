@@ -2,16 +2,7 @@ from models import db, Property, Lease, Unit, Tenant
 from datetime import datetime
 
 def add_lease(data):
-    new_lease = Lease(
-        unit_id=data['unit_id'],
-        tenant_id=data['tenant_id'],
-        start_date=datetime.strptime(data['start_date'], '%Y-%m-%d'),
-        end_date=datetime.strptime(data['end_date'], '%Y-%m-%d') if data.get('end_date') else None,
-        monthly_rent=data['monthly_rent'],
-        deposit=data.get('deposit'),
-        terms=data.get('terms'),
-        status=data.get('status')
-    )
+    new_lease = Lease(**data)
     db.session.add(new_lease)
     update_unit_occupancy(new_lease.unit_id)
     db.session.commit()
@@ -37,22 +28,19 @@ def get_leases(filters=None):
     return query.all()
 
 def update_lease(lease_id, data):
-    lease = get_leases(lease_id)
-    if lease:
-        lease.unit_id = data.get('unit_id', lease.unit_id)
-        lease.tenant_id = data.get('tenant_id', lease.tenant_id)
-        lease.start_date = datetime.strptime(data['start_date'], '%Y-%m-%d') if data.get('start_date') else lease.start_date
-        lease.end_date = datetime.strptime(data['end_date'], '%Y-%m-%d') if data.get('end_date') else lease.end_date
-        lease.monthly_rent = data.get('monthly_rent', lease.monthly_rent)
-        lease.deposit = data.get('deposit', lease.deposit)
-        lease.terms = data.get('terms', lease.terms)
-        lease.status = data.get('status', lease.status)
-        update_unit_occupancy(lease.unit_id)
-        db.session.commit()
+    lease = Lease.query.get(lease_id)
+    if not lease:
+        return None
+    
+    for key, value in data.items():
+        setattr(lease, key, value)
+
+    update_unit_occupancy(lease.unit_id)
+    db.session.commit()
     return lease
 
 def delete_lease(lease_id):
-    lease = get_leases(lease_id)
+    lease = Lease.query.get(lease_id)
     if lease:
         unit_id = lease.unit_id
         db.session.delete(lease)
