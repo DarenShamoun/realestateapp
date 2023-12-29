@@ -52,7 +52,7 @@ def get_rents(filters):
         end_date = datetime.strptime(filters['end_date'], '%Y-%m-%d')
         query = query.filter(Rent.date <= end_date)
 
-    return Rent.query.all()
+    return query.all()
 
 def update_rent(rent_id, data):
     """Updates an existing rent record."""
