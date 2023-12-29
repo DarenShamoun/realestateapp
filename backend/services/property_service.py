@@ -1,5 +1,4 @@
-from models import db, Property, Expense, Payment
-from sqlalchemy import extract
+from models import db, Property
 
 def add_property_service(data):
     new_property = Property(
@@ -14,18 +13,21 @@ def add_property_service(data):
     db.session.commit()
     return property_to_json(new_property)
 
-def get_all_properties_service():
-    properties = Property.query.all()
-    return [property_to_json(property) for property in properties]
+def get_properties(filters=None):
+    query = Property.query
 
-def get_property_by_id_service(property_id):
-    property = Property.query.get(property_id)
-    if property:
-        return property_to_json(property)
-    return None
+    if filters:
+        if 'property_id' in filters:
+            query = query.filter(Property.id == filters['property_id'])
+        if 'name' in filters:
+            query = query.filter(Property.name.ilike(f"%{filters['name']}%"))
+        if 'property_type' in filters:
+            query = query.filter(Property.property_type == filters['property_type'])
+
+    return [property_to_json(property) for property in query.all()]
 
 def update_property_service(property_id, data):
-    property = Property.query.get(property_id)
+    property = get_properties(property_id)
     if property:
         property.name = data.get('name', property.name)
         property.property_type = data.get('property_type', property.property_type)
@@ -38,57 +40,12 @@ def update_property_service(property_id, data):
     return None
 
 def delete_property_service(property_id):
-    property = Property.query.get(property_id)
+    property = get_properties(property_id)
     if property:
         db.session.delete(property)
         db.session.commit()
         return True
     return False
-
-def calculate_monthly_income(property_id, year, month):
-    total_income = 0
-    property = Property.query.get(property_id)
-    if property:
-        for unit in property.units:
-            payments = Payment.query.filter_by(unit_id=unit.id)
-            payments = payments.filter(extract('year', Payment.date) == year,
-                                       extract('month', Payment.date) == month).all()
-            total_income += sum(payment.amount for payment in payments)
-    return total_income
-
-def get_property_financial_summary(property_id, year, month):
-    property = Property.query.get(property_id)
-    if not property:
-        return None
-    
-    total_income = calculate_monthly_income(property_id, year, month)
-    expenses_query = Expense.query.filter_by(property_id=property_id)
-    if year:
-        expenses_query = expenses_query.filter(extract('year', Expense.date) == year)
-    if month:
-        expenses_query = expenses_query.filter(extract('month', Expense.date) == month)
-    total_expenses = sum(expense.amount for expense in expenses_query.all())
-
-    return {
-        'property_id': property_id,
-        'year': year,
-        'month': month,
-        'total_income': total_income,
-        'total_expenses': total_expenses
-    }
-
-def calculate_property_expenses(property_id, year, month):
-    try:
-        expenses_query = Expense.query.filter_by(property_id=property_id)
-        if year:
-            expenses_query = expenses_query.filter(extract('year', Expense.date) == year)
-        if month:
-            expenses_query = expenses_query.filter(extract('month', Expense.date) == month)
-        total_expenses = sum(expense.amount for expense in expenses_query.all())
-        return total_expenses
-    except Exception as e:
-        # Log the exception as needed
-        return None
 
 def property_to_json(property):
     """

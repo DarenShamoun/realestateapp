@@ -6,7 +6,7 @@ import Navbar from '@/components/Navigation/Navbar';
 import UnitDetails from '@/components/Details/UnitDetails';
 
 const UnitDetailPage = ({ params }) => {
-  const { unitId } = params;
+  const { unit_id } = params;
 
   return (
     <>
@@ -14,7 +14,7 @@ const UnitDetailPage = ({ params }) => {
         <Sidebar />
         <main className="flex-grow ml-64 relative">
           <Navbar />
-          <UnitDetails unitId={unitId} />
+          <UnitDetails unit_id = {unit_id} />
         </main>
       </div>
     </>

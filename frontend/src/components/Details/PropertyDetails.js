@@ -1,31 +1,26 @@
-/**
- * Renders the details of a property, including its name, address, and associated units.
- * @param {Object} props - The component props.
- * @param {string} props.propertyId - The ID of the property to display details for.
- * @returns {JSX.Element} The rendered PropertyDetails component.
- */
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getProperty } from '@/api/propertyService';
+import { getProperties } from '@/api/propertyService';
 import { getUnits } from '@/api/unitService';
 import UnitCard from '@/components/Cards/UnitCard';
 
-const PropertyDetails = ({ propertyId }) => {
+const PropertyDetails = ({ property_id }) => {
   const [property, setProperty] = useState(null);
   const [units, setUnits] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch property and units by ID
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const propertyData = await getProperty(propertyId);
-        setProperty(propertyData);
-
-        const unitsData = await getUnits(propertyId);
+        const propertyData = await getProperties({ property_id: property_id });
+        if (propertyData.length > 0) {
+          setProperty(propertyData[0]);
+        }
+    
+        const unitsData = await getUnits({ property_id: property_id });
         unitsData.sort((a, b) => a.unit_number.localeCompare(b.unit_number, undefined, {numeric: true}));
         setUnits(unitsData);
       } catch (error) {
@@ -34,10 +29,10 @@ const PropertyDetails = ({ propertyId }) => {
       }
       setIsLoading(false);
     };
-    if (propertyId) {
+    if (property_id) {
       fetchData();
     }
-  }, [propertyId]);
+  }, [property_id]);
 
   if (isLoading) {
     return <div>Loading...</div>;

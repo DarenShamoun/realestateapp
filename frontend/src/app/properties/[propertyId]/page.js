@@ -8,7 +8,7 @@ import PropertyDetails from '@/components/Details/PropertyDetails';
 
 const PropertyDetailPage = () => {
   const pathname = usePathname();
-  const propertyId = pathname.split('/').pop();
+  const property_id = pathname.split('/').pop();
 
   return (
     <>
@@ -16,7 +16,7 @@ const PropertyDetailPage = () => {
         <Sidebar />
         <main className="flex-grow ml-64 relative">
           <Navbar />
-          <PropertyDetails propertyId={propertyId} />
+          <PropertyDetails property_id = {property_id} />
         </main>
       </div>
     </>
