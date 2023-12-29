@@ -23,8 +23,8 @@ export const addProperty = async (propertyData) => {
   return response.json();
 };
 
-export const updateProperty = async (id, propertyData) => {
-    const response = await fetch(`${API_URL}/property/${id}`, {
+export const updateProperty = async (property_id, propertyData) => {
+    const response = await fetch(`${API_URL}/property/${property_id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -37,8 +37,8 @@ export const updateProperty = async (id, propertyData) => {
     return response.json();
 };
   
-export const deleteProperty = async (id) => {
-    const response = await fetch(`${API_URL}/property/${id}`, {
+export const deleteProperty = async (property_id) => {
+    const response = await fetch(`${API_URL}/property/${property_id}`, {
       method: 'DELETE'
     });
     if (!response.ok) {
