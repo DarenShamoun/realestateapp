@@ -2,17 +2,6 @@ from models import db, Rent, Lease, Unit
 from datetime import datetime
 from services.rent_history_service import add_rent_history
 
-def calculate_total_rent(rent):
-    """Calculates the total rent amount."""
-    return sum([
-        rent.rent or 0,
-        rent.trash or 0,
-        rent.water_sewer or 0,
-        rent.parking or 0,
-        rent.debt or 0,
-        rent.breaks or 0
-    ])
-
 def add_rent(data):
     lease = Lease.query.get(data['lease_id'])
     if not lease:
@@ -67,7 +56,7 @@ def get_rents(filters):
 
 def update_rent(rent_id, data):
     """Updates an existing rent record."""
-    rent = Rent.query.get(rent_id)
+    rent = get_rents(rent_id)
     if not rent:
         return None
 
@@ -97,6 +86,17 @@ def delete_rent(rent_id):
         db.session.commit()
         return True
     return False
+
+def calculate_total_rent(rent):
+    """Calculates the total rent amount."""
+    return sum([
+        rent.rent or 0,
+        rent.trash or 0,
+        rent.water_sewer or 0,
+        rent.parking or 0,
+        rent.debt or 0,
+        rent.breaks or 0
+    ])
 
 def rent_to_json(rent):
     lease = Lease.query.get(rent.lease_id)
