@@ -14,17 +14,17 @@ def add_property_service(data):
     return property_to_json(new_property)
 
 def get_properties(filters=None):
-    query = Property.query
+        query = Property.query
 
-    if filters:
-        if 'property_id' in filters:
-            query = query.filter(Property.id == filters['property_id'])
-        if 'name' in filters:
-            query = query.filter(Property.name.ilike(f"%{filters['name']}%"))
-        if 'property_type' in filters:
-            query = query.filter(Property.property_type == filters['property_type'])
+        if filters:
+            if 'property_id' in filters:
+                query = query.filter(Property.id == filters['property_id'])
+            if 'name' in filters:
+                query = query.filter(Property.name.ilike(f"%{filters['name']}%"))
+            if 'property_type' in filters:
+                query = query.filter(Property.property_type == filters['property_type'])
 
-    return [property_to_json(property) for property in query.all()]
+        return [property_to_json(property) for property in query.all()]
 
 def update_property_service(property_id, data):
     property = get_properties(property_id)
