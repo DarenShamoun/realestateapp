@@ -25,16 +25,26 @@ def get_tenants(filters=None):
         if 'primary_phone' in filters:
             query = query.filter(Tenant.primary_phone == filters['primary_phone'])
 
-    return Tenant.query.all()
+    return query.all()
 
 def update_tenant(tenant_id, data):
     tenant = get_tenants(tenant_id)
     if not tenant:
         return None
+    
     for key, value in data.items():
         setattr(tenant, key, value)
+
     db.session.commit()
     return tenant
+
+def delete_tenant(tenant_id):
+    tenant = Tenant.query.get(tenant_id)
+    if tenant:
+        db.session.delete(tenant)
+        db.session.commit()
+        return True
+    return False
 
 def tenant_to_json(tenant):
     return {
@@ -45,12 +55,3 @@ def tenant_to_json(tenant):
         'email': tenant.email,
         'contact_notes': tenant.contact_notes
     }
-
-def delete_tenant(tenant_id):
-    """Deletes a tenant record by its ID."""
-    tenant = get_tenants(tenant_id)
-    if tenant:
-        db.session.delete(tenant)
-        db.session.commit()
-        return True
-    return False

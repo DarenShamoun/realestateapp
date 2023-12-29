@@ -33,7 +33,7 @@ def update_tenant_route(tenant_id):
     try:
         updated_tenant = update_tenant(tenant_id, data)
         if updated_tenant:
-            return jsonify({'message': 'Tenant updated'}), 200
+            return jsonify(tenant_to_json(updated_tenant)), 200
         else:
             return jsonify({'message': 'Tenant not found'}), 404
     except Exception as e:
@@ -44,6 +44,7 @@ def delete_tenant_route(tenant_id):
     try:
         if delete_tenant(tenant_id):
             return jsonify({'message': 'Tenant deleted'}), 200
-        return jsonify({'message': 'Tenant not found'}), 404
+        else:
+            return jsonify({'message': 'Tenant not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
