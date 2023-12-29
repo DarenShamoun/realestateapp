@@ -2,12 +2,7 @@ from models import db, Payment, Lease
 from datetime import datetime
 
 def add_payment(data):
-    new_payment = Payment(
-        lease_id=data['lease_id'],
-        date=datetime.strptime(data['date'], '%Y-%m-%d'),
-        amount=data['amount'],
-        payment_method=data.get('payment_method')
-    )
+    new_payment = Payment(**data)
     db.session.add(new_payment)
     db.session.commit()
     return new_payment
@@ -16,8 +11,8 @@ def get_payments(filters=None):
     query = Payment.query.join(Lease, Payment.lease_id == Lease.id)
 
     if filters:
-        if 'id' in filters:
-            query = query.filter(Payment.id == filters['id'])
+        if 'payment_id' in filters:
+            query = query.filter(Payment.id == filters['payment_id'])
         if 'unit_id' in filters:
             query = query.filter(Lease.unit_id == filters['unit_id'])
         if 'tenant_id' in filters:
@@ -36,17 +31,18 @@ def get_payments(filters=None):
     return query.all()
 
 def update_payment(payment_id, data):
-    payment = get_payments(payment_id)
-    if payment:
-        payment.lease_id = data.get('lease_id', payment.lease_id)
-        payment.date = datetime.strptime(data['date'], '%Y-%m-%d') if 'date' in data else payment.date
-        payment.amount = data.get('amount', payment.amount)
-        payment.payment_method = data.get('payment_method', payment.payment_method)
-        db.session.commit()
+    payment = Payment.query.get(payment_id)
+    if not payment:
+        return None
+    
+    for key, value in data.items():
+        setattr(payment, key, value)
+
+    db.session.commit()
     return payment
 
 def delete_payment(payment_id):
-    payment = get_payments(payment_id)
+    payment = Payment.query.get(payment_id)
     if payment:
         db.session.delete(payment)
         db.session.commit()

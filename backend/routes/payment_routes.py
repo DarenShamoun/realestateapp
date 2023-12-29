@@ -27,22 +27,24 @@ def get_payments_route():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@payment_bp.route('/payment/<int:id>', methods=['PUT'])
-def update_payment_route(id):
+@payment_bp.route('/payment/<int:payment_id>', methods=['PUT'])
+def update_payment_route(payment_id):
     data = request.json
     try:
-        payment = update_payment(id, data)
+        payment = update_payment(payment_id, data)
         if payment:
             return jsonify(payment_to_json(payment)), 200
-        return jsonify({'message': 'Payment not found'}), 404
+        else:
+            return jsonify({'message': 'Payment not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@payment_bp.route('/payment/<int:id>', methods=['DELETE'])
-def delete_payment_route(id):
+@payment_bp.route('/payment/<int:payment_id>', methods=['DELETE'])
+def delete_payment_route(payment_id):
     try:
-        if delete_payment(id):
+        if delete_payment(payment_id):
             return jsonify({'message': 'Payment deleted'}), 200
-        return jsonify({'message': 'Payment not found'}), 404
+        else:
+            return jsonify({'message': 'Payment not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500

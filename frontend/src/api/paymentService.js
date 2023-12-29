@@ -23,8 +23,8 @@ export const addPayment = async (paymentData) => {
   return response.json();
 };
 
-export const updatePayment = async (id, paymentData) => {
-    const response = await fetch(`${API_URL}/payment/${id}`, {
+export const updatePayment = async (payment_id, paymentData) => {
+    const response = await fetch(`${API_URL}/payment/${payment_id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -37,8 +37,8 @@ export const updatePayment = async (id, paymentData) => {
     return response.json();
 };
   
-export const deletePayment = async (id) => {
-    const response = await fetch(`${API_URL}/payment/${id}`, {
+export const deletePayment = async (payment_id) => {
+    const response = await fetch(`${API_URL}/payment/${payment_id}`, {
       method: 'DELETE'
     });
     if (!response.ok) {
