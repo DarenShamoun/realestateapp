@@ -44,8 +44,8 @@ def add_rent(data):
 def get_rents(filters):
     query = Rent.query.join(Lease, Rent.lease_id == Lease.id).join(Unit, Lease.unit_id == Unit.id)
     
-    if 'id' in filters:
-        query = query.filter(Rent.id == filters['id'])
+    if 'rent_id' in filters:
+        query = query.filter(Rent.id == filters['rent_id'])
     if 'lease_id' in filters:
         query = query.filter(Rent.lease_id == filters['lease_id'])
     if 'unit_id' in filters:
@@ -63,11 +63,11 @@ def get_rents(filters):
         end_date = datetime.strptime(filters['end_date'], '%Y-%m-%d')
         query = query.filter(Rent.date <= end_date)
 
-    return query.all()
+    return Rent.query.all()
 
-def update_rent(id, data):
+def update_rent(rent_id, data):
     """Updates an existing rent record."""
-    rent = Rent.query.get(id)
+    rent = Rent.query.get(rent_id)
     if not rent:
         return None
 
@@ -89,9 +89,9 @@ def update_rent(id, data):
     db.session.commit()
     return rent
 
-def delete_rent(id):
+def delete_rent(rent_id):
     """Deletes a rent record by its ID."""
-    rent = get_rents(id)
+    rent = get_rents(rent_id)
     if rent:
         db.session.delete(rent)
         db.session.commit()

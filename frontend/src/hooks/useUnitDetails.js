@@ -10,6 +10,7 @@ export const useUnitDetails = (unitId) => {
   const [tenant, setTenant] = useState(null);
   const [payments, setPayments] = useState([]);
   const [leases, setLeases] = useState([]);
+  const [rents, setRents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -21,6 +22,8 @@ export const useUnitDetails = (unitId) => {
   
         const leasesData = await getLeases({ unitId });
         setLeases(leasesData);
+
+        const unitLeases = leasesData.filter(lease => lease.unit_id === unitId);
 
         if (leasesData && leasesData.length > 0) {
           const recentLease = leasesData[0]; 
@@ -41,6 +44,8 @@ export const useUnitDetails = (unitId) => {
     
         const rentFilters = { unit_id: unitId };
         const rentsData = await getRents(rentFilters);
+        setRents(rentsData);
+
         const recentRent = rentsData.length > 0 ? rentsData[0] : null;
         if (recentRent) {
           unitData.rent_details = recentRent;
@@ -68,5 +73,5 @@ export const useUnitDetails = (unitId) => {
     return months;
   };
   
-  return { unit, tenant, payments, leases, isLoading, error };
+  return { unit, tenant, payments, leases, rents, isLoading, error };
 };
