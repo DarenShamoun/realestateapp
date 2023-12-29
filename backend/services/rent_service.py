@@ -44,7 +44,6 @@ def add_rent(data):
 def get_rents(filters):
     query = Rent.query.join(Lease, Rent.lease_id == Lease.id).join(Unit, Lease.unit_id == Unit.id)
     
-    # Base filters
     if 'id' in filters:
         query = query.filter(Rent.id == filters['id'])
     if 'lease_id' in filters:
@@ -53,14 +52,10 @@ def get_rents(filters):
         query = query.filter(Unit.id == filters['unit_id'])
     if 'property_id' in filters:
         query = query.filter(Unit.property_id == filters['property_id'])
-
-    # filters for month and year
     if 'year' in filters:
         query = query.filter(db.extract('year', Rent.date) == int(filters['year']))
     if 'month' in filters:
         query = query.filter(db.extract('month', Rent.date) == int(filters['month']))
-
-    # filters for start and end date range
     if 'start_date' in filters:
         start_date = datetime.strptime(filters['start_date'], '%Y-%m-%d')
         query = query.filter(Rent.date >= start_date)
