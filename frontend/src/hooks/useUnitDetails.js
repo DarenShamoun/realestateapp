@@ -5,7 +5,7 @@ import { getPayments } from '@/api/paymentService';
 import { getLeases } from '@/api/leaseService';
 import { getRents } from '@/api/rentService';
 
-export const useUnitDetails = (unitId) => {
+export const useUnitDetails = (unit_id) => {
   const [unit, setUnit] = useState(null);
   const [tenant, setTenant] = useState(null);
   const [payments, setPayments] = useState([]);
@@ -20,10 +20,10 @@ export const useUnitDetails = (unitId) => {
         const currentMonth = new Date().getMonth() + 1;
         const currentYear = new Date().getFullYear();
 
-        const unitData = await getUnits({ unitId });
+        const unitData = await getUnits({ unit_id });
         setUnit(unitData);
   
-        const leasesData = await getLeases({ unitId });
+        const leasesData = await getLeases({ unit_id });
         setLeases(leasesData);
 
         if (leasesData && leasesData.length > 0) {
@@ -34,14 +34,14 @@ export const useUnitDetails = (unitId) => {
           }
         }
 
-        const rentFilters = { unit_id: unitId, month: currentMonth, year: currentYear };
+        const rentFilters = { unit_id: unit_id, month: currentMonth, year: currentYear };
         const rentsData = await getRents(rentFilters);
 
         if (rentsData.length > 0) {
           setCurrentMonthRent(rentsData[0]);
         }
 
-        const paymentsData = await getPayments({ unitId });
+        const paymentsData = await getPayments({ unit_id });
         setPayments(paymentsData);
       } catch (err) {
         console.error('Error fetching unit details:', err);
@@ -51,7 +51,7 @@ export const useUnitDetails = (unitId) => {
       }
     };
     fetchUnitDetails();
-  }, [unitId]);
+  }, [unit_id]);
 
   return { unit, tenant, payments, leases, currentMonthRent, isLoading, error };
 };

@@ -6,8 +6,9 @@ import LeaseDetails from './LeaseDetails';
 import RentDetails from './RentDetails';
 import PaymentHistory from './PaymentHistory';
 
-const UnitDetails = ({ unitId }) => {
-  const { unit, tenant, payments, leases, currentMonthRent, isLoading, error } = useUnitDetails(unitId);
+const UnitDetails = ({ unit_id }) => {
+  console.log("Unit ID:", unit_id);
+  const { unit, tenant, payments, leases, currentMonthRent, isLoading, error } = useUnitDetails(unit_id);
 
   if (isLoading) {
     return <div>Loading...</div>;

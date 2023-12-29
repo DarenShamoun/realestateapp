@@ -9,15 +9,13 @@ const UnitDetailPage = ({ params }) => {
   const { unit_id } = params;
 
   return (
-    <>
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-grow ml-64 relative">
-          <Navbar />
-          <UnitDetails unit_id = {unit_id} />
-        </main>
-      </div>
-    </>
+    <div className="flex">
+      <Sidebar />
+      <main className="flex-grow ml-64 relative">
+        <Navbar />
+        <UnitDetails unit_id={unit_id} />
+      </main>
+    </div>
   );
 };
 

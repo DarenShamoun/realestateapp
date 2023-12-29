@@ -23,8 +23,8 @@ export const addUnit = async (unitData) => {
   return response.json();
 };
 
-export const updateUnit = async (id, unitData) => {
-    const response = await fetch(`${API_URL}/unit/${id}`, {
+export const updateUnit = async (unit_id, unitData) => {
+    const response = await fetch(`${API_URL}/unit/${unit_id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -37,8 +37,8 @@ export const updateUnit = async (id, unitData) => {
     return response.json();
 };
 
-export const deleteUnit = async (id) => {
-    const response = await fetch(`${API_URL}/unit/${id}`, {
+export const deleteUnit = async (unit_id) => {
+    const response = await fetch(`${API_URL}/unit/${unit_id}`, {
       method: 'DELETE'
     });
     if (!response.ok) {
@@ -47,8 +47,8 @@ export const deleteUnit = async (id) => {
     return response.json();
 };
 
-export const getUnitFinancialSummary = async (id, year, month) => {
-  let url = `${API_URL}/unit/${id}/financial-summary`;
+export const getUnitFinancialSummary = async (unit_id, year, month) => {
+  let url = `${API_URL}/unit/${unit_id}/financial-summary`;
   
   const queryParams = new URLSearchParams();
   if (year) queryParams.append('year', year);
