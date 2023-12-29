@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getUnits } from '@/api/unitService';
-import { getTenant } from '@/api/tenantService';
+import { getTenants } from '@/api/tenantService';
 import { getPayments } from '@/api/paymentService';
 import { getLeases } from '@/api/leaseService';
 import { getRents } from '@/api/rentService';
@@ -16,16 +16,16 @@ export const useUnitDetails = (unitId) => {
   useEffect(() => {
     const fetchUnitDetails = async () => {
       try {
-        const unitData = await getUnits(unitId);
+        const unitData = await getUnits({ unitId });
         setUnit(unitData);
   
         const leasesData = await getLeases({ unitId });
         setLeases(leasesData);
-  
+
         if (leasesData && leasesData.length > 0) {
           const recentLease = leasesData[0]; 
           if (recentLease.tenant_id) {
-            const tenantData = await getTenant(recentLease.tenant_id);
+            const tenantData = await getTenants(recentLease.tenant_id);
             setTenant(tenantData);
           }
         }
@@ -39,7 +39,6 @@ export const useUnitDetails = (unitId) => {
           .sort((a, b) => new Date(b.date) - new Date(a.date));
         setPayments(filteredPayments);
     
-        // Using getRents instead of getRecentRentByUnitId
         const rentFilters = { unit_id: unitId };
         const rentsData = await getRents(rentFilters);
         const recentRent = rentsData.length > 0 ? rentsData[0] : null;
@@ -59,7 +58,6 @@ export const useUnitDetails = (unitId) => {
     fetchUnitDetails();
   }, [unitId]);
 
-  // Function to get the last six months from the current date
   const getLastSixMonths = () => {
     const months = [];
     let date = new Date();
