@@ -22,7 +22,7 @@ def get_units(filters=None):
             tenant_id = filters['tenant_id']
             query = query.join(Unit.lease_details).filter(Lease.tenant_id == tenant_id)
 
-    return Unit.query.all()
+    return query.all()
 
 def update_unit(unit_id, data):
     unit = get_units(unit_id)
@@ -46,7 +46,7 @@ def delete_unit(unit_id):
 def get_total_rent(unit_id):
     current_month = datetime.now().month
     current_year = datetime.now().year
-    unit = Unit.query.get(unit_id)
+    unit = get_units(unit_id)
     if unit:
         total_rent = 0
         for lease in unit.lease_details:

@@ -10,7 +10,6 @@ rent_history_bp = Blueprint('rent_history_bp', __name__)
 
 @rent_history_bp.route('/rent-history', methods=['GET'])
 def get_all_rent_histories_route():
-    """Get all rent history records."""
     try:
         histories = get_all_rent_histories()
         return jsonify([rent_history_to_json(history) for history in histories]), 200
@@ -20,7 +19,6 @@ def get_all_rent_histories_route():
 
 @rent_history_bp.route('/rent-history/<int:unit_id>', methods=['GET'])
 def get_rent_history(unit_id):
-    """Get rent history for a specific unit."""
     try:
         histories = get_rent_history_by_unit(unit_id)
         return jsonify([rent_history_to_json(history) for history in histories]), 200
@@ -30,7 +28,6 @@ def get_rent_history(unit_id):
 
 @rent_history_bp.route('/rent-history/<int:id>', methods=['DELETE'])
 def delete_rent_history_route(id):
-    """Delete a specific rent history record."""
     try:
         result = delete_rent_history(id)
         if result:

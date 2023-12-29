@@ -46,18 +46,3 @@ export const deleteUnit = async (unit_id) => {
     }
     return response.json();
 };
-
-export const getUnitFinancialSummary = async (unit_id, year, month) => {
-  let url = `${API_URL}/unit/${unit_id}/financial-summary`;
-  
-  const queryParams = new URLSearchParams();
-  if (year) queryParams.append('year', year);
-  if (month) queryParams.append('month', month);
-  if (queryParams.toString()) url += `?${queryParams}`;
-
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};

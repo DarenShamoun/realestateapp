@@ -17,9 +17,11 @@ def add_expense(data):
 def get_expenses(filters=None):
     query = Expense.query
     if filters:
+        if 'expense_id' in filters:
+            query = query.filter(Expense.id == filters['expense_id'])
         if 'property_id' in filters:
             query = query.filter(Expense.property_id == filters['property_id'])
-        if 'unit_id' in filters and filters['unit_id']:
+        if 'unit_id' in filters:
             query = query.filter(Expense.unit_id == filters['unit_id'])
         if 'year' in filters:
             query = query.filter(db.extract('year', Expense.date) == filters['year'])
@@ -27,11 +29,8 @@ def get_expenses(filters=None):
             query = query.filter(db.extract('month', Expense.date) == filters['month'])
     return query.all()
 
-def get_expense_by_id(expense_id):
-    return Expense.query.get(expense_id)
-
 def update_expense(expense_id, data):
-    expense = get_expense_by_id(expense_id)
+    expense = get_expenses(expense_id)
     if expense:
         expense.property_id = data.get('property_id', expense.property_id)
         expense.unit_id = data.get('unit_id', expense.unit_id)
@@ -43,7 +42,7 @@ def update_expense(expense_id, data):
     return expense
 
 def delete_expense(expense_id):
-    expense = get_expense_by_id(expense_id)
+    expense = get_expenses(expense_id)
     if expense:
         db.session.delete(expense)
         db.session.commit()
