@@ -12,8 +12,8 @@ def get_units(filters=None):
     query = Unit.query
 
     if filters:
-        if 'id' in filters:
-            query = query.filter(Unit.id == filters['id'])
+        if 'unit_id' in filters:
+            query = query.filter(Unit.id == filters['unit_id'])
         if 'property_id' in filters:
             query = query.filter(Unit.property_id == filters['property_id'])
         if 'is_occupied' in filters:
@@ -24,8 +24,8 @@ def get_units(filters=None):
 
     return query.all()
 
-def update_unit(id, data):
-    unit = get_units(id)
+def update_unit(unit_id, data):
+    unit = get_units(unit_id)
     if not unit:
         return None
 
@@ -35,8 +35,8 @@ def update_unit(id, data):
     db.session.commit()
     return unit
 
-def delete_unit(id):
-    unit = get_units(id)
+def delete_unit(unit_id):
+    unit = get_units(unit_id)
     if unit:
         db.session.delete(unit)
         db.session.commit()
