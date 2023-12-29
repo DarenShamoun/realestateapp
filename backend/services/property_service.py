@@ -1,6 +1,3 @@
-from models import Property, Payment, Expense, db
-from sqlalchemy import extract
-
 from models import db, Property, Expense, Payment
 from sqlalchemy import extract
 
