@@ -20,9 +20,12 @@ def add_rent_route():
     
 @rent_bp.route('/rent', methods=['GET'])
 def get_rents_route():
-    filters = request.args.to_dict()
-    rents = get_rents(filters)
-    return jsonify([rent_to_json(rent) for rent in rents]), 200
+    filters = {k: v for k, v in request.args.items() if v is not None}
+    try:
+        rents = get_rents(filters)
+        return jsonify([rent_to_json(rent) for rent in rents]), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @rent_bp.route('/rent/<int:id>', methods=['PUT'])
 def update_rent_route(id):

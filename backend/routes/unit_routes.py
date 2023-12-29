@@ -34,8 +34,7 @@ def update_unit_route(unit_id):
         updated_unit = update_unit(unit_id, data)
         if updated_unit:
             return jsonify(unit_to_json(updated_unit)), 200
-        else:
-            return jsonify({'message': 'Unit not found'}), 404
+        return jsonify({'message': 'Unit not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -44,7 +43,6 @@ def delete_unit_route(unit_id):
     try:
         if delete_unit(unit_id):
             return jsonify({'message': 'Unit deleted'}), 200
-        else:
-            return jsonify({'message': 'Unit not found'}), 404
+        return jsonify({'message': 'Unit not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
