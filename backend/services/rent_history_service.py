@@ -23,7 +23,13 @@ def get_rent_histories(filters=None):
 
     if filters:
         if 'unit_id' in filters:
-            query = query.filter(Lease.unit_id == filters['unit_id'])
+            query = query.filter(RentHistory.unit_id == filters['unit_id'])
+        if 'lease_id' in filters:
+            query = query.filter(RentHistory.lease_id == filters['lease_id'])
+        if 'year' in filters:
+            query = query.filter(db.extract('year', RentHistory.change_date) == int(filters['year']))
+        if 'month' in filters:
+            query = query.filter(db.extract('month', RentHistory.change_date) == int(filters['month']))
 
     return query.all()
 
