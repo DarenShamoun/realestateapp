@@ -1,39 +1,15 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const getRentDetails = async (id) => {
-  const response = await fetch(`${API_URL}/rent/${id}`);
+export const getRents = async (filters = {}) => {
+  const queryParams = new URLSearchParams(filters);
+  const response = await fetch(`${API_URL}/rent?${queryParams}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
   return response.json();
 };
 
-export const getRecentRentByUnitId = async (unitId) => {
-  const response = await fetch(`${API_URL}/rent/recent/${unitId}`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
-export const getAllRents = async () => {
-  const response = await fetch(`${API_URL}/rent/all`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
-export const getMonthlyRent = async (unitId, year, month) => {
-  let queryParams = new URLSearchParams({ unitId, year, month }).toString();
-  const response = await fetch(`${API_URL}/rent/monthly?${queryParams}`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
-export const addRentDetails = async (rentData) => {
+export const addRent = async (rentData) => {
   const response = await fetch(`${API_URL}/rent`, {
     method: 'POST',
     headers: {
@@ -47,7 +23,7 @@ export const addRentDetails = async (rentData) => {
   return response.json();
 };
 
-export const updateRentDetails = async (id, rentData) => {
+export const updateRent = async (id, rentData) => {
   const response = await fetch(`${API_URL}/rent/${id}`, {
     method: 'PUT',
     headers: {
@@ -61,7 +37,7 @@ export const updateRentDetails = async (id, rentData) => {
   return response.json();
 };
 
-export const deleteRentDetails = async (id) => {
+export const deleteRent = async (id) => {
   const response = await fetch(`${API_URL}/rent/${id}`, {
     method: 'DELETE'
   });

@@ -1,4 +1,4 @@
-from models import db, Rent, Lease
+from models import db, Rent, Lease, Unit
 from datetime import datetime
 from services.rent_history_service import add_rent_history
 
@@ -41,26 +41,34 @@ def add_rent(data):
     db.session.commit()
     return rent
 
-def get_all_rents():
-    """Retrieves all rent records from the database."""
-    return Rent.query.all()
+def get_rents(filters):
+    query = Rent.query.join(Lease, Rent.lease_id == Lease.id).join(Unit, Lease.unit_id == Unit.id)
+    
+    # Base filters
+    if 'id' in filters:
+        query = query.filter(Rent.id == filters['id'])
+    if 'lease_id' in filters:
+        query = query.filter(Rent.lease_id == filters['lease_id'])
+    if 'unit_id' in filters:
+        query = query.filter(Unit.id == filters['unit_id'])
+    if 'property_id' in filters:
+        query = query.filter(Unit.property_id == filters['property_id'])
 
-def get_rent_by_id(id):
-    """Retrieves a rent record by its ID."""
-    return Rent.query.get(id)
+    # filters for month and year
+    if 'year' in filters:
+        query = query.filter(db.extract('year', Rent.date) == int(filters['year']))
+    if 'month' in filters:
+        query = query.filter(db.extract('month', Rent.date) == int(filters['month']))
 
-def get_recent_rent(unit_id):
-    """Retrieves the most recent rent record for a specific unit."""
-    return Rent.query.join(Lease, Lease.id == Rent.lease_id)\
-                     .filter(Lease.unit_id == unit_id)\
-                     .order_by(Rent.date.desc()).first()
+    # filters for start and end date range
+    if 'start_date' in filters:
+        start_date = datetime.strptime(filters['start_date'], '%Y-%m-%d')
+        query = query.filter(Rent.date >= start_date)
+    if 'end_date' in filters:
+        end_date = datetime.strptime(filters['end_date'], '%Y-%m-%d')
+        query = query.filter(Rent.date <= end_date)
 
-def get_monthly_rent(lease_id, year, month):
-    """Retrieves rent for a specific month and year for a lease."""
-    return Rent.query.filter_by(lease_id=lease_id).filter(
-        db.extract('year', Rent.date) == year,
-        db.extract('month', Rent.date) == month
-    ).first()
+    return query.all()
 
 def update_rent(id, data):
     """Updates an existing rent record."""
@@ -88,7 +96,7 @@ def update_rent(id, data):
 
 def delete_rent(id):
     """Deletes a rent record by its ID."""
-    rent = get_rent_by_id(id)
+    rent = get_rents(id)
     if rent:
         db.session.delete(rent)
         db.session.commit()

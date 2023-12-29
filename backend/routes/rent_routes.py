@@ -1,10 +1,7 @@
 from flask import Blueprint, request, jsonify
 from services.rent_service import (
     add_rent, 
-    get_all_rents, 
-    get_rent_by_id, 
-    get_recent_rent, 
-    get_monthly_rent, 
+    get_rents,
     update_rent, 
     delete_rent, 
     rent_to_json
@@ -20,47 +17,12 @@ def add_rent_route():
         return jsonify(rent_to_json(new_rent)), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-@rent_bp.route('/rent/all', methods=['GET'])
-def get_all_rents_route():
-    try:
-        rents = get_all_rents()
-        return jsonify([rent_to_json(rent) for rent in rents]), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@rent_bp.route('/rent/<int:id>', methods=['GET'])
-def get_rent_route(id):
-    try:
-        rent = get_rent_by_id(id)
-        if rent:
-            return jsonify(rent_to_json(rent)), 200
-        return jsonify({'message': 'Rent details not found'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@rent_bp.route('/rent/recent/<int:unit_id>', methods=['GET'])
-def get_recent_rent_route(unit_id):
-    try:
-        recent_rent = get_recent_rent(unit_id)
-        if recent_rent:
-            return jsonify(rent_to_json(recent_rent)), 200
-        return jsonify({'message': 'Rent details not found'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@rent_bp.route('/rent/monthly', methods=['GET'])
-def get_monthly_rent_route():
-    unit_id = request.args.get('unitId', type=int)
-    year = request.args.get('year', type=int)
-    month = request.args.get('month', type=int)
-    try:
-        rent = get_monthly_rent(unit_id, year, month)
-        if rent:
-            return jsonify(rent_to_json(rent)), 200
-        return jsonify({'message': 'Rent details not found for the specified month'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    
+@rent_bp.route('/rent', methods=['GET'])
+def get_rents_route():
+    filters = request.args.to_dict()
+    rents = get_rents(filters)
+    return jsonify([rent_to_json(rent) for rent in rents]), 200
 
 @rent_bp.route('/rent/<int:id>', methods=['PUT'])
 def update_rent_route(id):

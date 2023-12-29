@@ -3,7 +3,7 @@ import { getUnit } from '@/api/unitService';
 import { getTenant } from '@/api/tenantService';
 import { getPayments } from '@/api/paymentService';
 import { getLeases } from '@/api/leaseService';
-import { getRecentRentByUnitId } from '@/api/rentService';
+import { getRents } from '@/api/rentService';
 
 export const useUnitDetails = (unitId) => {
   const [unit, setUnit] = useState(null);
@@ -31,20 +31,21 @@ export const useUnitDetails = (unitId) => {
         }
 
         const lastSixMonths = getLastSixMonths();
-        
         const paymentsData = await getPayments({ unitId });
         const filteredPayments = paymentsData
-        .filter(payment => lastSixMonths.some(date => 
-          new Date(payment.date).getMonth() === date.month - 1 && 
-          new Date(payment.date).getFullYear() === date.year))
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
-
+          .filter(payment => lastSixMonths.some(date => 
+            new Date(payment.date).getMonth() === date.month - 1 && 
+            new Date(payment.date).getFullYear() === date.year))
+          .sort((a, b) => new Date(b.date) - new Date(a.date));
         setPayments(filteredPayments);
     
-        const rentData = await getRecentRentByUnitId(unitId);
-        if (rentData) {
-          unitData.rent_details = rentData;
-          unitData.total_rent = rentData.total_rent;
+        // Using getRents instead of getRecentRentByUnitId
+        const rentFilters = { unit_id: unitId };
+        const rentsData = await getRents(rentFilters);
+        const recentRent = rentsData.length > 0 ? rentsData[0] : null;
+        if (recentRent) {
+          unitData.rent_details = recentRent;
+          unitData.total_rent = recentRent.total_rent;
           setUnit(unitData);
         }
   
@@ -59,15 +60,15 @@ export const useUnitDetails = (unitId) => {
   }, [unitId]);
 
   // Function to get the last six months from the current date
-const getLastSixMonths = () => {
-  const months = [];
-  let date = new Date();
-  for (let i = 0; i < 6; i++) {
-    months.push({ month: date.getMonth() + 1, year: date.getFullYear() });
-    date.setMonth(date.getMonth() - 1);
-  }
-  return months;
-};
+  const getLastSixMonths = () => {
+    const months = [];
+    let date = new Date();
+    for (let i = 0; i < 6; i++) {
+      months.push({ month: date.getMonth() + 1, year: date.getFullYear() });
+      date.setMonth(date.getMonth() - 1);
+    }
+    return months;
+  };
   
   return { unit, tenant, payments, leases, isLoading, error };
 };
