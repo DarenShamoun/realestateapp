@@ -23,7 +23,6 @@ def add_rent(data):
     rent.total_rent = calculate_total_rent(rent)
     db.session.add(rent)
 
-    # Adding rent history if rent value changes
     if existing_rent and existing_rent.rent != data.get('rent', 0):
         add_rent_history(lease_id=lease.id, old_rent=existing_rent.rent, new_rent=data.get('rent', 0))
 
