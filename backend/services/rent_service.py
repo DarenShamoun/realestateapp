@@ -54,12 +54,10 @@ def get_rents(filters):
     return query.all()
 
 def update_rent(rent_id, data):
-    """Updates an existing rent record."""
-    rent = get_rents(rent_id)
+    rent = Rent.query.get(rent_id)
     if not rent:
         return None
 
-    # Keep track of the old rent before updating
     old_rent = rent.rent
 
     for key in ['rent', 'trash', 'water_sewer', 'parking', 'debt', 'breaks']:
@@ -78,8 +76,7 @@ def update_rent(rent_id, data):
     return rent
 
 def delete_rent(rent_id):
-    """Deletes a rent record by its ID."""
-    rent = get_rents(rent_id)
+    rent = Rent.query.get(rent_id)
     if rent:
         db.session.delete(rent)
         db.session.commit()

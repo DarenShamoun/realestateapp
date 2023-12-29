@@ -23,8 +23,8 @@ export const addRent = async (rentData) => {
   return response.json();
 };
 
-export const updateRent = async (id, rentData) => {
-  const response = await fetch(`${API_URL}/rent/${id}`, {
+export const updateRent = async (rent_id, rentData) => {
+  const response = await fetch(`${API_URL}/rent/${rent_id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -37,8 +37,8 @@ export const updateRent = async (id, rentData) => {
   return response.json();
 };
 
-export const deleteRent = async (id) => {
-  const response = await fetch(`${API_URL}/rent/${id}`, {
+export const deleteRent = async (rent_id) => {
+  const response = await fetch(`${API_URL}/rent/${rent_id}`, {
     method: 'DELETE'
   });
   if (!response.ok) {

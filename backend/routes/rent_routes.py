@@ -27,22 +27,24 @@ def get_rents_route():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@rent_bp.route('/rent/<int:id>', methods=['PUT'])
-def update_rent_route(id):
+@rent_bp.route('/rent/<int:rent_id>', methods=['PUT'])
+def update_rent_route(rent_id):
     data = request.json
     try:
-        updated_rent = update_rent(id, data)
+        updated_rent = update_rent(rent_id, data)
         if updated_rent:
             return jsonify(rent_to_json(updated_rent)), 200
-        return jsonify({'message': 'Rent details not found'}), 404
+        else:
+            return jsonify({'message': 'Rent details not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@rent_bp.route('/rent/<int:id>', methods=['DELETE'])
-def delete_rent_route(id):
+@rent_bp.route('/rent/<int:rent_id>', methods=['DELETE'])
+def delete_rent_route(rent_id):
     try:
-        if delete_rent(id):
+        if delete_rent(rent_id):
             return jsonify({'message': 'Rent details deleted'}), 200
-        return jsonify({'message': 'Rent details not found'}), 404
+        else:
+            return jsonify({'message': 'Rent details not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
