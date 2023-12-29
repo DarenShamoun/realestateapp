@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify
 from services.property_service import (
-    add_property_service, 
+    add_property, 
     get_properties, 
-    update_property_service, 
-    delete_property_service
+    update_property, 
+    delete_property,
+    property_to_json
 )
 
 property_bp = Blueprint('property_bp', __name__)
@@ -12,8 +13,8 @@ property_bp = Blueprint('property_bp', __name__)
 def add_property():
     try:
         data = request.json
-        response = add_property_service(data)
-        return jsonify(response), 201
+        new_property = add_property(data)
+        return jsonify(property_to_json(new_property)), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -22,7 +23,7 @@ def get_properties_route():
     filters = {k: v for k, v in request.args.items() if v is not None}
     try:
         properties = get_properties(filters)
-        return jsonify(properties), 200
+        return jsonify([property_to_json(property) for property in properties]), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -30,18 +31,20 @@ def get_properties_route():
 def update_property_route(id):
     try:
         data = request.json
-        updated_property = update_property_service(id, data)
+        updated_property = update_property(id, data)
         if updated_property:
             return jsonify(updated_property), 200
-        return jsonify({'message': 'Property not found'}), 404
+        else:
+            return jsonify({'message': 'Property not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @property_bp.route('/property/<int:id>', methods=['DELETE'])
 def delete_property_route(id):
     try:
-        if delete_property_service(id):
+        if delete_property(id):
             return jsonify({'message': 'Property successfully deleted'}), 200
-        return jsonify({'message': 'Property not found'}), 404
+        else:
+            return jsonify({'message': 'Property not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500

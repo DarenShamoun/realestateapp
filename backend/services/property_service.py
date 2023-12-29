@@ -1,17 +1,10 @@
 from models import db, Property
 
-def add_property_service(data):
-    new_property = Property(
-        name=data['name'],
-        property_type=data['property_type'],
-        address=data['address'],
-        purchase_price=data.get('purchase_price'),
-        year_built=data.get('year_built'),
-        square_footage=data.get('square_footage')
-    )
+def add_property(data):
+    new_property = Property(**data)
     db.session.add(new_property)
     db.session.commit()
-    return property_to_json(new_property)
+    return new_property
 
 def get_properties(filters=None):
         query = Property.query
@@ -24,9 +17,9 @@ def get_properties(filters=None):
             if 'property_type' in filters:
                 query = query.filter(Property.property_type == filters['property_type'])
 
-        return [property_to_json(property) for property in query.all()]
+        return query.all()
 
-def update_property_service(property_id, data):
+def update_property(property_id, data):
     property = get_properties(property_id)
     if property:
         property.name = data.get('name', property.name)
@@ -39,7 +32,7 @@ def update_property_service(property_id, data):
         return property_to_json(property)
     return None
 
-def delete_property_service(property_id):
+def delete_property(property_id):
     property = get_properties(property_id)
     if property:
         db.session.delete(property)
