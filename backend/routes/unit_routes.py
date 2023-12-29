@@ -1,8 +1,7 @@
 from flask import Blueprint, request, jsonify
 from services.unit_service import (
     add_unit, 
-    get_all_units, 
-    get_unit_by_id, 
+    get_units, 
     update_unit, 
     delete_unit, 
     unit_to_json
@@ -20,21 +19,11 @@ def add_unit_route():
         return jsonify({'error': str(e)}), 500
 
 @unit_bp.route('/unit', methods=['GET'])
-def get_units():
+def get_units_route():
+    filters = {k: v for k, v in request.args.items() if v is not None}
     try:
-        units = get_all_units()
+        units = get_units(filters)
         return jsonify([unit_to_json(unit) for unit in units]), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@unit_bp.route('/unit/<int:id>', methods=['GET'])
-def get_unit_route(id):
-    try:
-        unit = get_unit_by_id(id)
-        if unit:
-            return jsonify(unit_to_json(unit)), 200
-        else:
-            return jsonify({'message': 'Unit not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

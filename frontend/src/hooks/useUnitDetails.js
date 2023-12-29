@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getUnit } from '@/api/unitService';
+import { getUnits } from '@/api/unitService';
 import { getTenant } from '@/api/tenantService';
 import { getPayments } from '@/api/paymentService';
 import { getLeases } from '@/api/leaseService';
@@ -16,7 +16,7 @@ export const useUnitDetails = (unitId) => {
   useEffect(() => {
     const fetchUnitDetails = async () => {
       try {
-        const unitData = await getUnit(unitId);
+        const unitData = await getUnits(unitId);
         setUnit(unitData);
   
         const leasesData = await getLeases({ unitId });

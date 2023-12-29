@@ -1,4 +1,4 @@
-from models import Unit, Payment, Rent, db
+from models import Unit, Payment, Lease, db
 from sqlalchemy import extract
 from datetime import datetime
 
@@ -8,14 +8,24 @@ def add_unit(data):
     db.session.commit()
     return new_unit
 
-def get_all_units():
-    return Unit.query.all()
+def get_units(filters=None):
+    query = Unit.query
 
-def get_unit_by_id(unit_id):
-    return Unit.query.get(unit_id)
+    if filters:
+        if 'id' in filters:
+            query = query.filter(Unit.id == filters['id'])
+        if 'property_id' in filters:
+            query = query.filter(Unit.property_id == filters['property_id'])
+        if 'is_occupied' in filters:
+            query = query.filter(Unit.is_occupied == filters['is_occupied'])
+        if 'tenant_id' in filters:
+            tenant_id = filters['tenant_id']
+            query = query.join(Unit.lease_details).filter(Lease.tenant_id == tenant_id)
 
-def update_unit(unit_id, data):
-    unit = get_unit_by_id(unit_id)
+    return query.all()
+
+def update_unit(id, data):
+    unit = get_units(id)
     if not unit:
         return None
 
@@ -25,8 +35,8 @@ def update_unit(unit_id, data):
     db.session.commit()
     return unit
 
-def delete_unit(unit_id):
-    unit = get_unit_by_id(unit_id)
+def delete_unit(id):
+    unit = get_units(id)
     if unit:
         db.session.delete(unit)
         db.session.commit()
@@ -40,7 +50,6 @@ def get_total_rent(unit_id):
     if unit:
         total_rent = 0
         for lease in unit.lease_details:
-            # Assuming each lease can have multiple rents
             rent_records = lease.rents
             for rent in rent_records:
                 if rent.date.year == current_year and rent.date.month == current_month:

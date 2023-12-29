@@ -8,7 +8,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getProperty } from '@/api/propertyService';
-import { getUnitsByPropertyId } from '@/api/unitService';
+import { getUnits } from '@/api/unitService';
 import UnitCard from '@/components/Cards/UnitCard';
 
 const PropertyDetails = ({ propertyId }) => {
@@ -25,7 +25,7 @@ const PropertyDetails = ({ propertyId }) => {
         const propertyData = await getProperty(propertyId);
         setProperty(propertyData);
 
-        const unitsData = await getUnitsByPropertyId(propertyId);
+        const unitsData = await getUnits(propertyId);
         unitsData.sort((a, b) => a.unit_number.localeCompare(b.unit_number, undefined, {numeric: true}));
         setUnits(unitsData);
       } catch (error) {
