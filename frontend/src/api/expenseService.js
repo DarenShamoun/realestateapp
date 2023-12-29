@@ -23,8 +23,8 @@ export const addExpense = async (expenseData) => {
   return response.json();
 };
 
-export const updateExpense = async (id, expenseData) => {
-  const response = await fetch(`${API_URL}/expense/${id}`, {
+export const updateExpense = async (expense_id, expenseData) => {
+  const response = await fetch(`${API_URL}/expense/${expense_id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -37,8 +37,8 @@ export const updateExpense = async (id, expenseData) => {
   return response.json();
 };
 
-export const deleteExpense = async (id) => {
-  const response = await fetch(`${API_URL}/expense/${id}`, {
+export const deleteExpense = async (expense_id) => {
+  const response = await fetch(`${API_URL}/expense/${expense_id}`, {
     method: 'DELETE',
   });
   if (!response.ok) {

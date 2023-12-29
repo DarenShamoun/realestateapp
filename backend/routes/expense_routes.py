@@ -34,7 +34,8 @@ def update_expense_route(expense_id):
         expense = update_expense(expense_id, data)
         if expense:
             return jsonify(expense_to_json(expense)), 200
-        return jsonify({'message': 'Expense not found'}), 404
+        else:
+            return jsonify({'message': 'Expense not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -43,6 +44,7 @@ def delete_expense_route(expense_id):
     try:
         if delete_expense(expense_id):
             return jsonify({'message': 'Expense deleted'}), 200
-        return jsonify({'message': 'Expense not found'}), 404
+        else:
+            return jsonify({'message': 'Expense not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
