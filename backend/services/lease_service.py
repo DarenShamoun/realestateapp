@@ -34,7 +34,7 @@ def get_leases(filters=None):
         if 'is_occupied' in filters:
             query = query.filter(Unit.is_occupied == filters['is_occupied'])
 
-    return Lease.query.all()
+    return query.all()
 
 def update_lease(lease_id, data):
     lease = get_leases(lease_id)
