@@ -1,8 +1,7 @@
 from flask import Blueprint, request, jsonify
 from services.lease_service import (
     add_lease, 
-    get_all_leases, 
-    get_lease_by_id, 
+    get_leases, 
     update_lease, 
     delete_lease, 
     lease_to_json
@@ -20,22 +19,11 @@ def add_lease_route():
         return jsonify({'error': str(e)}), 500
 
 @lease_bp.route('/lease', methods=['GET'])
-def get_leases():
-    unit_id = request.args.get('unitId', type=int)
-    tenant_id = request.args.get('tenantId', type=int)
+def get_leases_route():
+    filters = {k: v for k, v in request.args.items() if v is not None}
     try:
-        leases = get_all_leases(unit_id, tenant_id)
+        leases = get_leases(filters)
         return jsonify([lease_to_json(lease) for lease in leases]), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@lease_bp.route('/lease/<int:id>', methods=['GET'])
-def get_lease(id):
-    try:
-        lease = get_lease_by_id(id)
-        if lease:
-            return jsonify(lease_to_json(lease)), 200
-        return jsonify({'message': 'Lease not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

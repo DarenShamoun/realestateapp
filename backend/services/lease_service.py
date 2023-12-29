@@ -1,4 +1,4 @@
-from models import db, Lease, Unit
+from models import db, Property, Lease, Unit, Tenant
 from datetime import datetime
 
 def add_lease(data):
@@ -17,19 +17,27 @@ def add_lease(data):
     db.session.commit()
     return new_lease
 
-def get_all_leases(unit_id=None, tenant_id=None):
-    query = Lease.query
-    if unit_id:
-        query = query.filter(Lease.unit_id == unit_id)
-    if tenant_id:
-        query = query.filter(Lease.tenant_id == tenant_id)
-    return query.all()
+def get_leases(filters=None):
+    query = Lease.query.join(Unit).join(Tenant)
 
-def get_lease_by_id(lease_id):
-    return Lease.query.get(lease_id)
+    if filters:
+        if 'lease_id' in filters:
+            query = query.filter(Lease.id == filters['lease_id'])
+        if 'unit_id' in filters:
+            query = query.filter(Lease.unit_id == filters['unit_id'])
+        if 'tenant_id' in filters:
+            query = query.filter(Lease.tenant_id == filters['tenant_id'])
+        if 'property_id' in filters:
+            query = query.join(Property).filter(Property.id == filters['property_id'])
+        if 'status' in filters:
+            query = query.filter(Lease.status == filters['status'])
+        if 'is_occupied' in filters:
+            query = query.filter(Unit.is_occupied == filters['is_occupied'])
 
-def update_lease(id, data):
-    lease = Lease.query.get(id)
+    return Lease.query.all()
+
+def update_lease(lease_id, data):
+    lease = get_leases(lease_id)
     if lease:
         lease.unit_id = data.get('unit_id', lease.unit_id)
         lease.tenant_id = data.get('tenant_id', lease.tenant_id)
@@ -42,6 +50,16 @@ def update_lease(id, data):
         update_unit_occupancy(lease.unit_id)
         db.session.commit()
     return lease
+
+def delete_lease(lease_id):
+    lease = get_leases(lease_id)
+    if lease:
+        unit_id = lease.unit_id
+        db.session.delete(lease)
+        update_unit_occupancy(unit_id)
+        db.session.commit()
+        return True    
+    return False
 
 def update_unit_occupancy(unit_id):
     unit = Unit.query.get(unit_id)
@@ -60,16 +78,6 @@ def update_unit_occupancy(unit_id):
             unit.tenant_id = None
 
         db.session.commit()
-
-def delete_lease(lease_id):
-    lease = Lease.query.get(lease_id)
-    if lease:
-        unit_id = lease.unit_id
-        db.session.delete(lease)
-        update_unit_occupancy(unit_id)
-        db.session.commit()
-        return True    
-    return False
 
 def lease_to_json(lease):
     return {

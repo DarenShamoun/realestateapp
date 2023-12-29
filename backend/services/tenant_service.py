@@ -25,7 +25,7 @@ def get_tenants(filters=None):
         if 'primary_phone' in filters:
             query = query.filter(Tenant.primary_phone == filters['primary_phone'])
 
-    return query.all()
+    return Tenant.query.all()
 
 def update_tenant(tenant_id, data):
     tenant = get_tenants(tenant_id)

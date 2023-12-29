@@ -23,8 +23,6 @@ export const useUnitDetails = (unitId) => {
         const leasesData = await getLeases({ unitId });
         setLeases(leasesData);
 
-        const unitLeases = leasesData.filter(lease => lease.unit_id === unitId);
-
         if (leasesData && leasesData.length > 0) {
           const recentLease = leasesData[0]; 
           if (recentLease.tenant_id) {
