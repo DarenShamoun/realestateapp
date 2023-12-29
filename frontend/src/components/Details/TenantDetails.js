@@ -5,8 +5,8 @@ const TenantDetails = ({ tenant }) => (
     <h2 className="text-xl text-white">Tenant Details</h2>
     {tenant ? (
       <>
-        <p className="text-gray-300">Name: {tenant.full_name}</p>
-        <p className="text-gray-300">Primary Phone: {tenant.primary_phone}</p>
+        <p className="text-gray-300">Name: {tenant.full_name || 'None'}</p>
+        <p className="text-gray-300">Primary Phone: {tenant.primary_phone || 'None'} </p>
         <p className="text-gray-300">Secondary Phone: {tenant.secondary_phone || 'N/A'}</p>
         <p className="text-gray-300">Contact Notes: {tenant.contact_notes || 'None'}</p>
       </>
