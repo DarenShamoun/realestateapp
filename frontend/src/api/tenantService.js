@@ -1,24 +1,8 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const getTenants = async () => {
-  const response = await fetch(`${API_URL}/tenant`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
-export const getTenant = async (id) => {
-  const response = await fetch(`${API_URL}/tenant/${id}`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
-export const getTenantPayments = async (tenantId, startDate, endDate) => {
-  const queryParams = new URLSearchParams({ startDate, endDate });
-  const response = await fetch(`${API_URL}/tenant/${tenantId}/payments?${queryParams}`);
+export const getTenants = async (filters = {}) => {
+  const queryParams = new URLSearchParams(filters);
+  const response = await fetch(`${API_URL}/tenant?${queryParams}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -62,4 +46,3 @@ export const deleteTenant = async (id) => {
     }
     return response.json();
 };
-  

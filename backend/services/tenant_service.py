@@ -1,5 +1,4 @@
-from models import db, Tenant, Payment
-from sqlalchemy import desc
+from models import db, Tenant, Lease, Unit, Property
 
 def add_tenant(data):
     new_tenant = Tenant(**data)
@@ -7,16 +6,29 @@ def add_tenant(data):
     db.session.commit()
     return new_tenant
 
-def get_tenant_payments(tenant_id, start_date=None, end_date=None):
-    query = Payment.query.filter_by(tenant_id=tenant_id)
-    if start_date:
-        query = query.filter(Payment.date >= start_date)
-    if end_date:
-        query = query.filter(Payment.date <= end_date)
-    return query.order_by(desc(Payment.date)).all()
+def get_tenants(filters=None):
+    query = Tenant.query.join(Lease, Lease.tenant_id == Tenant.id)\
+                        .join(Unit, Lease.unit_id == Unit.id)\
+                        .join(Property, Unit.property_id == Property.id)
 
-def update_tenant(id, data):
-    tenant = Tenant.query.get(id)
+    if filters:
+        if 'tenant_id' in filters:
+            query = query.filter(Tenant.id == filters['tenant_id'])
+        if 'unit_id' in filters:
+            query = query.filter(Unit.id == filters['unit_id'])
+        if 'property_id' in filters:
+            query = query.filter(Property.id == filters['property_id'])
+        if 'lease_id' in filters:
+            query = query.filter(Lease.id == filters['lease_id'])
+        if 'full_name' in filters:
+            query = query.filter(Tenant.full_name.ilike(f"%{filters['full_name']}%"))
+        if 'primary_phone' in filters:
+            query = query.filter(Tenant.primary_phone == filters['primary_phone'])
+
+    return query.all()
+
+def update_tenant(tenant_id, data):
+    tenant = get_tenants(tenant_id)
     if not tenant:
         return None
     for key, value in data.items():
@@ -34,17 +46,9 @@ def tenant_to_json(tenant):
         'contact_notes': tenant.contact_notes
     }
 
-def get_all_tenants():
-    """Retrieves all tenant records from the database."""
-    return Tenant.query.all()
-
-def get_tenant_by_id(tenant_id):
-    """Retrieves a tenant record by its ID."""
-    return Tenant.query.get(tenant_id)
-
 def delete_tenant(tenant_id):
     """Deletes a tenant record by its ID."""
-    tenant = get_tenant_by_id(tenant_id)
+    tenant = get_tenants(tenant_id)
     if tenant:
         db.session.delete(tenant)
         db.session.commit()
