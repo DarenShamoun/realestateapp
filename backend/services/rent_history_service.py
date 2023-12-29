@@ -18,13 +18,14 @@ def add_rent_history(lease_id, old_rent, new_rent):
     db.session.commit()
     return rent_history
 
-def get_all_rent_histories():
-    """Retrieves all rent history records from the database."""
-    return RentHistory.query.all()
+def get_rent_histories(filters=None):
+    query = RentHistory.query.join(Lease, RentHistory.lease_id == Lease.id)
 
-def get_rent_history_by_unit(unit_id):
-    """Retrieves rent history records for a specific unit."""
-    return RentHistory.query.filter_by(unit_id=unit_id).all()
+    if filters:
+        if 'unit_id' in filters:
+            query = query.filter(Lease.unit_id == filters['unit_id'])
+
+    return query.all()
 
 def delete_rent_history(id):
     """Deletes a rent history record by its ID."""

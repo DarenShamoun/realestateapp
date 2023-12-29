@@ -1,8 +1,9 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const getRentHistory = async (unitId) => {
+export const getRentHistory = async (filters = {}) => {
+    const queryParams = new URLSearchParams(filters);
     try {
-        const response = await fetch(`${API_URL}/rent-history/${unitId}`);
+        const response = await fetch(`${API_URL}/rent-history?${queryParams}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
