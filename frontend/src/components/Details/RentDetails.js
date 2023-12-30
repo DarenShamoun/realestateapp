@@ -5,7 +5,8 @@ const RentDetails = ({ rentDetails, totalRent, rentDate }) => {
 
   return (
     <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4">
-      <h2 className="text-xl text-white">Rent Details {rentDate ? `(${rentDate})` : ''}</h2>
+      <h2 className="text-xl text-white">Rent Details</h2>
+      {rentDate && <p className="text-gray-300">Rent Date: {rentDate}</p>}
       {rentDetails && Object.keys(rentDetails).length > 0 ? (
         <>
           <p className="text-gray-300">Base Rent: {formatCurrency(rentDetails.rent)}</p>
