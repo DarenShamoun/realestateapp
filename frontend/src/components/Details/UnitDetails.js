@@ -23,8 +23,7 @@ const UnitDetails = ({ unit_id }) => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-white mb-4">Unit {unit.unit_number}</h1>
-  
+      <h1 className="text-3xl font-bold text-white mb-4">Unit {unit[0].unit_number}</h1>
       <section className="flex flex-wrap gap-4 justify-center">
         {/* Unit Details */}
         <TenantDetails tenant={tenant} />
