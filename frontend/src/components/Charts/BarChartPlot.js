@@ -1,6 +1,23 @@
 import React from 'react';
 import { BarChart, XAxis, YAxis, Bar, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="custom-tooltip" style={{ backgroundColor: '#fff', padding: '10px', border: '1px solid #ccc' }}>
+        <p className="label">{`${label}`}</p>
+        {payload.map((entry, index) => (
+          <p key={`item-${index}`} style={{ color: entry.color }}>
+            {`${entry.name}: $${entry.value.toFixed(2)}`}
+          </p>
+        ))}
+      </div>
+    );
+  }
+
+  return null;
+};
+
 const BarChartPlot = ({ data, barKeys, xAxisKey }) => {
   const defaultData = [
     {
@@ -40,7 +57,6 @@ const BarChartPlot = ({ data, barKeys, xAxisKey }) => {
     },
   ];
 
-
   const defaultBarKeys = [
     { name: "Payment", color: "#82ca9d" },
     { name: "Balance", color: "#FA8072" }
@@ -55,9 +71,9 @@ const BarChartPlot = ({ data, barKeys, xAxisKey }) => {
         <BarChart width={730} height={250} data={chartData}>
           <XAxis dataKey={xAxisKey || "name"} />
           <YAxis />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
           <Legend />
-          {keys.map(key => (
+          {barKeys.map(key => (
             <Bar key={key.name} dataKey={key.name} fill={key.color} />
           ))}
         </BarChart>
