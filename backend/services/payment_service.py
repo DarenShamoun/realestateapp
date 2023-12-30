@@ -13,6 +13,8 @@ def get_payments(filters=None):
     if filters:
         if 'payment_id' in filters:
             query = query.filter(Payment.id == filters['payment_id'])
+        if 'lease_id' in filters:
+            query = query.filter(Payment.lease_id == filters['lease_id'])
         if 'unit_id' in filters:
             query = query.filter(Lease.unit_id == filters['unit_id'])
         if 'tenant_id' in filters:

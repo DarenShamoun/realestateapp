@@ -20,10 +20,8 @@ def get_leases(filters=None):
             query = query.filter(Lease.tenant_id == filters['tenant_id'])
         if 'property_id' in filters:
             query = query.join(Property).filter(Property.id == filters['property_id'])
-        if 'status' in filters:
-            query = query.filter(Lease.status == filters['status'])
-        if 'is_occupied' in filters:
-            query = query.filter(Unit.is_occupied == filters['is_occupied'])
+        if 'is_active' in filters:
+            query = query.filter(Lease.is_active == filters['is_active'])
 
     return query.all()
 
@@ -31,22 +29,28 @@ def update_lease(lease_id, data):
     lease = Lease.query.get(lease_id)
     if not lease:
         return None
-    
-    for key, value in data.items():
-        setattr(lease, key, value)
 
-    update_unit_occupancy(lease.unit_id)
+    for key, value in data.items():
+        if hasattr(lease, key):
+            setattr(lease, key, value)
+
     db.session.commit()
     return lease
 
 def delete_lease(lease_id):
     lease = Lease.query.get(lease_id)
     if lease:
-        unit_id = lease.unit_id
-        db.session.delete(lease)
-        update_unit_occupancy(unit_id)
+        lease.is_active = False
         db.session.commit()
-        return True    
+        return True
+    return False
+
+def hard_delete_lease(lease_id):
+    lease = Lease.query.get(lease_id)
+    if lease:
+        db.session.delete(lease)
+        db.session.commit()
+        return True
     return False
 
 def update_unit_occupancy(unit_id):
@@ -77,7 +81,7 @@ def lease_to_json(lease):
         'monthly_rent': lease.monthly_rent,
         'deposit': lease.deposit,
         'terms': lease.terms,
-        'status': lease.status,
+        'is_active': lease.is_active,
         'created_at': lease.created_at.strftime('%Y-%m-%d %H:%M:%S'),
         'updated_at': lease.updated_at.strftime('%Y-%m-%d %H:%M:%S')
     }
