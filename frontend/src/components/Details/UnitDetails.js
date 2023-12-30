@@ -7,7 +7,7 @@ import RentDetails from './RentDetails';
 import PaymentHistory from './PaymentHistory';
 
 const UnitDetails = ({ unit_id }) => {
-  const { unit, tenant, payments, leases, currentMonthRent, isLoading, error } = useUnitDetails(unit_id);
+  const { unit, tenant, payments, rentHistory, leases, currentMonthRent, isLoading, error } = useUnitDetails(unit_id);
 
   if (isLoading) {
     return <div>Loading...</div>;
