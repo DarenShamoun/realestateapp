@@ -23,26 +23,24 @@ export const useUnitDetails = (unit_id) => {
         const unitData = await getUnits({ unit_id });
         setUnit(unitData);
   
-        const leasesData = await getLeases({ unit_id });
+        const leasesData = await getLeases({ unit_id, is_active: true });
         setLeases(leasesData);
-
-        if (leasesData && leasesData.length > 0) {
-          const recentLease = leasesData[0]; 
-          if (recentLease.tenant_id) {
-            const tenantData = await getTenants(recentLease.tenant_id);
-            setTenant(tenantData[0]);
-          }
+    
+        if (leasesData && leasesData.length > 0 && leasesData[0].is_active) {
+          const tenantData = await getTenants({ tenant_id: leasesData[0].tenant_id });
+          setTenant(tenantData[0]);
         }
 
-        const rentFilters = { unit_id: unit_id, month: currentMonth, year: currentYear };
-        const rentsData = await getRents(rentFilters);
+        const CurrentMonthRentFilters = { unit_id: unit_id, month: currentMonth, year: currentYear };
+        const CurrentMonthRentData = await getRents(CurrentMonthRentFilters);
 
-        if (rentsData.length > 0) {
-          setCurrentMonthRent(rentsData[0]);
+        if (CurrentMonthRentData.length > 0) {
+          setCurrentMonthRent(CurrentMonthRentData[0]);
         }
 
-        const paymentsData = await getPayments({ unit_id });
+        const paymentsData = await getPayments({ lease_id: leasesData[0].id });
         setPayments(paymentsData);
+
       } catch (err) {
         console.error('Error fetching unit details:', err);
         setError(err);

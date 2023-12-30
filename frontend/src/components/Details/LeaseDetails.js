@@ -6,11 +6,11 @@ const LeaseDetails = ({ leases }) => (
     {leases && leases.length > 0 ? (
       leases.map((lease, index) => (
         <div key={index} className="text-gray-300 mb-2">
-          <p>Start Date: {lease.start_date}</p>
-          <p>End Date: {lease.end_date || 'N/A'}</p>
           <p>Base Rent: ${lease.monthly_rent.toFixed(2)}</p>
           <p>Deposit: {lease.deposit ? `$${lease.deposit.toFixed(2)}` : 'N/A'}</p>
           <p>Terms: {lease.terms || 'N/A'}</p>
+          <p>Start Date: {lease.start_date}</p>
+          <p>End Date: {lease.end_date || 'N/A'}</p>
         </div>
       ))
     ) : (
