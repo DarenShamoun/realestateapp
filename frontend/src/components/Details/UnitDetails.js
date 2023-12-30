@@ -1,10 +1,10 @@
 import React from 'react';
 import { useUnitDetails } from '@/hooks/useUnitDetails';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
-import TenantDetails from './TenantDetails';
-import LeaseDetails from './LeaseDetails';
-import RentDetails from './RentDetails';
-import PaymentHistory from './PaymentHistory';
+import TenantDetails from '@/components/Details/TenantDetails';
+import LeaseDetails from '@/components/Details/LeaseDetails';
+import RentDetails from '@/components/Details/RentDetails';
+import PaymentHistory from '@/components/Details/PaymentHistory';
 
 const UnitDetails = ({ unit_id }) => {
   const { unit, tenant, payments, rentHistory, leases, currentMonthRent, isLoading, error } = useUnitDetails(unit_id);
