@@ -44,13 +44,15 @@ export const useUnitDetails = (unit_id) => {
             lease_id: leasesData[0].id,
             start_date: sixMonthsAgo.toISOString().split('T')[0]
           });
-          setPaymentsHistory(paymentsHistoryData);
+          const sortedPaymentsHistory = paymentsHistoryData.sort((a, b) => new Date(b.date) - new Date(a.date));
+          setPaymentsHistory(sortedPaymentsHistory);
 
           const rentHistoryData = await getRents({
             unit_id: unit_id,
             start_date: sixMonthsAgo.toISOString().split('T')[0]
           });
-          setRentHistory(rentHistoryData);
+          const sortedRentHistory = rentHistoryData.sort((a, b) => new Date(b.date) - new Date(a.date));
+          setRentHistory(sortedRentHistory);  
         }
       } catch (err) {
         console.error('Error fetching unit details:', err);

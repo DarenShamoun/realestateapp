@@ -37,9 +37,8 @@ const UnitDetails = ({ unit_id }) => {
       </section>
   
       <section className="flex flex-wrap -mx-4 my-4">
-        {/* Payment History */}
-        <PaymentHistory payments={payments} />
-
+      {/* Payment History */}
+      <PaymentHistory payments={payments} rentHistory={rentHistory} />
         {/* Financial Overview */}
         <div className="w-full lg:w-1/2 px-4">
           <div className="bg-gray-700 shadow rounded p-4">
