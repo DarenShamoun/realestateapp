@@ -79,7 +79,7 @@ export const useUnitDetails = (unit_id) => {
       combinedData[monthYear] = {
         ...combinedData[monthYear],
         monthYear,
-        TotalRent: rent.total_rent
+        Balance: rent.debt,
       };
     });
   

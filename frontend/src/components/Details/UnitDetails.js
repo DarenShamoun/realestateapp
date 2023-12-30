@@ -46,7 +46,7 @@ const UnitDetails = ({ unit_id }) => {
             <div className="h-[300px] bg-gray-700 rounded">
               <BarChartPlot 
                 data={chartData} 
-                barKeys={[{ name: "Payment", color: "#82ca9d" }, { name: "TotalRent", color: "#FA8072" }]} 
+                barKeys={[{ name: "Payment", color: "#82ca9d" }, { name: "Balance", color: "#FA8072" }]} 
                 xAxisKey="monthYear" 
               />
             </div>
