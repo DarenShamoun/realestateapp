@@ -7,7 +7,7 @@ import RentDetails from '@/components/Details/RentDetails';
 import PaymentHistory from '@/components/Details/PaymentHistory';
 
 const UnitDetails = ({ unit_id }) => {
-  const { unit, tenant, payments, rentHistory, leases, currentMonthRent, isLoading, error } = useUnitDetails(unit_id);
+  const { unit, tenant, payments, rentHistory, leases, currentMonthRent, chartData, isLoading, error } = useUnitDetails(unit_id);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -44,7 +44,11 @@ const UnitDetails = ({ unit_id }) => {
           <div className="bg-gray-700 shadow rounded p-4">
             <h2 className="text-xl text-white mb-4">Financial Overview</h2>
             <div className="h-[300px] bg-gray-700 rounded">
-              <BarChartPlot />
+              <BarChartPlot 
+                data={chartData} 
+                barKeys={[{ name: "Payment", color: "#82ca9d" }, { name: "TotalRent", color: "#FA8072" }]} 
+                xAxisKey="monthYear" 
+              />
             </div>
           </div>
         </div>

@@ -1,7 +1,8 @@
+import React from 'react';
 import { BarChart, XAxis, YAxis, Bar, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-const BarChartPlot = ({ data }) => {
-  const chartData = data && data.length > 0 ? data : [
+const BarChartPlot = ({ data, barKeys, xAxisKey }) => {
+  const defaultData = [
     {
         name: "Jan",
         Payment: 4000,
@@ -39,16 +40,26 @@ const BarChartPlot = ({ data }) => {
     },
   ];
 
+
+  const defaultBarKeys = [
+    { name: "Payment", color: "#82ca9d" },
+    { name: "Balance", color: "#FA8072" }
+  ];
+
+  const chartData = data && data.length > 0 ? data : defaultData;
+  const keys = barKeys || defaultBarKeys;
+
   return (
     <>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart width={730} height={250} data={chartData}>
-          <XAxis dataKey="name" />
+          <XAxis dataKey={xAxisKey || "name"} />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="Payment" fill="#82ca9d" />
-          <Bar dataKey="Balance" fill="#FA8072" />
+          {keys.map(key => (
+            <Bar key={key.name} dataKey={key.name} fill={key.color} />
+          ))}
         </BarChart>
       </ResponsiveContainer>
     </>
@@ -56,4 +67,3 @@ const BarChartPlot = ({ data }) => {
 }
 
 export default BarChartPlot;
-  

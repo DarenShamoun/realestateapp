@@ -12,6 +12,7 @@ export const useUnitDetails = (unit_id) => {
   const [leases, setLeases] = useState([]);
   const [currentMonthRent, setCurrentMonthRent] = useState(null);
   const [rentHistory, setRentHistory] = useState([]);
+  const [chartData, setChartData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -55,7 +56,11 @@ export const useUnitDetails = (unit_id) => {
             end_date: endDate
           });
           setRentHistory(rentHistoryData.sort((a, b) => new Date(b.date) - new Date(a.date)));
-              }
+
+          const mergedData = mergeFinancialData(sortedPaymentsHistory, rentHistoryData);
+          setChartData(mergedData);  
+        }
+
       } catch (err) {
         console.error('Error fetching unit details:', err);
         setError(err);
@@ -66,5 +71,29 @@ export const useUnitDetails = (unit_id) => {
     fetchUnitDetails();
   }, [unit_id]);
 
-  return { unit, tenant, payments, rentHistory, leases, currentMonthRent, isLoading, error };
+  const mergeFinancialData = (payments, rentHistory) => {
+    const combinedData = {};
+  
+    rentHistory.forEach(rent => {
+      const monthYear = new Date(rent.date).toISOString().substr(0, 7);
+      combinedData[monthYear] = {
+        ...combinedData[monthYear],
+        monthYear,
+        TotalRent: rent.total_rent
+      };
+    });
+  
+    payments.forEach(payment => {
+      const monthYear = new Date(payment.date).toISOString().substr(0, 7);
+      combinedData[monthYear] = {
+        ...combinedData[monthYear],
+        monthYear,
+        Payment: (combinedData[monthYear]?.Payment || 0) + payment.amount
+      };
+    });
+  
+    return Object.values(combinedData).sort((a, b) => b.monthYear.localeCompare(a.monthYear));
+  };
+
+  return { unit, tenant, payments, rentHistory, leases, currentMonthRent, chartData, isLoading, error };
 };
