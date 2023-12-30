@@ -57,6 +57,7 @@ const BarChartPlot = ({ data, barKeys, xAxisKey }) => {
     },
   ];
 
+
   const defaultBarKeys = [
     { name: "Payment", color: "#82ca9d" },
     { name: "Balance", color: "#FA8072" }
@@ -73,7 +74,7 @@ const BarChartPlot = ({ data, barKeys, xAxisKey }) => {
           <YAxis />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          {barKeys.map(key => (
+          {keys.map(key => (
             <Bar key={key.name} dataKey={key.name} fill={key.color} />
           ))}
         </BarChart>
