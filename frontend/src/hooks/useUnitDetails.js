@@ -20,6 +20,8 @@ export const useUnitDetails = (unit_id) => {
       try {
         const currentMonth = new Date().getMonth() + 1;
         const currentYear = new Date().getFullYear();
+        const currentDate = new Date();
+        const endDate = currentDate.toISOString().split('T')[0];
 
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
@@ -49,11 +51,11 @@ export const useUnitDetails = (unit_id) => {
 
           const rentHistoryData = await getRents({
             unit_id: unit_id,
-            start_date: sixMonthsAgo.toISOString().split('T')[0]
+            start_date: sixMonthsAgo.toISOString().split('T')[0],
+            end_date: endDate
           });
-          const sortedRentHistory = rentHistoryData.sort((a, b) => new Date(b.date) - new Date(a.date));
-          setRentHistory(sortedRentHistory);  
-        }
+          setRentHistory(rentHistoryData.sort((a, b) => new Date(b.date) - new Date(a.date)));
+              }
       } catch (err) {
         console.error('Error fetching unit details:', err);
         setError(err);
