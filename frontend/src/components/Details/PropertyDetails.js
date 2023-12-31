@@ -1,38 +1,21 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
-import { getProperties } from '@/api/propertyService';
-import { getUnits } from '@/api/unitService';
+// frontend\src\components\Details\PropertyDetails.js
+import React from 'react';
+import usePropertyDetails from '@/hooks/usePropertyDetails';
+import BarChartPlot from "@/components/Charts/BarChartPlot";
 import UnitCard from '@/components/Cards/UnitCard';
 
 const PropertyDetails = ({ property_id }) => {
-  const [property, setProperty] = useState(null);
-  const [units, setUnits] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const propertyData = await getProperties({ property_id: property_id });
-        if (propertyData.length > 0) {
-          setProperty(propertyData[0]);
-        }
-    
-        const unitsData = await getUnits({ property_id: property_id });
-        unitsData.sort((a, b) => a.unit_number.localeCompare(b.unit_number, undefined, {numeric: true}));
-        setUnits(unitsData);
-      } catch (error) {
-        console.error('Failed to fetch property details:', error);
-        setError(error);
-      }
-      setIsLoading(false);
-    };
-    if (property_id) {
-      fetchData();
-    }
-  }, [property_id]);
+  const {
+    property,
+    units,
+    totalIncome,
+    totalExpenses,
+    netProfit,
+    expectedMonthlyIncome,
+    totalDebt,
+    isLoading,
+    error
+  } = usePropertyDetails(property_id);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -49,16 +32,43 @@ const PropertyDetails = ({ property_id }) => {
   return (
     <section>
       <div className="flex justify-between items-center p-4">
-          <h2 className="text-2xl text-white font-bold">{property.name}</h2>
-        </div>
-        <p className="text-lg text-gray-300 mb-2 p-4">{property.address}</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-          {units.map(unit => (
-            <UnitCard key={unit.id} unit={unit} />
-          ))}
-        </div>
+        <h2 className="text-2xl text-white font-bold">{property.name}</h2>
+        <p className="text-lg text-gray-300 mb-1 p-4">{property.address}</p>
+      </div>
+
+      {/* Financial Summary */}
+      <div className="flex m-4 gap-2">
+        <FinancialCard title="Total Income" amount={totalIncome} />
+        <FinancialCard title="Total Expenses" amount={totalExpenses} />
+        <FinancialCard title="Net Profit" amount={netProfit} />
+        <FinancialCard title="Expected Monthly Income" amount={expectedMonthlyIncome} />
+        <FinancialCard title="Total Debt" amount={totalDebt} />
+      </div>
+
+      {/* Chart */}
+      <div className="p-4">
+        <BarChartPlot />
+      </div>
+
+      {/* Unit Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+        {units.map(unit => (
+          <UnitCard key={unit.id} unit={unit} />
+        ))}
+      </div>
     </section>
   );
 };
+
+// FinancialCard Component
+const FinancialCard = ({ title, amount }) => (
+  <div className="flex-1 px-2 justify-center w-16 bg-gray-700 shadow rounded h-300px">
+    <div className="flex flex-col justify-end h-full">
+      <p className="text-white font-bold self-start">{title}</p>
+      <p className="py-4 text-green-500 font-bold self-start">${amount.toLocaleString()}</p>
+      {/* You can add percentage change or other metrics here if available */}
+    </div>
+  </div>
+);
 
 export default PropertyDetails;
