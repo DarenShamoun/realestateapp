@@ -6,22 +6,31 @@ import { getPayments } from '@/api/paymentService';
 import { getRents } from '@/api/rentService';
 
 export const usePropertyDetails = (property_id) => {
-  const [financialData, setFinancialData] = useState({
-    totalIncome: 0,
-    totalExpenses: 0,
-    netProfit: 0,
-    expectedMonthlyIncome: 0,
-    totalDebt: 0,
-    chartData: []
-  });
   const [property, setProperty] = useState(null);
   const [units, setUnits] = useState([]);
+  const [currentMonth] = useState(new Date().getMonth() + 1);
+  const [currentYear] = useState(new Date().getFullYear());
+  const [currentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [monthlyTotalIncome, setMonthlyTotalIncome] = useState(0);
+  const [monthlyTotalExpenses, setMonthlyTotalExpenses] = useState(0);
+  const [monthlyNetProfit, setMonthlyNetProfit] = useState(0);
+  const [monthlyExpectedIncome, setMonthlyExpectedIncome] = useState(0);
+  const [YTDTotalIncome, setYTDTotalIncome] = useState(0);
+  const [YTDTotalExpenses, setYTDTotalExpenses] = useState(0);
+  const [YTDNetProfit, setYTDNetProfit] = useState(0);
+  const [YTDExpectedIncome, setYTDExpectedIncome] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchPropertyDetails = async () => {
       try {
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+        const twelveMonthsAgo = new Date();
+        twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+
         const propertyData = await getProperties({ property_id: property_id });
         if (propertyData.length > 0) {
           setProperty(propertyData[0]);
@@ -31,20 +40,65 @@ export const usePropertyDetails = (property_id) => {
         unitsData.sort((a, b) => a.unit_number.localeCompare(b.unit_number, undefined, {numeric: true}));
         setUnits(unitsData);
 
-        const rents = await getRents({ property_id });
-        const expenses = await getExpenses({ property_id });
-        const payments = await getPayments({ property_id });
+        const YTDrents = await getRents({
+          property_id: property_id,
+          start_date: twelveMonthsAgo.toISOString().split('T')[0],
+          end_date: currentDate
+        });
 
-        const totalIncome = payments.reduce((acc, payment) => acc + payment.amount, 0);
-        const totalExpenses = expenses.reduce((acc, expense) => acc + expense.amount, 0);
-        const netProfit = totalIncome - totalExpenses;
+        const YTDexpenses = await getExpenses({ 
+          property_id: property_id,
+          start_date: twelveMonthsAgo.toISOString().split('T')[0],
+          end_date: currentDate
+        });
 
-        const expectedMonthlyIncome = rents.reduce((acc, rent) => acc + (rent.total_rent - rent.debt), 0);
-        const totalDebt = rents.reduce((acc, rent) => acc + rent.debt, 0);
+        const YTDpayments = await getPayments({
+          property_id: property_id,
+          start_date: twelveMonthsAgo.toISOString().split('T')[0],
+          end_date: currentDate
+        });
 
-        const chartData = prepareChartData(rents, expenses, payments);
+        const CurrentMonthRents = await getRents({
+          property_id: property_id,
+          month: currentMonth,
+          year: currentYear
+        });
 
-        setFinancialData({ totalIncome, totalExpenses, netProfit, expectedMonthlyIncome, totalDebt, chartData });
+        const CurrentMonthExpenses = await getExpenses({
+          property_id: property_id,
+          month: currentMonth,
+          year: currentYear
+        });
+
+        const CurrentMonthPayments = await getPayments({
+          property_id: property_id,
+          month: currentMonth,
+        });
+
+        const MonthlyTotalIncome = CurrentMonthPayments.reduce((acc, payment) => acc + payment.amount, 0);
+        setMonthlyTotalIncome(MonthlyTotalIncome);
+
+        const MonthlyTotalExpenses = CurrentMonthExpenses.reduce((acc, expense) => acc + expense.amount, 0);
+        setMonthlyTotalExpenses(MonthlyTotalExpenses);
+
+        const MonthlyNetProfit = MonthlyTotalIncome - MonthlyTotalExpenses;
+        setMonthlyNetProfit(MonthlyNetProfit);
+
+        const MonthlyExpectedIncome = CurrentMonthRents.reduce((acc, rent) => acc + (rent.total_rent - rent.debt), 0);
+        setMonthlyExpectedIncome(MonthlyExpectedIncome);
+
+        const YTDTotalIncome = YTDpayments.reduce((acc, payment) => acc + payment.amount, 0);
+        setYTDTotalIncome(YTDTotalIncome);
+
+        const YTDTotalExpenses = YTDexpenses.reduce((acc, expense) => acc + expense.amount, 0);
+        setYTDTotalExpenses(YTDTotalExpenses);
+
+        const YTDNetProfit = YTDTotalIncome - YTDTotalExpenses;
+        setYTDNetProfit(YTDNetProfit);
+
+        const YTDExpectedIncome = YTDrents.reduce((acc, rent) => acc + (rent.total_rent - rent.debt), 0);
+        setYTDExpectedIncome(YTDExpectedIncome);
+
       } catch (error) {
         console.error('Failed to fetch property details:', error);
         setError(error);
@@ -54,15 +108,23 @@ export const usePropertyDetails = (property_id) => {
     };
 
     if (property_id) {
-      fetchData();
+      fetchPropertyDetails();
     }
   }, [property_id]);
 
-  const prepareChartData = (rents, expenses, payments) => {
-    // Combine and format data for charting purposes
-    // Example: Aggregate data by month/year, calculate monthly income/expenses, etc.
-    // Return an array of data suitable for rendering in BarChartPlot or other chart components
-  };
-
-  return { ...financialData, property, units, isLoading, error };
+  return { 
+    property, 
+    units,
+    currentMonth,
+    currentYear,
+    monthlyTotalIncome,
+    monthlyTotalExpenses,
+    monthlyNetProfit,
+    monthlyExpectedIncome,
+    YTDTotalIncome,
+    YTDTotalExpenses,
+    YTDNetProfit,
+    YTDExpectedIncome,
+    isLoading, 
+    error };
 };
