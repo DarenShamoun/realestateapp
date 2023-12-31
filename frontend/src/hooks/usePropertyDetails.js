@@ -5,7 +5,7 @@ import { getExpenses } from '@/api/expenseService';
 import { getPayments } from '@/api/paymentService';
 import { getRents } from '@/api/rentService';
 
-const usePropertyDetails = (property_id) => {
+export const usePropertyDetails = (property_id) => {
   const [financialData, setFinancialData] = useState({
     totalIncome: 0,
     totalExpenses: 0,
@@ -66,5 +66,3 @@ const usePropertyDetails = (property_id) => {
 
   return { ...financialData, property, units, isLoading, error };
 };
-
-export default usePropertyDetails;

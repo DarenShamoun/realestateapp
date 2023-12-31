@@ -1,7 +1,8 @@
 // frontend\src\components\Details\PropertyDetails.js
 import React from 'react';
-import usePropertyDetails from '@/hooks/usePropertyDetails';
+import { usePropertyDetails } from '@/hooks/usePropertyDetails';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
+import PieChartPlot from '../Charts/PieChartPlot';
 import UnitCard from '@/components/Cards/UnitCard';
 
 const PropertyDetails = ({ property_id }) => {
