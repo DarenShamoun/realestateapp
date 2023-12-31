@@ -19,6 +19,8 @@ const PropertyDetails = ({ property_id }) => {
     YTDTotalExpenses,
     YTDNetProfit,
     YTDExpectedIncome,
+    pieChartData,
+    barChartData,
     isLoading, 
     error
   } = usePropertyDetails(property_id);

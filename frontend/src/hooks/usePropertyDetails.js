@@ -19,6 +19,8 @@ export const usePropertyDetails = (property_id) => {
   const [YTDTotalExpenses, setYTDTotalExpenses] = useState(0);
   const [YTDNetProfit, setYTDNetProfit] = useState(0);
   const [YTDExpectedIncome, setYTDExpectedIncome] = useState(0);
+  const [pieChartData, setPieChartData] = useState([]);
+  const [barChartData, setBarChartData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -125,6 +127,8 @@ export const usePropertyDetails = (property_id) => {
     YTDTotalExpenses,
     YTDNetProfit,
     YTDExpectedIncome,
+    pieChartData,
+    barChartData,
     isLoading, 
     error };
 };

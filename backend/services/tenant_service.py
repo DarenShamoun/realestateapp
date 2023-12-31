@@ -28,7 +28,7 @@ def get_tenants(filters=None):
     return query.all()
 
 def update_tenant(tenant_id, data):
-    tenant = get_tenants(tenant_id)
+    tenant = Tenant.query.get(tenant_id)
     if not tenant:
         return None
     
