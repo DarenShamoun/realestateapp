@@ -7,19 +7,24 @@ def add_tenant(data):
     return new_tenant
 
 def get_tenants(filters=None):
-    query = Tenant.query.join(Lease, Lease.tenant_id == Tenant.id)\
-                        .join(Unit, Lease.unit_id == Unit.id)\
-                        .join(Property, Unit.property_id == Property.id)
+    query = Tenant.query
+
+    if filters and any(k in filters for k in ['lease_id', 'unit_id', 'property_id']):
+        query = query.join(Lease, Lease.tenant_id == Tenant.id)\
+                     .join(Unit, Lease.unit_id == Unit.id)
+
+        if 'lease_id' in filters:
+            query = query.filter(Lease.id == filters['lease_id'])
+        if 'unit_id' in filters:
+            query = query.filter(Unit.id == filters['unit_id'])
+
+    if filters and 'property_id' in filters:
+        query = query.join(Property, Unit.property_id == Property.id)\
+                     .filter(Property.id == filters['property_id'])
 
     if filters:
         if 'tenant_id' in filters:
             query = query.filter(Tenant.id == filters['tenant_id'])
-        if 'unit_id' in filters:
-            query = query.filter(Unit.id == filters['unit_id'])
-        if 'property_id' in filters:
-            query = query.filter(Property.id == filters['property_id'])
-        if 'lease_id' in filters:
-            query = query.filter(Lease.id == filters['lease_id'])
         if 'full_name' in filters:
             query = query.filter(Tenant.full_name.ilike(f"%{filters['full_name']}%"))
         if 'primary_phone' in filters:
