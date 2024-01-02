@@ -5,7 +5,6 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
   const [step, setStep] = useState(1);
   const [existingTenants, setExistingTenants] = useState([]);
   const [selectedTenant, setSelectedTenant] = useState(null);
-  const [newTenantDetails, setNewTenantDetails] = useState({});
   const [tenantDetails, setTenantDetails] = useState({});
   const [leaseDetails, setLeaseDetails] = useState({});
   const [rentDetails, setRentDetails] = useState({});
@@ -24,15 +23,6 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
   const handleTenantSelect = (e) => {
     const tenantId = e.target.value;
     setSelectedTenant(tenantId);
-  };
-
-  const handleTenantSelectChange = (e) => {
-    setSelectedTenant(e.target.value);
-    if (e.target.value !== 'new') {
-      setTenantDetails(existingTenants.find(tenant => tenant.id.toString() === e.target.value));
-    } else {
-      setTenantDetails({});
-    }
   };
 
   // Function to handle form submission
