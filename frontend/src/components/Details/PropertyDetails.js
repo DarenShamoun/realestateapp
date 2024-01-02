@@ -1,4 +1,3 @@
-// frontend\src\components\Details\PropertyDetails.js
 import React from 'react';
 import { usePropertyDetails } from '@/hooks/usePropertyDetails';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
@@ -37,6 +36,14 @@ const PropertyDetails = ({ property_id }) => {
     return <div>No property found.</div>;
   }
 
+  const barKeys = [
+    { name: "Income", color: "#82ca9d" },
+    { name: "Expenses", color: "#FA8072" }
+  ];
+
+  console.log("Pie Chart Data:", pieChartData);
+  console.log("Bar Chart Data:", barChartData);
+
   return (
     <section>
       <div className="flex justify-between items-center p-2">
@@ -60,14 +67,14 @@ const PropertyDetails = ({ property_id }) => {
         <FinancialCard title="YTD Net Profit" amount={YTDNetProfit} />
       </div>
 
-      {/* Chart */}
+      {/* Chart Section */}
       <section className="flex my-4 px-4 gap-3">
-          <div className="w-1/2 h-[300px] bg-gray-700 rounded">
-              <PieChartPlot/>
-          </div>
-          <div className="w-1/2 h-[300px] bg-gray-700 rounded">
-              <BarChartPlot/>
-          </div>
+        <div className="w-1/2 h-[300px] bg-gray-700 rounded">
+          <PieChartPlot data={pieChartData} />
+        </div>
+        <div className="w-1/2 h-[300px] bg-gray-700 rounded">
+          <BarChartPlot data={barChartData} barKeys={barKeys} xAxisKey="name" />
+        </div>
       </section>
 
       {/* Unit Cards */}

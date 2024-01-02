@@ -60,7 +60,6 @@ export const useUnitDetails = (unit_id) => {
           const mergedData = mergeFinancialData(sortedPaymentsHistory, rentHistoryData);
           setChartData(mergedData);  
         }
-
       } catch (err) {
         console.error('Error fetching unit details:', err);
         setError(err);
