@@ -1,4 +1,4 @@
-from models import db, Payment, Lease
+from models import db, Payment, Lease, Unit, Property
 from datetime import datetime
 
 def add_payment(data):
@@ -8,7 +8,9 @@ def add_payment(data):
     return new_payment
 
 def get_payments(filters=None):
-    query = Payment.query.join(Lease, Payment.lease_id == Lease.id)
+    query = Payment.query.join(Lease, Payment.lease_id == Lease.id)\
+                          .join(Unit, Lease.unit_id == Unit.id)\
+                          .join(Property, Unit.property_id == Property.id)
 
     if filters:
         if 'payment_id' in filters:
@@ -17,6 +19,8 @@ def get_payments(filters=None):
             query = query.filter(Payment.lease_id == filters['lease_id'])
         if 'unit_id' in filters:
             query = query.filter(Lease.unit_id == filters['unit_id'])
+        if 'property_id' in filters:
+            query = query.filter(Property.id == filters['property_id'])
         if 'tenant_id' in filters:
             query = query.filter(Lease.tenant_id == filters['tenant_id'])
         if 'year' in filters:
