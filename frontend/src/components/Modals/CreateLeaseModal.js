@@ -5,9 +5,10 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
   const [step, setStep] = useState(1);
   const [existingTenants, setExistingTenants] = useState([]);
   const [selectedTenant, setSelectedTenant] = useState(null);
-  const [tenantDetails, setTenantDetails] = useState({});
+  const [tenantDetails, setTenantDetails] = useState({ full_name: '', primary_phone: '', secondary_phone: '', email: '', contact_notes: '' });
   const [leaseDetails, setLeaseDetails] = useState({});
   const [rentDetails, setRentDetails] = useState({});
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     // Fetch existing tenants when modal opens
@@ -25,25 +26,94 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
     setSelectedTenant(tenantId);
   };
 
-  const handleSubmit = async () => {
-    let tenantId = selectedTenant;
-    // If new tenant is being added
-    if (!selectedTenant) {
-      const newTenantResponse = await addTenant(tenantDetails);
-      tenantId = newTenantResponse.id;
+  const formatPhoneNumber = (value) => {
+    if (!value) return value;
+    const phoneNumber = value.replace(/[^\d]/g, '');
+    const phoneNumberLength = phoneNumber.length;
+    if (phoneNumberLength < 4) return phoneNumber;
+    if (phoneNumberLength < 7) {
+      return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
     }
-  
-    // Create lease
-    const leaseResponse = await addLease({ ...leaseDetails, tenant_id: tenantId, unit_id: unitId });
-    const leaseId = leaseResponse.id;
-  
-    // Create rent details
-    await addRent({ ...rentDetails, lease_id: leaseId });
-  
-    // Close the modal and refresh data as needed
-    onClose();
-    // Refresh or update state to reflect the new data
+    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
   };  
+
+  const validateTenantDetails = () => {
+    let newErrors = {};
+    if (!tenantDetails.full_name.trim()) {
+      newErrors.full_name = 'Please enter a full name.';
+    }
+    if (!/^(\d{3})-?(\d{3})-?(\d{4})$/.test(tenantDetails.primary_phone)) {
+      newErrors.primary_phone = 'Please enter a valid primary phone number.';
+    }
+    if (tenantDetails.email && !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(tenantDetails.email)) {
+      newErrors.email = 'Please enter a valid email address.';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+    
+  const validateLeaseDetails = () => {
+    let newErrors = {};
+    if (!leaseDetails.start_date || isNaN(new Date(leaseDetails.start_date).getTime())) {
+      newErrors.start_date = 'Please enter a valid start date.';
+    }
+    if (leaseDetails.end_date && (isNaN(new Date(leaseDetails.end_date).getTime()) || new Date(leaseDetails.end_date) < new Date(leaseDetails.start_date))) {
+      newErrors.end_date = 'End date must be after the start date.';
+    }
+    if (leaseDetails.monthly_rent < 0) {
+      newErrors.monthly_rent = 'Monthly rent cannot be negative.';
+    }
+    setErrors({...errors, ...newErrors});
+    return Object.keys(newErrors).length === 0;
+  };
+  
+  const validateRentDetails = () => {
+    let newErrors = {};
+    const fields = ['rent', 'trash', 'water_sewer', 'parking', 'debt', 'breaks'];
+    fields.forEach(field => {
+      if (rentDetails[field] < 0) {
+        newErrors[field] = `The ${field} value cannot be negative.`;
+      }
+    });
+    setErrors({...errors, ...newErrors});
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateTenantDetails() || !validateLeaseDetails() || !validateRentDetails()) {
+      return;
+    }
+    try {
+      let tenantId = selectedTenant;
+  
+      // If a new tenant is being added
+      if (!selectedTenant) {
+        const newTenantResponse = await addTenant(tenantDetails);
+        tenantId = newTenantResponse.id;
+      }
+  
+      // Create lease
+      const leaseData = {
+        ...leaseDetails,
+        tenant_id: tenantId,
+        unit_id: unitId,
+        end_date: leaseDetails.end_date || null
+      };
+      const leaseResponse = await addLease(leaseData);
+      const leaseId = leaseResponse.id;
+  
+      // Create rent details
+      await addRent({ ...rentDetails, lease_id: leaseId });
+  
+      // Success message
+      alert('Lease created successfully.');
+      onClose(); // Close the modal and update UI as needed
+    } catch (error) {
+        console.error('Error creating lease:', error);
+        alert('An error occurred while creating the lease. Please try again.');
+      }
+    };
+    
 
   return (
     <div className={`fixed inset-0 z-50 ${isOpen ? 'flex' : 'hidden'} items-center justify-center bg-black bg-opacity-50`}>
@@ -73,16 +143,18 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
                     placeholder="Full Name"
                     value={tenantDetails.full_name}
                     onChange={(e) => setTenantDetails({ ...tenantDetails, full_name: e.target.value })}
-                />
-                    
+                    />
+                    {errors.full_name && <p className="text-red-500 text-xs italic">{errors.full_name}</p>}
+                                        
                 <label className="block mb-2 text-sm font-bold text-white">Primary Phone</label>
                     <input
                     type="text"
                     className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                     placeholder="Primary Phone"
                     value={tenantDetails.primary_phone}
-                    onChange={(e) => setTenantDetails({ ...tenantDetails, primary_phone: e.target.value })}
-                />
+                    onChange={(e) => setTenantDetails({ ...tenantDetails, email: e.target.value })}
+                    />
+                    {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}    
 
                 <label className="block mb-2 text-sm font-bold text-white">Secondary Phone</label>
                     <input
@@ -91,7 +163,8 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
                     placeholder="Secondary Phone"
                     value={tenantDetails.secondary_phone}
                     onChange={(e) => setTenantDetails({ ...tenantDetails, secondary_phone: e.target.value })}
-                />
+                    />
+                    {errors.secondary_phone && <p className="text-red-500 text-xs italic">{errors.secondary_phone}</p>}
 
                 <label className="block mb-2 text-sm font-bold text-white">Email</label>
                     <input
@@ -100,7 +173,8 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
                     placeholder="Email"
                     value={tenantDetails.email}
                     onChange={(e) => setTenantDetails({ ...tenantDetails, email: e.target.value })}
-                />
+                    />
+                    {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}
 
                 <label className="block mb-2 text-sm font-bold text-white">Contact Notes</label>
                     <textarea
@@ -108,7 +182,8 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
                     placeholder="Contact Notes"
                     value={tenantDetails.contact_notes}
                     onChange={(e) => setTenantDetails({ ...tenantDetails, contact_notes: e.target.value })}
-                />
+                    />
+                    {errors.contact_notes && <p className="text-red-500 text-xs italic">{errors.contact_notes}</p>}
             </>
             )}
         </div>
@@ -117,14 +192,15 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
         {step === 2 && (
         <div>
             <label className="block mb-2 text-sm font-bold text-white">Start Date</label>
-            <input
+                <input
                 type="date"
                 className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                 placeholder="yyyy-mm-dd"
                 value={leaseDetails.start_date}
                 onChange={(e) => setLeaseDetails({ ...leaseDetails, start_date: e.target.value })}
-            />
-
+                />
+                {errors.start_date && <p className="text-red-500 text-xs italic">{errors.start_date}</p>}
+            
             <label className="block mb-2 text-sm font-bold text-white">End Date</label>
             <input
                 type="date"
@@ -132,36 +208,40 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
                 placeholder="yyyy-mm-dd"
                 value={leaseDetails.end_date}
                 onChange={(e) => setLeaseDetails({ ...leaseDetails, end_date: e.target.value })}
-            />
-
+                />
+                {errors.end_date && <p className="text-red-500 text-xs italic">{errors.end_date}</p>}
+            
             <label className="block mb-2 text-sm font-bold text-white">Monthly Rent</label>
-            <input
-            type="number"
-            className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
-            placeholder="Monthly Rent"
-            value={leaseDetails.monthly_rent}
-            onChange={(e) => {
-                setLeaseDetails({ ...leaseDetails, monthly_rent: e.target.value });
-                setRentDetails({ ...rentDetails, rent: e.target.value });
-            }}
-            />
-
+                <input
+                type="number"
+                className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
+                placeholder="Monthly Rent"
+                value={leaseDetails.monthly_rent}
+                onChange={(e) => {
+                    setLeaseDetails({ ...leaseDetails, monthly_rent: e.target.value });
+                    setRentDetails({ ...rentDetails, rent: e.target.value });
+                }}
+                />
+                {errors.monthly_rent && <p className="text-red-500 text-xs italic">{errors.monthly_rent}</p>}
+      
             <label className="block mb-2 text-sm font-bold text-white">Deposit</label>
-            <input
-            type="number"
-            className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
-            placeholder="Deposit"
-            value={leaseDetails.deposit}
-            onChange={(e) => setLeaseDetails({ ...leaseDetails, deposit: e.target.value })}
-            />
+                <input
+                type="number"
+                className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
+                placeholder="Deposit"
+                value={leaseDetails.deposit}
+                onChange={(e) => setLeaseDetails({ ...leaseDetails, deposit: e.target.value })}
+                />
+                {errors.deposit && <p className="text-red-500 text-xs italic">{errors.deposit}</p>}
 
             <label className="block mb-2 text-sm font-bold text-white">Terms</label>
-            <textarea
-            className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
-            placeholder="Lease Terms"
-            value={leaseDetails.terms}
-            onChange={(e) => setLeaseDetails({ ...leaseDetails, terms: e.target.value })}
-            />
+                <textarea
+                className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
+                placeholder="Lease Terms"
+                value={leaseDetails.terms}
+                onChange={(e) => setLeaseDetails({ ...leaseDetails, terms: e.target.value })}
+                />
+                {errors.terms && <p className="text-red-500 text-xs italic">{errors.terms}</p>}
         </div>
         )}
 
@@ -174,7 +254,8 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
             value={rentDetails.rent}
             readOnly
             />
-      
+            {errors.rent && <p className="text-red-500 text-xs italic">{errors.rent}</p>}
+              
           <label className="block mb-2 text-sm font-bold text-white">Trash Fee</label>
           <input
             type="number"
@@ -182,7 +263,8 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
             placeholder="Trash Fee"
             value={rentDetails.trash}
             onChange={(e) => setRentDetails({ ...rentDetails, trash: e.target.value })}
-          />
+            />
+            {errors.trash && <p className="text-red-500 text-xs italic">{errors.trash}</p>}
       
           <label className="block mb-2 text-sm font-bold text-white">Water & Sewer Fee</label>
           <input
@@ -191,7 +273,8 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
             placeholder="Water & Sewer Fee"
             value={rentDetails.water_sewer}
             onChange={(e) => setRentDetails({ ...rentDetails, water_sewer: e.target.value })}
-          />
+            />
+            {errors.water_sewer && <p className="text-red-500 text-xs italic">{errors.water_sewer}</p>}
       
           <label className="block mb-2 text-sm font-bold text-white">Parking Fee</label>
           <input
@@ -201,6 +284,7 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
             value={rentDetails.parking}
             onChange={(e) => setRentDetails({ ...rentDetails, parking: e.target.value })}
           />
+            {errors.parking && <p className="text-red-500 text-xs italic">{errors.parking}</p>}
       
           <label className="block mb-2 text-sm font-bold text-white">Debt</label>
           <input
@@ -210,6 +294,7 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
             value={rentDetails.debt}
             onChange={(e) => setRentDetails({ ...rentDetails, debt: e.target.value })}
           />
+            {errors.debt && <p className="text-red-500 text-xs italic">{errors.debt}</p>}
       
           <label className="block mb-2 text-sm font-bold text-white">Breaks</label>
           <input
@@ -219,6 +304,7 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
             value={rentDetails.breaks}
             onChange={(e) => setRentDetails({ ...rentDetails, breaks: e.target.value })}
           />
+            {errors.breaks && <p className="text-red-500 text-xs italic">{errors.breaks}</p>}
         </div>
         )}      
 
