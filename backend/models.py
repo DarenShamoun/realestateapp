@@ -82,7 +82,7 @@ class Lease(db.Model):
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=True)
     monthly_rent = db.Column(db.Float, nullable=False)
-    deposit = db.Column(db.Float)
+    deposit = db.Column(db.Float, nullable=True)
     terms = db.Column(db.Text)
     is_active = db.Column(db.Boolean, default=True)
     rents = db.relationship('Rent', backref='lease', lazy=True)

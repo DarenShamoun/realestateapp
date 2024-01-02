@@ -25,10 +25,25 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
     setSelectedTenant(tenantId);
   };
 
-  // Function to handle form submission
   const handleSubmit = async () => {
-    // Implement API calls here
-  };
+    let tenantId = selectedTenant;
+    // If new tenant is being added
+    if (!selectedTenant) {
+      const newTenantResponse = await addTenant(tenantDetails);
+      tenantId = newTenantResponse.id;
+    }
+  
+    // Create lease
+    const leaseResponse = await addLease({ ...leaseDetails, tenant_id: tenantId, unit_id: unitId });
+    const leaseId = leaseResponse.id;
+  
+    // Create rent details
+    await addRent({ ...rentDetails, lease_id: leaseId });
+  
+    // Close the modal and refresh data as needed
+    onClose();
+    // Refresh or update state to reflect the new data
+  };  
 
   return (
     <div className={`fixed inset-0 z-50 ${isOpen ? 'flex' : 'hidden'} items-center justify-center bg-black bg-opacity-50`}>
