@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { useUnitDetails } from '@/hooks/useUnitDetails';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
@@ -5,6 +7,7 @@ import TenantDetails from '@/components/Details/TenantDetails';
 import LeaseDetails from '@/components/Details/LeaseDetails';
 import RentDetails from '@/components/Details/RentDetails';
 import PaymentHistory from '@/components/Details/PaymentHistory';
+import CreateLeaseModal from '@/components/Modals/CreateLeaseModal';
 
 const UnitDetails = ({ unit_id }) => {
   const { 
@@ -18,6 +21,8 @@ const UnitDetails = ({ unit_id }) => {
     isLoading, 
     error 
   } = useUnitDetails(unit_id);
+
+  const [isCreateLeaseModalOpen, setCreateLeaseModalOpen] = React.useState(false);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -62,6 +67,24 @@ const UnitDetails = ({ unit_id }) => {
           </div>
         </div>
       </section>
+        <div className="container mx-auto p-4">
+        {unit && !unit[0].is_occupied && (
+          <div className="text-right">
+            <button 
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
+              onClick={() => setCreateLeaseModalOpen(true)}
+            >
+              Create Lease
+            </button>
+          </div>
+        )}
+
+        <CreateLeaseModal 
+          isOpen={isCreateLeaseModalOpen} 
+          onClose={() => setCreateLeaseModalOpen(false)}
+          unitId={unit_id}
+        />
+      </div>
     </div>
   );
 };
