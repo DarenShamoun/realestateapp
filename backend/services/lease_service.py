@@ -59,7 +59,7 @@ def update_unit_occupancy(unit_id):
         active_lease = Lease.query.filter(
             Lease.unit_id == unit_id,
             (Lease.end_date == None) | (Lease.end_date >= datetime.utcnow()),
-            Lease.status == 'Active'
+            Lease.is_active == True
         ).order_by(Lease.start_date.desc()).first()
 
         if active_lease:

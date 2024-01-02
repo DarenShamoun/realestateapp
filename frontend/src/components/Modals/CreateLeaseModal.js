@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getTenants } from '@/api/tenantService';
+import { addTenant } from '@/api/tenantService';
+import { addLease } from '@/api/leaseService';
+import { addRent } from '@/api/rentService';
 
 const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
   const [step, setStep] = useState(1);
@@ -113,7 +116,6 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
         alert('An error occurred while creating the lease. Please try again.');
       }
     };
-    
 
   return (
     <div className={`fixed inset-0 z-50 ${isOpen ? 'flex' : 'hidden'} items-center justify-center bg-black bg-opacity-50`}>
@@ -152,7 +154,7 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
                     className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                     placeholder="Primary Phone"
                     value={tenantDetails.primary_phone}
-                    onChange={(e) => setTenantDetails({ ...tenantDetails, email: e.target.value })}
+                    onChange={(e) => setTenantDetails({ ...tenantDetails, primary_phone: formatPhoneNumber(e.target.value) })}
                     />
                     {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}    
 
@@ -162,7 +164,7 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
                     className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                     placeholder="Secondary Phone"
                     value={tenantDetails.secondary_phone}
-                    onChange={(e) => setTenantDetails({ ...tenantDetails, secondary_phone: e.target.value })}
+                    onChange={(e) => setTenantDetails({ ...tenantDetails, secondary_phone: formatPhoneNumber(e.target.value) })}
                     />
                     {errors.secondary_phone && <p className="text-red-500 text-xs italic">{errors.secondary_phone}</p>}
 
