@@ -83,7 +83,7 @@ class Lease(db.Model):
     end_date = db.Column(db.Date, nullable=True)
     monthly_rent = db.Column(db.Float, nullable=False)
     deposit = db.Column(db.Float, nullable=True)
-    terms = db.Column(db.Text)
+    terms = db.Column(db.Text, nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     rents = db.relationship('Rent', backref='lease', lazy=True)
     payment_id = db.Column(db.Integer, db.ForeignKey('payment.id'), nullable=True, index=True)
