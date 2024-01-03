@@ -8,6 +8,7 @@ import LeaseDetails from '@/components/Details/LeaseDetails';
 import RentDetails from '@/components/Details/RentDetails';
 import PaymentHistory from '@/components/Details/PaymentHistory';
 import CreateLeaseModal from '@/components/Modals/CreateLeaseModal';
+import CreatePaymentModal from '@/components/Modals/CreatePaymentModal';
 
 const UnitDetails = ({ unit_id }) => {
   const { 
@@ -23,6 +24,7 @@ const UnitDetails = ({ unit_id }) => {
   } = useUnitDetails(unit_id);
 
   const [isCreateLeaseModalOpen, setCreateLeaseModalOpen] = React.useState(false);
+  const [isCreatePaymentModalOpen, setCreatePaymentModalOpen] = React.useState(false);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -57,7 +59,11 @@ const UnitDetails = ({ unit_id }) => {
   
       <section className="flex flex-wrap -mx-4 my-4">
       {/* Payment History */}
-      <PaymentHistory payments={payments} rentHistory={rentHistory} />
+      <PaymentHistory
+          payments={payments}
+          rentHistory={rentHistory}
+          onOpenCreatePayment={() => setCreatePaymentModalOpen(true)}
+        />        
         {/* Financial Overview */}
         <div className="w-full lg:w-1/2 px-4">
           <div className="bg-gray-700 shadow rounded p-4">
@@ -72,6 +78,11 @@ const UnitDetails = ({ unit_id }) => {
           </div>
         </div>
       </section>
+      <CreatePaymentModal 
+        isOpen={isCreatePaymentModalOpen} 
+        onClose={() => setCreatePaymentModalOpen(false)}
+        leaseId={leases[0]?.id} // Assuming you want to use the lease ID of the first lease
+      />
     </div>
   );
 };
