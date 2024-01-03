@@ -64,6 +64,7 @@ const UnitDetails = ({ unit_id }) => {
       <PaymentHistory
           payments={payments}
           rentHistory={rentHistory}
+          leases={leases}
           onOpenCreatePayment={() => setCreatePaymentModalOpen(true)}
           onOpenCreateRent={() => setCreateRentModalOpen(true)}
         />     
