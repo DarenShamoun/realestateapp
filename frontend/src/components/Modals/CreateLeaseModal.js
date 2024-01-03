@@ -162,7 +162,7 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
                 ))}
               </select>
             {!selectedTenant && (
-            <>
+              <>  
                 <label className="block mb-2 text-sm font-bold text-white">Full Name</label>
                 <input
                   type="text"
@@ -211,7 +211,7 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
                   onChange={(e) => setTenantDetails({ ...tenantDetails, contact_notes: e.target.value })}
                 />
                 {errors.contact_notes && <p className="text-red-500 text-xs italic">{errors.contact_notes}</p>}
-            </>
+              </>
             )}
           </div>
         )}   
