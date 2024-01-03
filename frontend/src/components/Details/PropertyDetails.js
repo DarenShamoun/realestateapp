@@ -40,10 +40,7 @@ const PropertyDetails = ({ property_id }) => {
     { name: "Income", color: "#82ca9d" },
     { name: "Expenses", color: "#FA8072" }
   ];
-
-  console.log("Pie Chart Data:", pieChartData);
-  console.log("Bar Chart Data:", barChartData);
-
+  
   return (
     <section>
       <div className="flex justify-between items-center p-2">
