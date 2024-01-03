@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PaymentHistory = ({ payments, rentHistory, onOpenCreatePayment }) => (
+const PaymentHistory = ({ payments, rentHistory, onOpenCreatePayment, onOpenCreateRent }) => (
   <div className="w-full lg:w-1/2 px-4">
     <div className="bg-gray-700 shadow rounded p-4 mb-4 lg:mb-0">
       <h2 className="text-xl text-white mb-4">Financial History</h2>
@@ -38,6 +38,13 @@ const PaymentHistory = ({ payments, rentHistory, onOpenCreatePayment }) => (
                   <p>Total Rent: ${rent.total_rent.toFixed(2)}</p>
                 </li>
               ))}
+              {/* Add Rent Button */}
+              <button
+                onClick={onOpenCreateRent}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
+              >
+                Add Rent
+              </button>
             </ul>
           ) : <p className="text-gray-300">No rent history available</p>}
         </div>

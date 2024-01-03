@@ -9,6 +9,7 @@ import RentDetails from '@/components/Details/RentDetails';
 import PaymentHistory from '@/components/Details/PaymentHistory';
 import CreateLeaseModal from '@/components/Modals/CreateLeaseModal';
 import CreatePaymentModal from '@/components/Modals/CreatePaymentModal';
+import CreateRentModal from '@/components/Modals/CreateRentModal';
 
 const UnitDetails = ({ unit_id }) => {
   const { 
@@ -25,6 +26,7 @@ const UnitDetails = ({ unit_id }) => {
 
   const [isCreateLeaseModalOpen, setCreateLeaseModalOpen] = React.useState(false);
   const [isCreatePaymentModalOpen, setCreatePaymentModalOpen] = React.useState(false);
+  const [isCreateRentModalOpen, setCreateRentModalOpen] = React.useState(false);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -63,7 +65,8 @@ const UnitDetails = ({ unit_id }) => {
           payments={payments}
           rentHistory={rentHistory}
           onOpenCreatePayment={() => setCreatePaymentModalOpen(true)}
-        />        
+          onOpenCreateRent={() => setCreateRentModalOpen(true)} // Add this line
+        />     
         {/* Financial Overview */}
         <div className="w-full lg:w-1/2 px-4">
           <div className="bg-gray-700 shadow rounded p-4">
@@ -82,6 +85,11 @@ const UnitDetails = ({ unit_id }) => {
         isOpen={isCreatePaymentModalOpen} 
         onClose={() => setCreatePaymentModalOpen(false)}
         leaseId={leases[0]?.id} // Assuming you want to use the lease ID of the first lease
+      />
+      <CreateRentModal 
+        isOpen={isCreateRentModalOpen} 
+        onClose={() => setCreateRentModalOpen(false)}
+        leaseId={leases[0]?.id} // Assuming leaseId is needed for rent
       />
     </div>
   );
