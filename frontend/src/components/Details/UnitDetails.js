@@ -17,7 +17,7 @@ const UnitDetails = ({ unit_id }) => {
     rentHistory, 
     leases, 
     currentMonthRent, 
-    chartData, 
+    chartData,
     isLoading, 
     error 
   } = useUnitDetails(unit_id);
