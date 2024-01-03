@@ -7,7 +7,7 @@ import { addRent } from '@/api/rentService';
 const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
   const [step, setStep] = useState(1);
   const [existingTenants, setExistingTenants] = useState([]);
-  const [selectedTenant, setSelectedTenant] = useState(null);
+  const [selectedTenant, setSelectedTenant] = useState('');
   const [tenantDetails, setTenantDetails] = useState({ full_name: '', primary_phone: '', secondary_phone: '', email: '', contact_notes: '' });
   const [leaseDetails, setLeaseDetails] = useState({});
   const [rentDetails, setRentDetails] = useState({});
@@ -152,16 +152,16 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
         {step === 1 && (
         <div>
             <label className="block mb-2 text-sm font-bold text-white">Select Existing Tenant</label>
-                <select
-                    className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-700"
-                    onChange={handleTenantSelect}
-                    value={selectedTenant}
-                >
-                    <option value="">New Tenant</option>
-                    {existingTenants.map((tenant) => (
-                    <option key={tenant.id} value={tenant.id}>{tenant.full_name}</option>
-                    ))}
-                </select>
+              <select
+                className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-700"
+                onChange={handleTenantSelect}
+                value={selectedTenant || ''}
+              >
+                <option value="">New Tenant</option>
+                {existingTenants.map((tenant) => (
+                  <option key={tenant.id} value={tenant.id}>{tenant.full_name}</option>
+                ))}
+              </select>
             {!selectedTenant && (
             <>
                 <label className="block mb-2 text-sm font-bold text-white">Full Name</label>
