@@ -11,6 +11,7 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
   const [tenantDetails, setTenantDetails] = useState({ full_name: '', primary_phone: '', secondary_phone: '', email: '', contact_notes: '' });
   const [leaseDetails, setLeaseDetails] = useState({});
   const [rentDetails, setRentDetails] = useState({});
+  const [rentDate, setRentDate] = useState(new Date().toISOString().slice(0, 10));
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -83,9 +84,24 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
   };
 
   const handleSubmit = async () => {
-    if (!validateTenantDetails() || !validateLeaseDetails() || !validateRentDetails()) {
+    // Skip tenant details validation if an existing tenant is selected
+    if (!selectedTenant && !validateTenantDetails()) {
       return;
     }
+  
+    if (!validateLeaseDetails() || !validateRentDetails()) {
+      return;
+    }
+
+    const formattedRentDetails = {
+        rent: rentDetails.rent,
+        trash: rentDetails.trash || 0,
+        water_sewer: rentDetails.water_sewer || 0,
+        parking: rentDetails.parking || 0,
+        debt: rentDetails.debt || 0,
+        breaks: rentDetails.breaks || 0,
+      };
+    
     try {
       let tenantId = selectedTenant;
   
@@ -102,20 +118,29 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
         unit_id: unitId,
         end_date: leaseDetails.end_date || null
       };
+
+      console.log(leaseData);
+  
       const leaseResponse = await addLease(leaseData);
       const leaseId = leaseResponse.id;
   
       // Create rent details
-      await addRent({ ...rentDetails, lease_id: leaseId });
-  
+      const rentData = {
+        ...formattedRentDetails,
+        lease_id: leaseId,
+        date: rentDate,
+      };
+        console.log(rentData);
+      await addRent(rentData);
+    
       // Success message
       alert('Lease created successfully.');
       onClose(); // Close the modal and update UI as needed
     } catch (error) {
         console.error('Error creating lease:', error);
         alert('An error occurred while creating the lease. Please try again.');
-      }
-    };
+    }
+  };  
 
   return (
     <div className={`fixed inset-0 z-50 ${isOpen ? 'flex' : 'hidden'} items-center justify-center bg-black bg-opacity-50`}>
@@ -124,68 +149,67 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
         
         {step === 1 && (
         <div>
-          <label className="block mb-2 text-sm font-bold text-white">Select Existing Tenant</label>
-            <select
-                className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-700"
-                onChange={handleTenantSelect}
-                value={selectedTenant}
-            >
-                <option value="">New Tenant</option>
-                {existingTenants.map((tenant) => (
-                <option key={tenant.id} value={tenant.id}>{tenant.full_name}</option>
-                ))}
-            </select>
-
+            <label className="block mb-2 text-sm font-bold text-white">Select Existing Tenant</label>
+                <select
+                    className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-700"
+                    onChange={handleTenantSelect}
+                    value={selectedTenant}
+                >
+                    <option value="">New Tenant</option>
+                    {existingTenants.map((tenant) => (
+                    <option key={tenant.id} value={tenant.id}>{tenant.full_name}</option>
+                    ))}
+                </select>
             {!selectedTenant && (
             <>
                 <label className="block mb-2 text-sm font-bold text-white">Full Name</label>
-                    <input
+                <input
                     type="text"
                     className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                     placeholder="Full Name"
                     value={tenantDetails.full_name}
                     onChange={(e) => setTenantDetails({ ...tenantDetails, full_name: e.target.value })}
-                    />
-                    {errors.full_name && <p className="text-red-500 text-xs italic">{errors.full_name}</p>}
+                />
+                {errors.full_name && <p className="text-red-500 text-xs italic">{errors.full_name}</p>}
                                         
                 <label className="block mb-2 text-sm font-bold text-white">Primary Phone</label>
-                    <input
+                <input
                     type="text"
                     className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                     placeholder="Primary Phone"
                     value={tenantDetails.primary_phone}
                     onChange={(e) => setTenantDetails({ ...tenantDetails, primary_phone: formatPhoneNumber(e.target.value) })}
-                    />
-                    {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}    
+                />
+                {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}    
 
                 <label className="block mb-2 text-sm font-bold text-white">Secondary Phone</label>
-                    <input
+                <input
                     type="text"
                     className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                     placeholder="Secondary Phone"
                     value={tenantDetails.secondary_phone}
                     onChange={(e) => setTenantDetails({ ...tenantDetails, secondary_phone: formatPhoneNumber(e.target.value) })}
-                    />
-                    {errors.secondary_phone && <p className="text-red-500 text-xs italic">{errors.secondary_phone}</p>}
+                />
+                {errors.secondary_phone && <p className="text-red-500 text-xs italic">{errors.secondary_phone}</p>}
 
                 <label className="block mb-2 text-sm font-bold text-white">Email</label>
-                    <input
+                <input
                     type="email"
                     className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                     placeholder="Email"
                     value={tenantDetails.email}
                     onChange={(e) => setTenantDetails({ ...tenantDetails, email: e.target.value })}
-                    />
-                    {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}
+                />
+                {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}
 
                 <label className="block mb-2 text-sm font-bold text-white">Contact Notes</label>
-                    <textarea
+                <textarea
                     className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                     placeholder="Contact Notes"
                     value={tenantDetails.contact_notes}
                     onChange={(e) => setTenantDetails({ ...tenantDetails, contact_notes: e.target.value })}
-                    />
-                    {errors.contact_notes && <p className="text-red-500 text-xs italic">{errors.contact_notes}</p>}
+                />
+                {errors.contact_notes && <p className="text-red-500 text-xs italic">{errors.contact_notes}</p>}
             </>
             )}
         </div>
@@ -194,14 +218,14 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
         {step === 2 && (
         <div>
             <label className="block mb-2 text-sm font-bold text-white">Start Date</label>
-                <input
+            <input
                 type="date"
                 className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                 placeholder="yyyy-mm-dd"
                 value={leaseDetails.start_date}
                 onChange={(e) => setLeaseDetails({ ...leaseDetails, start_date: e.target.value })}
-                />
-                {errors.start_date && <p className="text-red-500 text-xs italic">{errors.start_date}</p>}
+            />
+            {errors.start_date && <p className="text-red-500 text-xs italic">{errors.start_date}</p>}
             
             <label className="block mb-2 text-sm font-bold text-white">End Date</label>
             <input
@@ -210,11 +234,11 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
                 placeholder="yyyy-mm-dd"
                 value={leaseDetails.end_date}
                 onChange={(e) => setLeaseDetails({ ...leaseDetails, end_date: e.target.value })}
-                />
-                {errors.end_date && <p className="text-red-500 text-xs italic">{errors.end_date}</p>}
+            />
+            {errors.end_date && <p className="text-red-500 text-xs italic">{errors.end_date}</p>}
             
             <label className="block mb-2 text-sm font-bold text-white">Monthly Rent</label>
-                <input
+            <input
                 type="number"
                 className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                 placeholder="Monthly Rent"
@@ -223,89 +247,98 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
                     setLeaseDetails({ ...leaseDetails, monthly_rent: e.target.value });
                     setRentDetails({ ...rentDetails, rent: e.target.value });
                 }}
-                />
-                {errors.monthly_rent && <p className="text-red-500 text-xs italic">{errors.monthly_rent}</p>}
+            />
+            {errors.monthly_rent && <p className="text-red-500 text-xs italic">{errors.monthly_rent}</p>}
       
             <label className="block mb-2 text-sm font-bold text-white">Deposit</label>
-                <input
+            <input
                 type="number"
                 className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                 placeholder="Deposit"
                 value={leaseDetails.deposit}
                 onChange={(e) => setLeaseDetails({ ...leaseDetails, deposit: e.target.value })}
-                />
-                {errors.deposit && <p className="text-red-500 text-xs italic">{errors.deposit}</p>}
+            />
+            {errors.deposit && <p className="text-red-500 text-xs italic">{errors.deposit}</p>}
 
             <label className="block mb-2 text-sm font-bold text-white">Terms</label>
-                <textarea
+            <textarea
                 className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
                 placeholder="Lease Terms"
                 value={leaseDetails.terms}
                 onChange={(e) => setLeaseDetails({ ...leaseDetails, terms: e.target.value })}
-                />
-                {errors.terms && <p className="text-red-500 text-xs italic">{errors.terms}</p>}
+            />
+            {errors.terms && <p className="text-red-500 text-xs italic">{errors.terms}</p>}
         </div>
         )}
 
         {step === 3 && (
         <div>
+            <label className="block mb-2 text-sm font-bold text-white">Rent Date</label>
+            <input
+                type="date"
+                className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
+                value={rentDate}
+                onChange={(e) => setRentDate(e.target.value)}
+            />
+            {errors.date && <p className="text-red-500 text-xs italic">{errors.date}</p>}
+
             <label className="block mb-2 text-sm font-bold text-white">Rent</label>
             <input
-            type="number"
-            className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
-            value={rentDetails.rent}
-            readOnly
+                type="number"
+                className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
+                value={rentDetails.rent}
+                readOnly
             />
             {errors.rent && <p className="text-red-500 text-xs italic">{errors.rent}</p>}
               
-          <label className="block mb-2 text-sm font-bold text-white">Trash Fee</label>
-          <input
-            type="number"
-            className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
-            placeholder="Trash Fee"
-            value={rentDetails.trash}
-            onChange={(e) => setRentDetails({ ...rentDetails, trash: e.target.value })}
+            <label className="block mb-2 text-sm font-bold text-white">Trash Fee</label>
+            <input
+                type="number"
+                className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
+                placeholder="Trash Fee"
+                value={rentDetails.trash}
+                onChange={(e) => setRentDetails({ ...rentDetails, trash: e.target.value })}
             />
             {errors.trash && <p className="text-red-500 text-xs italic">{errors.trash}</p>}
       
-          <label className="block mb-2 text-sm font-bold text-white">Water & Sewer Fee</label>
-          <input
-            type="number"
-            className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
-            placeholder="Water & Sewer Fee"
-            value={rentDetails.water_sewer}
-            onChange={(e) => setRentDetails({ ...rentDetails, water_sewer: e.target.value })}
+            <label className="block mb-2 text-sm font-bold text-white">Water & Sewer Fee</label>
+            <input
+                type="number"
+                className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
+                placeholder="Water & Sewer Fee"
+                value={rentDetails.water_sewer}
+                onChange={(e) => setRentDetails({ ...rentDetails, water_sewer: e.target.value })}
             />
             {errors.water_sewer && <p className="text-red-500 text-xs italic">{errors.water_sewer}</p>}
       
-          <label className="block mb-2 text-sm font-bold text-white">Parking Fee</label>
-          <input
-            type="number"
-            className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
-            placeholder="Parking Fee"
-            value={rentDetails.parking}
-            onChange={(e) => setRentDetails({ ...rentDetails, parking: e.target.value })}
-          />
+            <label className="block mb-2 text-sm font-bold text-white">Parking Fee</label>
+            <input
+                type="number"
+                className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
+                placeholder="Parking Fee"
+                value={rentDetails.parking}
+                onChange={(e) => setRentDetails({ ...rentDetails, parking: e.target.value })}
+            />
             {errors.parking && <p className="text-red-500 text-xs italic">{errors.parking}</p>}
       
-          <label className="block mb-2 text-sm font-bold text-white">Debt</label>
-          <input
-            type="number"
-            className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
-            placeholder="Debt"
-            value={rentDetails.debt}
-            onChange={(e) => setRentDetails({ ...rentDetails, debt: e.target.value })}
-          />
+            <label className="block mb-2 text-sm font-bold text-white">Debt</label>
+            <input
+                type="number"
+                className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
+                placeholder="Debt"
+                value={rentDetails.debt}
+                onChange={(e) => setRentDetails({ ...rentDetails, debt: e.target.value })}
+            />
             {errors.debt && <p className="text-red-500 text-xs italic">{errors.debt}</p>}
       
-          <label className="block mb-2 text-sm font-bold text-white">Breaks</label>
-          <input
-            type="number"
-            className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
-            placeholder="Breaks"
-            value={rentDetails.breaks}
-            onChange={(e) => setRentDetails({ ...rentDetails, breaks: e.target.value })}
-          />
+            <label className="block mb-2 text-sm font-bold text-white">Breaks</label>
+            <input
+                type="number"
+                className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
+                placeholder="Breaks"
+                value={rentDetails.breaks}
+                onChange={(e) => setRentDetails({ ...rentDetails, breaks: e.target.value })}
+            />
             {errors.breaks && <p className="text-red-500 text-xs italic">{errors.breaks}</p>}
         </div>
         )}      
