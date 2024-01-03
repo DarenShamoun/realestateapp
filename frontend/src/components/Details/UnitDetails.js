@@ -65,7 +65,7 @@ const UnitDetails = ({ unit_id }) => {
           payments={payments}
           rentHistory={rentHistory}
           onOpenCreatePayment={() => setCreatePaymentModalOpen(true)}
-          onOpenCreateRent={() => setCreateRentModalOpen(true)} // Add this line
+          onOpenCreateRent={() => setCreateRentModalOpen(true)}
         />     
         {/* Financial Overview */}
         <div className="w-full lg:w-1/2 px-4">
@@ -84,12 +84,12 @@ const UnitDetails = ({ unit_id }) => {
       <CreatePaymentModal 
         isOpen={isCreatePaymentModalOpen} 
         onClose={() => setCreatePaymentModalOpen(false)}
-        leaseId={leases[0]?.id} // Assuming you want to use the lease ID of the first lease
+        leaseId={leases[0]?.id}
       />
       <CreateRentModal 
         isOpen={isCreateRentModalOpen} 
         onClose={() => setCreateRentModalOpen(false)}
-        leaseId={leases[0]?.id} // Assuming leaseId is needed for rent
+        leaseId={leases[0]?.id}
       />
     </div>
   );

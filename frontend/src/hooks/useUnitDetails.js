@@ -91,7 +91,7 @@ export const useUnitDetails = (unit_id) => {
       };
     });
   
-    return Object.values(combinedData).sort((a, b) => b.monthYear.localeCompare(a.monthYear));
+    return Object.values(combinedData).sort((a, b) => a.monthYear.localeCompare(b.monthYear));
   };
 
   return { unit, tenant, payments, rentHistory, leases, currentMonthRent, chartData, isLoading, error };
