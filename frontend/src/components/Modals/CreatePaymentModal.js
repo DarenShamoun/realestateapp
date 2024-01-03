@@ -43,7 +43,7 @@ const CreatePaymentModal = ({ isOpen, onClose, leaseId }) => {
   return (
     <div className={`fixed inset-0 z-50 ${isOpen ? 'flex' : 'hidden'} items-center justify-center bg-black bg-opacity-50`}>
       <div className="bg-gray-700 p-6 rounded-lg shadow-lg max-w-lg w-full">
-        <h2 className="text-xl font-semibold mb-4 text-white">Add Payment</h2>
+      <h2 className="text-xl font-semibold mb-4 text-white">Add Payment</h2>
         
         {/* Payment Date */}
         <label className="block mb-2 text-sm font-bold text-white">Payment Date</label>
