@@ -94,48 +94,50 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
     }
 
     const formattedRentDetails = {
-        rent: rentDetails.rent,
-        trash: rentDetails.trash || 0,
-        water_sewer: rentDetails.water_sewer || 0,
-        parking: rentDetails.parking || 0,
-        debt: rentDetails.debt || 0,
-        breaks: rentDetails.breaks || 0,
-      };
-    
+        rent: parseFloat(rentDetails.rent || 0),
+        trash: parseFloat(rentDetails.trash || 0),
+        water_sewer: parseFloat(rentDetails.water_sewer || 0),
+        parking: parseFloat(rentDetails.parking || 0),
+        debt: parseFloat(rentDetails.debt || 0),
+        breaks: parseFloat(rentDetails.breaks || 0),
+    };
+        
     try {
-      let tenantId = selectedTenant;
-  
-      // If a new tenant is being added
-      if (!selectedTenant) {
-        const newTenantResponse = await addTenant(tenantDetails);
-        tenantId = newTenantResponse.id;
-      }
-  
-      // Create lease
-      const leaseData = {
-        ...leaseDetails,
-        tenant_id: tenantId,
-        unit_id: unitId,
-        end_date: leaseDetails.end_date || null
-      };
-
-      console.log(leaseData);
-  
-      const leaseResponse = await addLease(leaseData);
-      const leaseId = leaseResponse.id;
-  
-      // Create rent details
-      const rentData = {
-        ...formattedRentDetails,
-        lease_id: leaseId,
-        date: rentDate,
-      };
-        console.log(rentData);
-      await addRent(rentData);
+        let tenantId = selectedTenant;
     
-      // Success message
-      alert('Lease created successfully.');
-      onClose(); // Close the modal and update UI as needed
+        // If a new tenant is being added
+        if (!selectedTenant) {
+            const newTenantResponse = await addTenant(tenantDetails);
+            tenantId = newTenantResponse.id;
+        }
+    
+        // Create lease
+        const leaseData = {
+            ...leaseDetails,
+            tenant_id: tenantId,
+            unit_id: unitId,
+            end_date: leaseDetails.end_date || null,
+            deposit: leaseDetails.deposit || null,
+            terms: leaseDetails.terms || null,
+        };        
+
+        console.log(leaseData);
+    
+        const leaseResponse = await addLease(leaseData);
+        const leaseId = leaseResponse.id;
+    
+        // Create rent details
+        const rentData = {
+            ...formattedRentDetails,
+            lease_id: leaseId,
+            date: rentDate,
+        };
+        console.log(rentData);
+        await addRent(rentData);
+        
+        // Success message
+        alert('Lease created successfully.');
+        onClose(); // Close the modal and update UI as needed
     } catch (error) {
         console.error('Error creating lease:', error);
         alert('An error occurred while creating the lease. Please try again.');
