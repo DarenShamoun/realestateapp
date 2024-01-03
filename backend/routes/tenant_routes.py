@@ -6,6 +6,7 @@ from services.tenant_service import (
     delete_tenant, 
     tenant_to_json
 )
+import traceback
 
 tenant_bp = Blueprint('tenant_bp', __name__)
 
@@ -16,6 +17,7 @@ def add_tenant_route():
         new_tenant = add_tenant(data)
         return jsonify(tenant_to_json(new_tenant)), 201
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @tenant_bp.route('/tenant', methods=['GET'])
@@ -25,6 +27,7 @@ def get_tenants_route():
         tenants = get_tenants(filters)
         return jsonify([tenant_to_json(tenant) for tenant in tenants]), 200
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @tenant_bp.route('/tenant/<int:tenant_id>', methods=['PUT'])
@@ -37,6 +40,7 @@ def update_tenant_route(tenant_id):
         else:
             return jsonify({'message': 'Tenant not found'}), 404
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @tenant_bp.route('/tenant/<int:tenant_id>', methods=['DELETE'])
@@ -47,4 +51,5 @@ def delete_tenant_route(tenant_id):
         else:
             return jsonify({'message': 'Tenant not found'}), 404
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500

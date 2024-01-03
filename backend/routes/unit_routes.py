@@ -6,6 +6,7 @@ from services.unit_service import (
     delete_unit, 
     unit_to_json
 )
+import traceback
 
 unit_bp = Blueprint('unit_bp', __name__)
 
@@ -16,6 +17,7 @@ def add_unit_route():
         new_unit = add_unit(data)
         return jsonify(unit_to_json(new_unit)), 201
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @unit_bp.route('/unit', methods=['GET'])
@@ -25,6 +27,7 @@ def get_units_route():
         units = get_units(filters)
         return jsonify([unit_to_json(unit) for unit in units]), 200
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @unit_bp.route('/unit/<int:unit_id>', methods=['PUT'])
@@ -37,6 +40,7 @@ def update_unit_route(unit_id):
         else:
             return jsonify({'message': 'Unit not found'}), 404
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @unit_bp.route('/unit/<int:unit_id>', methods=['DELETE'])
@@ -47,4 +51,5 @@ def delete_unit_route(unit_id):
         else:
             return jsonify({'message': 'Unit not found'}), 404
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500

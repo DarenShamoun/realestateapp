@@ -6,6 +6,7 @@ from services.rent_service import (
     delete_rent, 
     rent_to_json
 )
+import traceback
 
 rent_bp = Blueprint('rent_bp', __name__)
 
@@ -16,6 +17,7 @@ def add_rent_route():
         new_rent = add_rent(data)
         return jsonify(rent_to_json(new_rent)), 201
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
     
 @rent_bp.route('/rent', methods=['GET'])
@@ -25,6 +27,7 @@ def get_rents_route():
         rents = get_rents(filters)
         return jsonify([rent_to_json(rent) for rent in rents]), 200
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @rent_bp.route('/rent/<int:rent_id>', methods=['PUT'])
@@ -37,6 +40,7 @@ def update_rent_route(rent_id):
         else:
             return jsonify({'message': 'Rent details not found'}), 404
     except Exception as e:
+        traceback.print_exc()        
         return jsonify({'error': str(e)}), 500
 
 @rent_bp.route('/rent/<int:rent_id>', methods=['DELETE'])
@@ -47,4 +51,5 @@ def delete_rent_route(rent_id):
         else:
             return jsonify({'message': 'Rent details not found'}), 404
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500

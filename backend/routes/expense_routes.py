@@ -6,6 +6,7 @@ from services.expense_service import (
     delete_expense, 
     expense_to_json
 )
+import traceback
 
 expense_bp = Blueprint('expense_bp', __name__)
 
@@ -16,6 +17,7 @@ def add_expense_route():
         expense = add_expense(data)
         return jsonify(expense_to_json(expense)), 201
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @expense_bp.route('/expense', methods=['GET'])
@@ -25,6 +27,7 @@ def get_expenses_route():
         expenses = get_expenses(filters)
         return jsonify([expense_to_json(expense) for expense in expenses]), 200
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @expense_bp.route('/expense/<int:expense_id>', methods=['PUT'])
@@ -37,6 +40,7 @@ def update_expense_route(expense_id):
         else:
             return jsonify({'message': 'Expense not found'}), 404
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @expense_bp.route('/expense/<int:expense_id>', methods=['DELETE'])
@@ -47,4 +51,5 @@ def delete_expense_route(expense_id):
         else:
             return jsonify({'message': 'Expense not found'}), 404
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500

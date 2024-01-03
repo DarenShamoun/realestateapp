@@ -6,6 +6,7 @@ from services.lease_service import (
     delete_lease, 
     lease_to_json
 )
+import traceback
 
 lease_bp = Blueprint('lease_bp', __name__)
 
@@ -16,6 +17,7 @@ def add_lease_route():
         lease = add_lease(data)
         return jsonify(lease_to_json(lease)), 201
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @lease_bp.route('/lease', methods=['GET'])
@@ -25,6 +27,7 @@ def get_leases_route():
         leases = get_leases(filters)
         return jsonify([lease_to_json(lease) for lease in leases]), 200
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @lease_bp.route('/lease/<int:lease_id>', methods=['PUT'])
@@ -37,6 +40,7 @@ def update_lease_route(lease_id):
         else:
             return jsonify({'message': 'Lease not found'}), 404
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @lease_bp.route('/lease/<int:lease_id>', methods=['DELETE'])
@@ -47,4 +51,5 @@ def delete_lease_route(lease_id):
         else:
             return jsonify({'message': 'Lease not found'}), 404
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500

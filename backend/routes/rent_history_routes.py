@@ -4,6 +4,7 @@ from services.rent_history_service import (
     delete_rent_history, 
     rent_history_to_json
 )
+import traceback
 
 rent_history_bp = Blueprint('rent_history_bp', __name__)
 
@@ -14,6 +15,7 @@ def get_rent_histories_route():
         histories = get_rent_histories(filters)
         return jsonify([rent_history_to_json(history) for history in histories]), 200
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @rent_history_bp.route('/rent-history/<int:id>', methods=['DELETE'])
@@ -25,4 +27,5 @@ def delete_rent_history_route(id):
         else:
             return jsonify({'error': 'Rent history not found'}), 404
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500

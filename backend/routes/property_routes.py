@@ -6,6 +6,7 @@ from services.property_service import (
     delete_property,
     property_to_json
 )
+import traceback
 
 property_bp = Blueprint('property_bp', __name__)
 
@@ -16,6 +17,7 @@ def add_property_route():
         new_property = add_property(data)
         return jsonify(property_to_json(new_property)), 201
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @property_bp.route('/property', methods=['GET'])
@@ -25,6 +27,7 @@ def get_properties_route():
         properties = get_properties(filters)
         return jsonify([property_to_json(property) for property in properties]), 200
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @property_bp.route('/property/<int:property_id>', methods=['PUT'])
@@ -37,6 +40,7 @@ def update_property_route(property_id):
         else:
             return jsonify({'message': 'Property not found'}), 404
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @property_bp.route('/property/<int:property_id>', methods=['DELETE'])
@@ -47,4 +51,5 @@ def delete_property_route(property_id):
         else:
             return jsonify({'message': 'Property not found'}), 404
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
