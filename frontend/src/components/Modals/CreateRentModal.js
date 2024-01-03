@@ -37,12 +37,9 @@ const CreateRentModal = ({ isOpen, onClose, leaseId }) => {
         ...formattedRentDetails,
         lease_id: leaseId,
         date: rentDate,
-    };
-    console.log(rentData);
-    await addRent(rentData);
-
-    alert('Rent added successfully.');
-      onClose();
+      };
+      await addRent(rentData);
+      onClose(console.log(rentData));
     } catch (error) {
       console.error('Error adding rent:', error);
       alert('An error occurred while adding the rent. Please try again.');

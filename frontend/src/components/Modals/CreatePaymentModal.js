@@ -33,8 +33,7 @@ const CreatePaymentModal = ({ isOpen, onClose, leaseId }) => {
 
     try {
       await addPayment({ ...paymentData, lease_id: leaseId });
-      alert('Payment added successfully.');
-      onClose();
+      onClose(console.log(paymentData));
     } catch (error) {
       console.error('Error adding payment:', error);
       alert('An error occurred while adding the payment. Please try again.');
