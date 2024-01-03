@@ -42,11 +42,16 @@ const UnitDetails = ({ unit_id }) => {
       <section className="flex flex-wrap gap-4 justify-center">
         {/* Unit Details */}
         <TenantDetails tenant={tenant} />
-        <LeaseDetails leases={leases} />
+        <LeaseDetails leases={leases} onOpenCreateLease={() => setCreateLeaseModalOpen(true)} />
         <RentDetails 
           rentDetails={currentMonthRent} 
           totalRent={currentMonthRent?.total_rent} 
           rentDate={currentMonthRent?.date} 
+        />
+        <CreateLeaseModal 
+        isOpen={isCreateLeaseModalOpen} 
+        onClose={() => setCreateLeaseModalOpen(false)}
+        unitId={unit_id}
         />
       </section>
   
@@ -67,24 +72,6 @@ const UnitDetails = ({ unit_id }) => {
           </div>
         </div>
       </section>
-        <div className="container mx-auto p-4">
-        {unit && !unit[0].is_occupied && (
-          <div className="text-right">
-            <button 
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
-              onClick={() => setCreateLeaseModalOpen(true)}
-            >
-              Create Lease
-            </button>
-          </div>
-        )}
-
-        <CreateLeaseModal 
-          isOpen={isCreateLeaseModalOpen} 
-          onClose={() => setCreateLeaseModalOpen(false)}
-          unitId={unit_id}
-        />
-      </div>
     </div>
   );
 };

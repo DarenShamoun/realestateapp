@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LeaseDetails = ({ leases }) => (
+const LeaseDetails = ({ leases, onOpenCreateLease }) => (
   <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4">
     <h2 className="text-xl text-white">Lease Details</h2>
     {leases && leases.length > 0 ? (
@@ -14,7 +14,15 @@ const LeaseDetails = ({ leases }) => (
         </div>
       ))
     ) : (
-      <p className="text-gray-300">No current lease agreement.</p>
+      <>
+        <p className="text-gray-300">No current lease agreement.</p>
+        <button 
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
+          onClick={onOpenCreateLease}
+        >
+          Create Lease
+        </button>
+      </>
     )}
   </div>
 );

@@ -136,7 +136,7 @@ const CreateLeaseModal = ({ isOpen, onClose, unitId }) => {
         await addRent(rentData);
         
         // Success message
-        alert('Lease created successfully.');
+        console.log('Lease created successfully!');
         onClose(); // Close the modal and update UI as needed
     } catch (error) {
         console.error('Error creating lease:', error);
