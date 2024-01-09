@@ -11,6 +11,20 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
+const renderCustomLabel = ({
+  cx, cy, midAngle, innerRadius, outerRadius, percent, index, payload
+}) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
+  const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
+
+  return (
+    <text x={x} y={y} fill="black" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+      {payload.name}: ${payload.value.toFixed(2)} ({(percent * 100).toFixed(0)}%)
+    </text>
+  );
+};
+
 const PieChartPlot = ({ data }) => {
   const colors = ["#82ca9d", "#FA8072"];
 
@@ -25,20 +39,20 @@ const PieChartPlot = ({ data }) => {
     <>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart width={730} height={250}>
-        <Pie
-          data={chartData}
-          dataKey="value"
-          nameKey="name"
-          cx="50%"
-          cy="50%"
-          outerRadius={80}
-          fill="#8884d8"
-          label
-        >
-          {chartData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-          ))}
-        </Pie>
+          <Pie
+            data={chartData}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={80}
+            fill="#8884d8"
+            label={renderCustomLabel}
+            >
+            {chartData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+            ))}
+          </Pie>
           <Tooltip content={<CustomTooltip />} />
         </PieChart>
       </ResponsiveContainer>

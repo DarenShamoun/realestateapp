@@ -4,7 +4,7 @@ import { BarChart, XAxis, YAxis, Bar, Tooltip, Legend, ResponsiveContainer } fro
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="custom-tooltip" style={{ backgroundColor: '#fff', padding: '10px', border: '1px solid #ccc' }}>
+      <div className="custom-tooltip" style={{ backgroundColor: 'gray', padding: '10px', border: '1px solid #ccc' }}>
         <p className="label">{`${label}`}</p>
         {payload.map((entry, index) => (
           <p key={`item-${index}`} style={{ color: entry.color }}>
@@ -68,17 +68,23 @@ const BarChartPlot = ({ data, barKeys, xAxisKey }) => {
 
   return (
     <>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart width={730} height={250} data={chartData}>
-          <XAxis dataKey={xAxisKey || "name"} />
-          <YAxis />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend />
-          {keys.map(key => (
-            <Bar key={key.name} dataKey={key.name} fill={key.color} />
-          ))}
-        </BarChart>
-      </ResponsiveContainer>
+      <h1 style={{ paddingLeft: '20px', paddingTop: '10px', color: 'white', fontWeight: 'bold' }}>6-Month Financial Overview</h1> 
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart width={730} height={250} data={chartData} margin={{
+              top: 30,
+              right: 30,
+              left: 10,
+              bottom: 40,
+            }}>
+            <XAxis dataKey={xAxisKey || "name"} />
+            <YAxis />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend />
+            {keys.map(key => (
+              <Bar key={key.name} dataKey={key.name} fill={key.color} />
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
     </>
   );
 }
