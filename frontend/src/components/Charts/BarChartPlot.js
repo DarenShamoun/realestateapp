@@ -4,7 +4,7 @@ import { BarChart, XAxis, YAxis, Bar, Tooltip, Legend, ResponsiveContainer } fro
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="custom-tooltip" style={{ backgroundColor: 'black', padding: '10px', border: '1px solid #ccc' }}>
+      <div className="custom-tooltip" style={{ backgroundColor: '#6B7280', padding: '10px', border: '1px solid #ccc' }}>
         <p className="label">{`${label}`}</p>
         {payload.map((entry, index) => (
           <p key={`item-${index}`} style={{ color: entry.color }}>
@@ -76,8 +76,8 @@ const BarChartPlot = ({ data, barKeys, xAxisKey, title }) => {
             left: 10,
             bottom: 40,
           }}>
-          <XAxis dataKey={xAxisKey || "name"} />
-          <YAxis />
+          <XAxis dataKey={xAxisKey || "name"} stroke="white" />
+          <YAxis stroke="white" />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
           {keys.map(key => (
