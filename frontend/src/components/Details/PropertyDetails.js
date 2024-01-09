@@ -89,7 +89,7 @@ const FinancialCard = ({ title, amount }) => {
   const monthName = new Date().toLocaleString('default', { month: 'long' });
   const year = new Date().getFullYear();
 
-  const updatedTitle = title.replace('YTD', year).replace('Monthly', monthName);
+  const updatedTitle = title.replace('Monthly', monthName);
 
   return (
     <div className="flex-1 px-2 justify-center w-16 bg-gray-700 shadow rounded h-300px">
