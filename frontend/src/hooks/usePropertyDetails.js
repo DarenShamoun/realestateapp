@@ -117,7 +117,7 @@ export const usePropertyDetails = (property_id) => {
     }
   }, [property_id]);
 
-  const prepareChartData = (currentPayments, YTDpayments, YTDexpenses) => {
+  const prepareChartData = (currentPayments, currentExpenses, currentRents, YTDpayments, YTDexpenses) => {
     let rentPaidThisMonth = currentPayments.reduce((acc, payment) => acc + payment.amount, 0);
     let remainingRent = monthlyExpectedIncome - rentPaidThisMonth;
   
