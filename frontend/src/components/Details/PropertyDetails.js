@@ -87,7 +87,6 @@ const PropertyDetails = ({ property_id }) => {
 // FinancialCard Component
 const FinancialCard = ({ title, amount }) => {
   const monthName = new Date().toLocaleString('default', { month: 'long' });
-  const year = new Date().getFullYear();
 
   const updatedTitle = title.replace('Monthly', monthName);
 
