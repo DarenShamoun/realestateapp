@@ -44,7 +44,7 @@ const Properties = () => {
 
   return (
     <section>
-      <div className="flex justify-between items-center p-4">
+      <div className="flex justify-between items-center p-2">
         <h2 className="text-2xl text-white font-bold">Properties{":"} {currentMonth} {"/"} {currentYear}</h2>
       </div>
 
