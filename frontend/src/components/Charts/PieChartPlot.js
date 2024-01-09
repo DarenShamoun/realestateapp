@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="custom-tooltip" style={{ backgroundColor: 'black', padding: '10px', border: '1px solid #ccc' }}>
+      <div className="custom-tooltip" style={{ backgroundColor: '#6B7280', padding: '10px', border: '1px solid #ccc' }}>
         <p className="label">{`${label}`}</p>
         {payload.map((entry, index) => (
           <p key={`item-${index}`} style={{ color: entry.color }}>
@@ -17,7 +17,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const PieChartPlot = ({ data }) => {
+const PieChartPlot = ({ data, title }) => {
   const colors = ["#82ca9d", "#FA8072"];
 
   const defaultData = [
@@ -29,8 +29,14 @@ const PieChartPlot = ({ data }) => {
 
   return (
     <>
+      <h1 style={{ paddingLeft: '20px', paddingTop: '10px', color: 'white', fontWeight: 'bold' }}>{title}</h1> 
       <ResponsiveContainer width="100%" height="100%">
-        <PieChart width={730} height={250}>
+        <PieChart width={730} height={250} margin={{
+            top: 30,
+            right: 30,
+            left: 10,
+            bottom: 40,
+          }}>
           <Pie
             data={chartData}
             dataKey="value"
