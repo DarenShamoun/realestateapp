@@ -70,7 +70,7 @@ const Properties = () => {
           <PieChartPlot data={pieChartData} />
         </div>
         <div className="w-1/2 h-[300px] bg-gray-700 rounded">
-          <BarChartPlot data={barChartData} barKeys={barKeys} xAxisKey="name" />
+          <BarChartPlot data={barChartData} barKeys={barKeys} xAxisKey="name" title="6-Month Financial Overview" />
         </div>
       </section>
 

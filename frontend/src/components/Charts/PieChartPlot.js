@@ -1,28 +1,20 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
-const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="custom-tooltip" style={{ backgroundColor: '#fff', padding: '10px', border: '1px solid #ccc' }}>
-        <p>{`${payload[0].name}: $${payload[0].value.toFixed(2)}`}</p>
+      <div className="custom-tooltip" style={{ backgroundColor: 'black', padding: '10px', border: '1px solid #ccc' }}>
+        <p className="label">{`${label}`}</p>
+        {payload.map((entry, index) => (
+          <p key={`item-${index}`} style={{ color: entry.color }}>
+            {`${entry.name}: $${entry.value.toFixed(2)}`}
+          </p>
+        ))}
       </div>
     );
   }
+
   return null;
-};
-
-const renderCustomLabel = ({
-  cx, cy, midAngle, innerRadius, outerRadius, percent, index, payload
-}) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
-  const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
-
-  return (
-    <text x={x} y={y} fill="black" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-      {payload.name}: ${payload.value.toFixed(2)} ({(percent * 100).toFixed(0)}%)
-    </text>
-  );
 };
 
 const PieChartPlot = ({ data }) => {
@@ -47,7 +39,7 @@ const PieChartPlot = ({ data }) => {
             cy="50%"
             outerRadius={80}
             fill="#8884d8"
-            label={renderCustomLabel}
+            label
             >
             {chartData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
