@@ -117,7 +117,7 @@ export const usePropertyDetails = (property_id) => {
     }
   }, [property_id]);
 
-  const prepareChartData = (currentPayments, currentExpenses, currentRents, YTDpayments, YTDexpenses) => {
+  const prepareChartData = (currentPayments, YTDpayments, YTDexpenses) => {
     let rentPaidThisMonth = currentPayments.reduce((acc, payment) => acc + payment.amount, 0);
     let remainingRent = monthlyExpectedIncome - rentPaidThisMonth;
   
@@ -137,7 +137,6 @@ export const usePropertyDetails = (property_id) => {
     for (let i = 0; i < 6; i++) {
       const month = new Date();
       month.setMonth(currentMonth - i - 1);
-      const monthYear = `${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, '0')}`;
 
       const monthlyIncome = YTDpayments.filter(p => {
         const paymentMonth = new Date(p.date).getMonth() + 1;
