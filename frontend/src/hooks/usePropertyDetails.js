@@ -101,9 +101,49 @@ export const usePropertyDetails = (property_id) => {
         const YTDExpectedIncome = YTDrents.reduce((acc, rent) => acc + (rent.total_rent - rent.debt), 0);
         setYTDExpectedIncome(YTDExpectedIncome);
 
-        if (YTDrents && YTDexpenses && YTDpayments && CurrentMonthRents && CurrentMonthExpenses && CurrentMonthPayments) {
-          prepareChartData(CurrentMonthPayments, CurrentMonthExpenses, CurrentMonthRents, YTDpayments, YTDexpenses);
+        console.log("Current Month Rents", CurrentMonthRents);
+        console.log("Current Month Expenses", CurrentMonthExpenses);
+        console.log("Current Month Payments", CurrentMonthPayments);
+
+        // Preparing Bar Chart Data
+        const barData = [];
+        for (let i = 0; i < 6; i++) {
+          const month = new Date();
+          month.setMonth(currentMonth - i - 1);
+
+          const monthlyIncome = YTDpayments.filter(p => {
+            const paymentMonth = new Date(p.date).getMonth() + 1;
+            const paymentYear = new Date(p.date).getFullYear();
+            return paymentMonth === month.getMonth() + 1 && paymentYear === month.getFullYear();
+          }).reduce((acc, payment) => acc + payment.amount, 0);
+
+          const monthlyExpenses = YTDexpenses.filter(e => {
+            const expenseMonth = new Date(e.date).getMonth() + 1;
+            const expenseYear = new Date(e.date).getFullYear();
+            return expenseMonth === month.getMonth() + 1 && expenseYear === month.getFullYear();
+          }).reduce((acc, expense) => acc + expense.amount, 0);
+
+          const formattedMonthYear = `${String(month.getMonth() + 1).padStart(2, '0')}/${month.getFullYear().toString().substr(2, 2)}`;
+          barData.push({
+            name: formattedMonthYear,
+            Income: monthlyIncome,
+            Expenses: monthlyExpenses
+          });
         }
+        setBarChartData(barData.reverse());
+
+        // Preparing Pie Chart Data
+        if (CurrentMonthPayments && CurrentMonthRents) {
+          const rentPaidThisMonth = CurrentMonthPayments.reduce((acc, payment) => acc + payment.amount, 0);
+          const remainingRent = MonthlyExpectedIncome - rentPaidThisMonth;
+
+          const pieData = [
+            { name: "Rent Paid", value: rentPaidThisMonth },
+            { name: "Remaining Rent", value: Math.max(0, remainingRent) }
+          ];
+          setPieChartData(pieData);
+        }
+
       } catch (error) {
         console.error('Failed to fetch property details:', error);
         setError(error);
@@ -116,50 +156,6 @@ export const usePropertyDetails = (property_id) => {
       fetchPropertyDetails();
     }
   }, [property_id]);
-
-  const prepareChartData = (currentPayments, currentExpenses, currentRents, YTDpayments, YTDexpenses) => {
-    let rentPaidThisMonth = currentPayments.reduce((acc, payment) => acc + payment.amount, 0);
-    let remainingRent = monthlyExpectedIncome - rentPaidThisMonth;
-  
-    // Set a minimum value to ensure the pie chart is visible
-    const minValueRent = .65;
-    const minValueRemaining = .35;
-    rentPaidThisMonth = rentPaidThisMonth > 0 ? rentPaidThisMonth : minValueRent;
-    remainingRent = remainingRent > 0 ? remainingRent : minValueRemaining;
-  
-    const pieData = [
-      { name: "Rent Paid", value: rentPaidThisMonth },
-      { name: "Remaining Rent", value: remainingRent }
-    ];
-    setPieChartData(pieData);
-
-    const barData = [];
-    for (let i = 0; i < 6; i++) {
-      const month = new Date();
-      month.setMonth(currentMonth - i - 1);
-
-      const monthlyIncome = YTDpayments.filter(p => {
-        const paymentMonth = new Date(p.date).getMonth() + 1;
-        const paymentYear = new Date(p.date).getFullYear();
-        return paymentMonth === month.getMonth() + 1 && paymentYear === month.getFullYear();
-      }).reduce((acc, payment) => acc + payment.amount, 0);
-
-      const monthlyExpenses = YTDexpenses.filter(e => {
-        const expenseMonth = new Date(e.date).getMonth() + 1;
-        const expenseYear = new Date(e.date).getFullYear();
-        return expenseMonth === month.getMonth() + 1 && expenseYear === month.getFullYear();
-      }).reduce((acc, expense) => acc + expense.amount, 0);
-
-      const formattedMonthYear = `${String(month.getMonth() + 1).padStart(2, '0')}/${month.getFullYear().toString().substr(2, 2)}`; // Format as MM/YY
-
-      barData.push({
-        name: formattedMonthYear,
-        Income: monthlyIncome,
-        Expenses: monthlyExpenses
-      });
-    }
-    setBarChartData(barData.reverse());
-  };
 
   return { 
     property, 

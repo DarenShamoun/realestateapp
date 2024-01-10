@@ -4,20 +4,19 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <div className="custom-tooltip" style={{ backgroundColor: '#6B7280', padding: '10px', border: '1px solid #ccc' }}>
-        <p className="label">{`${label}`}</p>
+        <p className="label">{label}</p>
         {payload.map((entry, index) => (
           <p key={`item-${index}`} style={{ color: entry.color }}>
-            {`${entry.name}: $${entry.value.toFixed(2)}`}
+            {`${entry.name}: $${entry.value?.toFixed(2)}`}
           </p>
         ))}
       </div>
     );
   }
-
   return null;
 };
 
-const PieChartPlot = ({ data, title }) => {
+const PieChartPlot = ({ data, pieKeys, title }) => {
   const colors = ["#82ca9d", "#FA8072"];
 
   const defaultData = [
@@ -25,7 +24,13 @@ const PieChartPlot = ({ data, title }) => {
     { name: "Remaining Rent", value: 5000 }
   ];
 
+  const defaultPieKeys = [
+    { name: "Payment", color: "#82ca9d" },
+    { name: "Balance", color: "#FA8072" }
+  ];
+
   const chartData = data && data.length > 0 ? data : defaultData;
+  const keys = pieKeys || defaultPieKeys;
 
   return (
     <>
