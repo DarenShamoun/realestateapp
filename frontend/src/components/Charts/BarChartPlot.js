@@ -18,6 +18,8 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+const yAxisTickFormatter = (value) => `$${value.toFixed(2)}`;
+
 const BarChartPlot = ({ data, barKeys, xAxisKey, title }) => {
   const defaultData = [
     {
@@ -72,11 +74,11 @@ const BarChartPlot = ({ data, barKeys, xAxisKey, title }) => {
         <BarChart width={730} height={250} data={chartData} margin={{
             top: 30,
             right: 30,
-            left: 10,
+            left: 30,
             bottom: 40,
           }}>
           <XAxis dataKey={xAxisKey || "name"} stroke="white" />
-          <YAxis stroke="white" />
+          <YAxis stroke="white" tickFormatter={yAxisTickFormatter} />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
           {keys.map(key => (
