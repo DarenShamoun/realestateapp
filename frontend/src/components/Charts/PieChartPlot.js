@@ -1,4 +1,4 @@
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -16,7 +16,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const PieChartPlot = ({ data, pieKeys, title }) => {
+const PieChartPlot = ({ data, title }) => {
   const colors = ["#82ca9d", "#FA8072"];
 
   const defaultData = [
@@ -24,13 +24,7 @@ const PieChartPlot = ({ data, pieKeys, title }) => {
     { name: "Remaining Rent", value: 5000 }
   ];
 
-  const defaultPieKeys = [
-    { name: "Payment", color: "#82ca9d" },
-    { name: "Balance", color: "#FA8072" }
-  ];
-
   const chartData = data && data.length > 0 ? data : defaultData;
-  const keys = pieKeys || defaultPieKeys;
 
   return (
     <>
@@ -56,6 +50,7 @@ const PieChartPlot = ({ data, pieKeys, title }) => {
               <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
             ))}
           </Pie>
+          <Legend />
           <Tooltip content={<CustomTooltip />} />
         </PieChart>
       </ResponsiveContainer>
