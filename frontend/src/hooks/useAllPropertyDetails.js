@@ -105,33 +105,30 @@ export const useAllPropertyDetails = () => {
           month.setMonth(currentMonth - i - 1);
 
           const monthlyIncome = YTDpayments.filter(p => {
-              const paymentMonth = new Date(p.date).getMonth() + 1;
-              const paymentYear = new Date(p.date).getFullYear();
-              return paymentMonth === month.getMonth() + 1 && paymentYear === month.getFullYear();
+            const paymentMonth = new Date(p.date).getMonth() + 1;
+            const paymentYear = new Date(p.date).getFullYear();
+            return paymentMonth === month.getMonth() + 1 && paymentYear === month.getFullYear();
           }).reduce((acc, payment) => acc + payment.amount, 0);
 
           const monthlyExpenses = YTDexpenses.filter(e => {
-              const expenseMonth = new Date(e.date).getMonth() + 1;
-              const expenseYear = new Date(e.date).getFullYear();
-              return expenseMonth === month.getMonth() + 1 && expenseYear === month.getFullYear();
+            const expenseMonth = new Date(e.date).getMonth() + 1;
+            const expenseYear = new Date(e.date).getFullYear();
+            return expenseMonth === month.getMonth() + 1 && expenseYear === month.getFullYear();
           }).reduce((acc, expense) => acc + expense.amount, 0);
 
           const formattedMonthYear = `${String(month.getMonth() + 1).padStart(2, '0')}/${month.getFullYear().toString().substr(2, 2)}`;
           barData.push({
-              name: formattedMonthYear,
-              Income: monthlyIncome,
-              Expenses: monthlyExpenses
+            name: formattedMonthYear,
+            Income: monthlyIncome,
+            Expenses: monthlyExpenses
           });
         }
         setBarChartData(barData.reverse());
 
-      }
-      catch (error) {
+      } catch (error) {
         console.error('Failed to fetch property details:', error);
         setError(error);
-      } 
-      finally 
-      {
+      } finally {
         setIsLoading(false);
       }
     };
