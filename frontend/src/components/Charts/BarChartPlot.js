@@ -18,7 +18,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const yAxisTickFormatter = (value) => `$${value.toFixed(2)}`;
+const yAxisTickFormatter = (value) => `$${value.toFixed(0)}`;
 
 const BarChartPlot = ({ data, barKeys, xAxisKey, title }) => {
   const defaultData = [
