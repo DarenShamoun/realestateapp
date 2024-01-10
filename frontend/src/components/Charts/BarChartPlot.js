@@ -57,7 +57,6 @@ const BarChartPlot = ({ data, barKeys, xAxisKey, title }) => {
     },
   ];
 
-
   const defaultBarKeys = [
     { name: "Payment", color: "#82ca9d" },
     { name: "Balance", color: "#FA8072" }
