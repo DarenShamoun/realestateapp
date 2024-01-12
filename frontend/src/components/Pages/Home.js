@@ -10,6 +10,8 @@ import BarChartPlot from "@/components/Charts/BarChartPlot";
 import PieChartPlot from "@/components/Charts/PieChartPlot";
 import LineChartPlot from "@/components/Charts/LineChartPlot";
 import RadarChartPlot from "@/components/Charts/RadarChartPlot";
+import { useHomePageDetails } from '@/hooks/useHomePageDetails';
+import FinancialCard from '@/components/Cards/FinancialCard';
 
 
 const Landing = () => {
@@ -58,9 +60,9 @@ const Landing = () => {
         </section>
 
       <section className="flex my-4 px-4 gap-2">
-        <div className=" w-1/3 h-[250px] bg-gray-700 rounded"><PieChartPlot/></div>
-        <div className=" w-1/3 h-[250px] bg-gray-700 rounded"><LineChartPlot/></div>
-        <div className=" w-1/3 h-[250px] bg-gray-700 rounded"><RadarChartPlot/></div>
+        <div className=" w-1/3 h-[300px] bg-gray-700 rounded"><PieChartPlot/></div>
+        <div className=" w-1/3 h-[300px] bg-gray-700 rounded"><LineChartPlot/></div>
+        <div className=" w-1/3 h-[300px] bg-gray-700 rounded"><RadarChartPlot/></div>
       </section>
     </>
   );
