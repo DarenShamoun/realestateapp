@@ -26,6 +26,7 @@ const Properties = () => {
     YTDExpectedIncome,
     pieChartData,
     barChartData,
+    barKeys,
     isLoading,
     error
   } = useAllPropertyDetails();
@@ -37,11 +38,6 @@ const Properties = () => {
   if (error) {
     return <div>Error: {error.message}</div>;
   }
-
-  const barKeys = [
-    { name: "Income", color: "#82ca9d" },
-    { name: "Expenses", color: "#FA8072" }
-  ];
 
   return (
     <section>

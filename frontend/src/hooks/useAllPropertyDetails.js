@@ -19,6 +19,7 @@ export const useAllPropertyDetails = () => {
   const [YTDExpectedIncome, setYTDExpectedIncome] = useState(0);
   const [pieChartData, setPieChartData] = useState([]);
   const [barChartData, setBarChartData] = useState([]);
+  const [barKeys, setBarKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
     
@@ -125,6 +126,12 @@ export const useAllPropertyDetails = () => {
         }
         setBarChartData(barData.reverse());
 
+        const barKeys = [
+          { name: "Income", color: "#82ca9d" },
+          { name: "Expenses", color: "#FA8072" }
+        ];
+        setBarKeys(barKeys);
+
       } catch (error) {
         console.error('Failed to fetch property details:', error);
         setError(error);
@@ -150,6 +157,7 @@ export const useAllPropertyDetails = () => {
       YTDExpectedIncome,
       pieChartData,
       barChartData,
+      barKeys,
       isLoading,
       error
   };

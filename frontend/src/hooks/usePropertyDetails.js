@@ -21,6 +21,7 @@ export const usePropertyDetails = (property_id) => {
   const [YTDExpectedIncome, setYTDExpectedIncome] = useState(0);
   const [pieChartData, setPieChartData] = useState([]);
   const [barChartData, setBarChartData] = useState([]);
+  const [barKeys, setBarKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -101,10 +102,6 @@ export const usePropertyDetails = (property_id) => {
         const YTDExpectedIncome = YTDrents.reduce((acc, rent) => acc + (rent.total_rent - rent.debt), 0);
         setYTDExpectedIncome(YTDExpectedIncome);
 
-        console.log("Current Month Rents", CurrentMonthRents);
-        console.log("Current Month Expenses", CurrentMonthExpenses);
-        console.log("Current Month Payments", CurrentMonthPayments);
-
         // Preparing Bar Chart Data
         const barData = [];
         for (let i = 0; i < 6; i++) {
@@ -131,6 +128,13 @@ export const usePropertyDetails = (property_id) => {
           });
         }
         setBarChartData(barData.reverse());
+
+        // Preparing Bar Chart Keys
+        const barKeys = [
+          { name: "Income", color: "#82ca9d" },
+          { name: "Expenses", color: "#FA8072" }
+        ];
+        setBarKeys(barKeys);
 
         // Preparing Pie Chart Data
         if (CurrentMonthPayments && CurrentMonthRents) {
@@ -172,6 +176,7 @@ export const usePropertyDetails = (property_id) => {
     YTDExpectedIncome,
     pieChartData,
     barChartData,
+    barKeys,
     isLoading, 
     error };
 };

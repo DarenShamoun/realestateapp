@@ -21,6 +21,7 @@ const PropertyDetails = ({ property_id }) => {
     YTDExpectedIncome,
     pieChartData,
     barChartData,
+    barKeys,
     isLoading, 
     error
   } = usePropertyDetails(property_id);
@@ -36,11 +37,6 @@ const PropertyDetails = ({ property_id }) => {
   if (!property) {
     return <div>No property found.</div>;
   }
-
-  const barKeys = [
-    { name: "Income", color: "#82ca9d" },
-    { name: "Expenses", color: "#FA8072" }
-  ];
   
   return (
     <section>
