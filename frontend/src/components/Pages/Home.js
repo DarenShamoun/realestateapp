@@ -81,12 +81,12 @@ const Landing = () => {
       </section>
 
       <section className="flex my-4 px-4 gap-3">
-          <div className="w-1/2 h-[400px] bg-gray-700 rounded">
-            <AreaChartPlot/>
-          </div>
-          <div className="w-1/2 h-[400px] bg-gray-700 rounded">
-            <BarChartPlot data={barChartData} barKeys={barKeys} xAxisKey="name" title="6-Month Financial Overview"/>
-          </div>
+        <div className="w-1/2 h-[400px] bg-gray-700 rounded">
+          <AreaChartPlot/>
+        </div>
+        <div className="w-1/2 h-[400px] bg-gray-700 rounded">
+          <BarChartPlot data={barChartData} barKeys={barKeys} xAxisKey="name" title="6-Month Financial Overview"/>
+        </div>
       </section>
 
       <section className="flex my-4 px-4 gap-2">
