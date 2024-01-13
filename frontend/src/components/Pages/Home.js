@@ -16,11 +16,7 @@ import FinancialCard from '@/components/Cards/FinancialCard';
 const Landing = () => {
   const {
     properties,
-    currentMonth,
-    currentYear,
     currentDate,
-    lastMonth,
-    lastYear,
     lastMonthDate,
     monthlyTotalIncome,
     monthlyTotalExpenses,
@@ -30,10 +26,6 @@ const Landing = () => {
     lastMonthTotalExpenses,
     lastMonthNetProfit,
     lastMonthExpectedIncome,
-    YTDTotalIncome,
-    YTDTotalExpenses,
-    YTDNetProfit,
-    YTDExpectedIncome,
     pieChartData,
     barChartData,
     barKeys,
