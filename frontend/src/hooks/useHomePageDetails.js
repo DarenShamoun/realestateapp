@@ -25,6 +25,7 @@ export const useHomePageDetails = () => {
     const [YTDTotalExpenses, setYTDTotalExpenses] = useState(0);
     const [YTDNetProfit, setYTDNetProfit] = useState(0);
     const [YTDExpectedIncome, setYTDExpectedIncome] = useState(0);
+    const [radarChartData, setRadarChartData] = useState([]);
     const [pieChartData, setPieChartData] = useState([]);
     const [barChartData, setBarChartData] = useState([]);
     const [barKeys, setBarKeys] = useState([]);
@@ -167,6 +168,20 @@ export const useHomePageDetails = () => {
                 ];
                 setBarKeys(barKeys);
 
+                // Preparing Radar Chart Data
+                const radarData = [];
+                for (let i = 0; i < propertiesData.length; i++) {
+                const property = propertiesData[i];
+                const propertyIncome = YTDpayments.filter(p => p.property_id === property.id).reduce((acc, payment) => acc + payment.amount, 0);
+                const propertyExpenses = YTDexpenses.filter(e => e.property_id === property.id).reduce((acc, expense) => acc + expense.amount, 0);
+                radarData.push({
+                    property: property.name,
+                    income: propertyIncome,
+                    expenses: propertyExpenses
+                });
+                }
+                setRadarChartData(radarData);
+
             } catch (error) {
                 console.error('Failed to fetch property details:', error);
                 setError(error);
@@ -193,6 +208,7 @@ export const useHomePageDetails = () => {
         lastMonthTotalExpenses,
         lastMonthNetProfit,
         lastMonthExpectedIncome,
+        radarChartData,
         pieChartData,
         barChartData,
         barKeys,

@@ -72,7 +72,7 @@ const UnitDetails = ({ unit_id }) => {
         <div className="w-full lg:w-1/2 px-4">
           <div className="bg-gray-700 shadow rounded p-4">
             <h2 className="text-xl text-white mb-4">Financial Overview</h2>
-            <div className="h-[300px] bg-gray-700 rounded">
+            <div className="h-[420px] bg-gray-700 rounded">
               <BarChartPlot 
                 data={chartData} 
                 barKeys={[{ name: "Payment", color: "#82ca9d" }, { name: "Balance", color: "#FA8072" }]} 

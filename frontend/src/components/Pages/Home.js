@@ -28,6 +28,7 @@ const Landing = () => {
     lastMonthTotalExpenses,
     lastMonthNetProfit,
     lastMonthExpectedIncome,
+    radarChartData,
     pieChartData,
     barChartData,
     barKeys,
@@ -83,10 +84,10 @@ const Landing = () => {
       </section>
 
       <section className="flex my-4 px-4 gap-3">
-        <div className="w-1/2 h-[400px] bg-gray-700 rounded">
+        <div className="w-1/2 h-[500px] bg-gray-700 rounded">
           <AreaChartPlot/>
         </div>
-        <div className="w-1/2 h-[400px] bg-gray-700 rounded">
+        <div className="w-1/2 h-[500px] bg-gray-700 rounded">
           <BarChartPlot data={barChartData} barKeys={barKeys} xAxisKey="name" title="6-Month Financial Overview"/>
         </div>
       </section>
@@ -99,7 +100,7 @@ const Landing = () => {
           <LineChartPlot/>
         </div>
         <div className=" w-1/3 h-[400px] bg-gray-700 rounded">
-          <RadarChartPlot/>
+          <RadarChartPlot data={radarChartData} title="Property Income Breakdown"/>
         </div>
       </section>
     </>
