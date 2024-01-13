@@ -181,11 +181,7 @@ export const useHomePageDetails = () => {
 
     return {
         properties,
-        currentMonth,
-        currentYear,
         currentDate,
-        lastMonth,
-        lastYear,
         lastMonthDate,
         monthlyTotalIncome,
         monthlyTotalExpenses,
@@ -195,10 +191,6 @@ export const useHomePageDetails = () => {
         lastMonthTotalExpenses,
         lastMonthNetProfit,
         lastMonthExpectedIncome,
-        YTDTotalIncome,
-        YTDTotalExpenses,
-        YTDNetProfit,
-        YTDExpectedIncome,
         pieChartData,
         barChartData,
         barKeys,
