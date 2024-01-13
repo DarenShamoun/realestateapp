@@ -43,8 +43,8 @@ const RadarChartPlot = ({ data, keys, title }) => {
     <>
       <h1 style={{ paddingLeft: '20px', paddingTop: '10px', color: 'white', fontWeight: 'bold' }}>{titleText}</h1> 
       <ResponsiveContainer width="100%" height="90%" padding={{ top: 10, bottom: 10}} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <RadarChart outerRadius="100%" data={chartData}>
-          <PolarGrid stroke="white" />
+        <RadarChart outerRadius="80%" data={chartData}>
+        <PolarGrid stroke="white" />
           <PolarAngleAxis dataKey="property" tick={{ fill: 'white' }} />
           <PolarRadiusAxis angle={30} domain={[0, Math.max(...chartData.map(d => Math.max(d.income, d.expenses)))]} />
           {chartKeys.map((key) => (
