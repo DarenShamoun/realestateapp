@@ -1,4 +1,3 @@
-import React from 'react';
 import { RadarChart, Radar, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Legend, Tooltip, ResponsiveContainer } from "recharts";
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -14,7 +13,6 @@ const CustomTooltip = ({ active, payload, label }) => {
       </div>
     );
   }
-
   return null;
 };
 
@@ -43,9 +41,9 @@ const RadarChartPlot = ({ data, keys, title }) => {
     <>
       <h1 style={{ paddingLeft: '20px', paddingTop: '10px', color: 'white', fontWeight: 'bold' }}>{titleText}</h1> 
       <ResponsiveContainer width="100%" height="100%">
-        <RadarChart width={730} height={250} outerRadius="80%" data={chartData}
+        <RadarChart width={730} height={400} outerRadius="80%" data={chartData}
           margin={{
-            top: 30,
+            top: 10,
             right: 30,
             left: 30,
             bottom: 40,

@@ -51,7 +51,7 @@ const PieChartPlot = ({ data, title }) => {
       <h1 style={{ paddingLeft: '20px', paddingTop: '10px', color: 'white', fontWeight: 'bold' }}>{title}</h1> 
       <ResponsiveContainer width="100%" height="100%">
         <PieChart width={730} height={250} margin={{
-            top: 30,
+            top: 10,
             right: 30,
             left: 30,
             bottom: 40,
