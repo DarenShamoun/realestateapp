@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart, XAxis, YAxis, Bar, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { BarChart, XAxis, YAxis, Bar, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -66,10 +66,12 @@ const BarChartPlot = ({ data, barKeys, xAxisKey, title }) => {
 
   const chartData = data && data.length > 0 ? data : defaultData;
   const keys = barKeys || defaultBarKeys;
+  const xKey = xAxisKey || "year";
+  const titleText = title || "Bar Chart";
 
   return (
     <>
-      <h1 style={{ paddingLeft: '20px', paddingTop: '10px', color: 'white', fontWeight: 'bold' }}>{title}</h1> 
+      <h1 style={{ paddingLeft: '20px', paddingTop: '10px', color: 'white', fontWeight: 'bold' }}>{titleText}</h1> 
       <ResponsiveContainer width="100%" height="100%">
         <BarChart width={730} height={250} data={chartData} margin={{
             top: 30,
@@ -77,8 +79,9 @@ const BarChartPlot = ({ data, barKeys, xAxisKey, title }) => {
             left: 30,
             bottom: 40,
           }}>
-          <XAxis dataKey={xAxisKey || "name"} stroke="white" />
+          <XAxis dataKey={xKey || "name"} stroke="white" />
           <YAxis stroke="white" tickFormatter={yAxisTickFormatter} />
+          <CartesianGrid strokeDasharray="3 3" />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
           {keys.map(key => (

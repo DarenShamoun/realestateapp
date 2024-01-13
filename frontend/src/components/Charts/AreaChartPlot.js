@@ -1,7 +1,25 @@
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import React from 'react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Defs, LinearGradient, Stop } from 'recharts';
 
-const AreaChartPlot = () => {
-  const data = [
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="custom-tooltip" style={{ backgroundColor: '#6B7280', padding: '10px', border: '1px solid #ccc' }}>
+        {payload.map((entry, index) => (
+          <p key={`item-${index}`} style={{ color: entry.color }}>
+            {`${entry.name}: $${entry.value.toFixed(2)}`}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+const yAxisTickFormatter = (value) => `$${value.toFixed(0)}`;
+
+const AreaChartPlot = ({ data, areaKeys, xAxisKey, title }) => {
+  const defaultData = [
     {
       "year": "2016",
       "expenses": 4000,
@@ -37,32 +55,52 @@ const AreaChartPlot = () => {
       "expenses": 3490,
       "profit": 4300
     }
-  ]
+  ];
+
+  const defaultAreaKeys = [
+    { name: "profit", color: "#82ca9d", fill: "#82ca9d" },
+    { name: "expenses", color: "#8884d8", fill: "#8884d8" }
+  ];
+
+  const chartData = data && data.length > 0 ? data : defaultData;
+  const keys = areaKeys || defaultAreaKeys;
+  const xKey = xAxisKey || "year";
+  const titleText = title || "Area Chart";
 
   return (
     <>
-      <ResponsiveContainer width="100%" height="100%" >
-        <AreaChart width={730} height={250} data={data}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-          <defs>
-            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <XAxis dataKey="year" />
-          <YAxis />
-          <Tooltip />
-          <Area type="monotone" dataKey="profit" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
-          <Area type="monotone" dataKey="expenses" stroke="#82ca9d" fillOpacity={1} fill="url(#colorPv)" />
+      <h1 style={{ paddingLeft: '20px', paddingTop: '10px', color: 'white', fontWeight: 'bold' }}>{titleText}</h1> 
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart width={730} height={250} data={chartData}
+          margin={{ top: 30, right: 40, left: 30, bottom: 40 }}>
+          <Defs>
+            {keys.map((key, index) => (
+              <LinearGradient key={index} id={`color${key.name}`} x1="0" y1="0" x2="0" y2="1">
+                <Stop offset="5%" stopColor={key.color} stopOpacity={0.8}/>
+                <Stop offset="95%" stopColor={key.color} stopOpacity={0}/>
+              </LinearGradient>
+            ))}
+          </Defs>
+          <XAxis dataKey={xKey || "name"} stroke="white" />
+          <YAxis stroke="white" tickFormatter={yAxisTickFormatter} />
+          <CartesianGrid strokeDasharray="3 3" />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend />
+          {keys.map((key, index) => (
+            <Area 
+              key={key.name} 
+              type="monotone" 
+              dataKey={key.name} 
+              stroke={key.color} 
+              strokeWidth={2}
+              fillOpacity={0.4}
+              fill={defaultAreaKeys[index].fill}
+            />
+          ))}
         </AreaChart>
       </ResponsiveContainer>
     </>
   );
-} 
+}
 
 export default AreaChartPlot;
