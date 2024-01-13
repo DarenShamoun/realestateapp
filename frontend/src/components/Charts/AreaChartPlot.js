@@ -5,6 +5,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <div className="custom-tooltip" style={{ backgroundColor: '#6B7280', padding: '10px', border: '1px solid #ccc' }}>
+        <p className="label">{`${label}`}</p>
         {payload.map((entry, index) => (
           <p key={`item-${index}`} style={{ color: entry.color }}>
             {`${entry.name}: $${entry.value.toFixed(2)}`}
@@ -13,6 +14,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       </div>
     );
   }
+
   return null;
 };
 
