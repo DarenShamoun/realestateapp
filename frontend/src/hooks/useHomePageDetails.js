@@ -182,6 +182,8 @@ export const useHomePageDetails = () => {
     return {
         properties,
         currentDate,
+        currentMonth,
+        currentYear,
         lastMonthDate,
         monthlyTotalIncome,
         monthlyTotalExpenses,

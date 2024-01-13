@@ -17,6 +17,8 @@ const Landing = () => {
   const {
     properties,
     currentDate,
+    currentMonth,
+    currentYear,
     lastMonthDate,
     monthlyTotalIncome,
     monthlyTotalExpenses,
