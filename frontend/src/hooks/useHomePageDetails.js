@@ -3,7 +3,7 @@ import { getProperties } from '@/api/propertyService';
 import { getExpenses } from '@/api/expenseService';
 import { getPayments } from '@/api/paymentService';
 import { getRents } from '@/api/rentService';
-import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo } from '@/components/Utils/DateManagment';
+import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo } from '@/Utils/DateManagment';
 
 export const useHomePageDetails = () => {
 

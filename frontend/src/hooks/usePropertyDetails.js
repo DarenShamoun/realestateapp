@@ -4,7 +4,7 @@ import { getUnits } from '@/api/unitService';
 import { getExpenses } from '@/api/expenseService';
 import { getPayments } from '@/api/paymentService';
 import { getRents } from '@/api/rentService';
-import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo } from '@/components/Utils/DateManagment';
+import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo } from '@/Utils/DateManagment';
 
 export const usePropertyDetails = (property_id) => {
   const [property, setProperty] = useState(null);
