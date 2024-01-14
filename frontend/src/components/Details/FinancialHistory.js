@@ -1,7 +1,7 @@
 import React from 'react';
 import { formatDate } from '@/Utils/DateManagment';
 
-const PaymentHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, onOpenCreateRent }) => (
+const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, onOpenCreateRent }) => (
   <div className="w-full lg:w-1/2 px-4">
     <div className="bg-gray-700 shadow rounded p-4 mb-4 lg:mb-0">
       <h2 className="text-xl text-white mb-4">Financial History</h2>
@@ -58,4 +58,4 @@ const PaymentHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, on
   </div>
 );
 
-export default PaymentHistory;
+export default FinancialHistory;
