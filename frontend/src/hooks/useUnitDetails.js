@@ -4,7 +4,7 @@ import { getTenants } from '@/api/tenantService';
 import { getPayments } from '@/api/paymentService';
 import { getLeases } from '@/api/leaseService';
 import { getRents } from '@/api/rentService';
-import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo } from '@/Utils/DateManagment';
+import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo, formatDate } from '@/Utils/DateManagment';
 
 export const useUnitDetails = (unit_id) => {
   const [unit, setUnit] = useState(null);
@@ -73,26 +73,39 @@ export const useUnitDetails = (unit_id) => {
   const mergeFinancialData = (payments, rentHistory) => {
     const combinedData = {};
   
+    // First, use YYYY-MM format for correct sorting
     rentHistory.forEach(rent => {
-      const monthYear = new Date(rent.date).toISOString().substr(0, 7);
-      combinedData[monthYear] = {
-        ...combinedData[monthYear],
-        monthYear,
+      const monthYearForSorting = formatDate(rent.date, 'YYYY-MM');
+      combinedData[monthYearForSorting] = {
+        ...combinedData[monthYearForSorting],
+        monthYearForSorting,
         Balance: rent.debt,
       };
     });
   
     payments.forEach(payment => {
-      const monthYear = new Date(payment.date).toISOString().substr(0, 7);
-      combinedData[monthYear] = {
-        ...combinedData[monthYear],
-        monthYear,
-        Payment: (combinedData[monthYear]?.Payment || 0) + payment.amount
+      const monthYearForSorting = formatDate(payment.date, 'YYYY-MM');
+      combinedData[monthYearForSorting] = {
+        ...combinedData[monthYearForSorting],
+        monthYearForSorting,
+        Payment: (combinedData[monthYearForSorting]?.Payment || 0) + payment.amount
       };
     });
   
-    return Object.values(combinedData).sort((a, b) => a.monthYear.localeCompare(b.monthYear));
-  };
+    // Sort data based on YYYY-MM format
+    const sortedData = Object.values(combinedData).sort((a, b) => a.monthYearForSorting.localeCompare(b.monthYearForSorting));
+  
+    // Then, convert to MM-YY format for display
+    const finalData = sortedData.map(item => {
+      const [year, month] = item.monthYearForSorting.split('-');
+      return {
+        ...item,
+        monthYear: `${month}-${year.substring(2)}` // Convert to MM-YY
+      };
+    });
+  
+    return finalData;
+  };  
 
   return { unit, tenant, payments, rentHistory, leases, currentMonthRent, chartData, isLoading, error };
 };
