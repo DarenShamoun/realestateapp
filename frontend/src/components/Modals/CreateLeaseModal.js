@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { getTenants } from '@/api/tenantService';
 import { addTenant } from '@/api/tenantService';

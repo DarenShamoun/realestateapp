@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { useUnitDetails } from '@/hooks/useUnitDetails';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
