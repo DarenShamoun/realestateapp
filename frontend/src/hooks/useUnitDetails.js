@@ -4,6 +4,7 @@ import { getTenants } from '@/api/tenantService';
 import { getPayments } from '@/api/paymentService';
 import { getLeases } from '@/api/leaseService';
 import { getRents } from '@/api/rentService';
+import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo } from '@/components/Utils/DateManagment';
 
 export const useUnitDetails = (unit_id) => {
   const [unit, setUnit] = useState(null);
@@ -19,13 +20,12 @@ export const useUnitDetails = (unit_id) => {
   useEffect(() => {
     const fetchUnitDetails = async () => {
       try {
-        const currentMonth = new Date().getMonth() + 1;
-        const currentYear = new Date().getFullYear();
-        const currentDate = new Date();
+        const currentDate = getCurrentDate();
+        const currentMonth = getCurrentMonth();
+        const currentYear = getCurrentYear();
         const endDate = currentDate.toISOString().split('T')[0];
 
-        const sixMonthsAgo = new Date();
-        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        const sixMonthsAgo = getDateMonthsAgo(6);
 
         const unitData = await getUnits({ unit_id });
         setUnit(unitData);

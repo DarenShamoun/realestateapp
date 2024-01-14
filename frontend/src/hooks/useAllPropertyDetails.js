@@ -3,12 +3,13 @@ import { getProperties } from '@/api/propertyService';
 import { getExpenses } from '@/api/expenseService';
 import { getPayments } from '@/api/paymentService';
 import { getRents } from '@/api/rentService';
+import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo } from '@/components/Utils/DateManagment';
 
 export const useAllPropertyDetails = () => {
   const [properties, setProperties] = useState([]);
-  const [currentMonth] = useState(new Date().getMonth() + 1);
-  const [currentYear] = useState(new Date().getFullYear());
-  const [currentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [currentMonth] = useState(getCurrentMonth());
+  const [currentYear] = useState(getCurrentYear());
+  const [currentDate] = useState(getCurrentDate().toISOString().split('T')[0]);
   const [monthlyTotalIncome, setMonthlyTotalIncome] = useState(0);
   const [monthlyTotalExpenses, setMonthlyTotalExpenses] = useState(0);
   const [monthlyNetProfit, setMonthlyNetProfit] = useState(0);
@@ -26,27 +27,25 @@ export const useAllPropertyDetails = () => {
   useEffect(() => {
     const fetchAllPropertyDetails = async () => {
       try {
-        const sixMonthsAgo = new Date();
-        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
-        const twelveMonthsAgo = new Date();
-        twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+        const sixMonthsAgo = getDateMonthsAgo(6).toISOString().split('T')[0];
+        
+        const twelveMonthsAgo = getDateMonthsAgo(12).toISOString().split('T')[0];
 
         const propertiesData = await getProperties();
         setProperties(propertiesData);
 
         const YTDrents = await getRents({
-          start_date: twelveMonthsAgo.toISOString().split('T')[0],
+          start_date: twelveMonthsAgo,
           end_date: currentDate
         });
   
         const YTDexpenses = await getExpenses({ 
-          start_date: twelveMonthsAgo.toISOString().split('T')[0],
+          start_date: twelveMonthsAgo,
           end_date: currentDate
         });
   
         const YTDpayments = await getPayments({
-          start_date: twelveMonthsAgo.toISOString().split('T')[0],
+          start_date: twelveMonthsAgo,
           end_date: currentDate
         });
 

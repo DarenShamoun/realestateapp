@@ -4,13 +4,14 @@ import { getUnits } from '@/api/unitService';
 import { getExpenses } from '@/api/expenseService';
 import { getPayments } from '@/api/paymentService';
 import { getRents } from '@/api/rentService';
+import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo } from '@/components/Utils/DateManagment';
 
 export const usePropertyDetails = (property_id) => {
   const [property, setProperty] = useState(null);
   const [units, setUnits] = useState([]);
-  const [currentMonth] = useState(new Date().getMonth() + 1);
-  const [currentYear] = useState(new Date().getFullYear());
-  const [currentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [currentMonth] = useState(getCurrentMonth());
+  const [currentYear] = useState(getCurrentYear());
+  const [currentDate] = useState(getCurrentDate().toISOString().split('T')[0]);
   const [monthlyTotalIncome, setMonthlyTotalIncome] = useState(0);
   const [monthlyTotalExpenses, setMonthlyTotalExpenses] = useState(0);
   const [monthlyNetProfit, setMonthlyNetProfit] = useState(0);
@@ -28,11 +29,9 @@ export const usePropertyDetails = (property_id) => {
   useEffect(() => {
     const fetchPropertyDetails = async () => {
       try {
-        const sixMonthsAgo = new Date();
-        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        const sixMonthsAgo = getDateMonthsAgo(6);
 
-        const twelveMonthsAgo = new Date();
-        twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+        const twelveMonthsAgo = getDateMonthsAgo(12);
 
         const propertyData = await getProperties({ property_id: property_id });
         if (propertyData.length > 0) {
