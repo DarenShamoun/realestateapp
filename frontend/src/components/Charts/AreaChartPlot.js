@@ -1,5 +1,5 @@
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Defs, LinearGradient, Stop } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -75,14 +75,14 @@ const AreaChartPlot = ({ data, areaKeys, xAxisKey, title }) => {
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart width={730} height={250} data={chartData}
           margin={{ top: 30, right: 40, left: 30, bottom: 40 }}>
-          <Defs>
+          <defs>
             {keys.map((key, index) => (
-              <LinearGradient key={index} id={`color${key.name}`} x1="0" y1="0" x2="0" y2="1">
-                <Stop offset="5%" stopColor={key.color} stopOpacity={0.8}/>
-                <Stop offset="95%" stopColor={key.color} stopOpacity={0}/>
-              </LinearGradient>
+              <linearGradient key={index} id={`color${key.name}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={key.color} stopOpacity={0.8}/>
+                <stop offset="95%" stopColor={key.color} stopOpacity={0}/>
+              </linearGradient>
             ))}
-          </Defs>
+          </defs>
           <XAxis dataKey={xKey || "name"} stroke="white" />
           <YAxis stroke="white" tickFormatter={yAxisTickFormatter} />
           <CartesianGrid strokeDasharray="3 3" />
