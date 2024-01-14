@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatDate } from '@/Utils/DateManagment';
 
 const PaymentHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, onOpenCreateRent }) => (
   <div className="w-full lg:w-1/2 px-4">
@@ -13,7 +14,7 @@ const PaymentHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, on
             <ul className="space-y-2">
               {payments.map((payment, index) => (
                 <li key={index} className="text-gray-300">
-                  <p>Date: {payment.date}</p>
+                  <p>Date: {formatDate(payment.date, "MM-DD-YYYY")}</p>
                   <p>Amount: ${payment.amount.toFixed(2)}</p>
                 </li>
               ))}
@@ -38,7 +39,7 @@ const PaymentHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, on
             <ul className="space-y-2">
               {rentHistory.map((rent, index) => (
                 <li key={index} className="text-gray-300">
-                  <p>Date: {rent.date}</p>
+                  <p>Date: {formatDate(rent.date, "MM-DD-YYYY")}</p>
                   <p>Total Rent: ${rent.total_rent.toFixed(2)}</p>
                 </li>
               ))}

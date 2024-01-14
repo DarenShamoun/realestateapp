@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatDate } from '@/Utils/DateManagment';
 
 const LeaseDetails = ({ leases, onOpenCreateLease }) => (
   <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4">
@@ -9,7 +10,7 @@ const LeaseDetails = ({ leases, onOpenCreateLease }) => (
           <p>Base Rent: ${lease.monthly_rent.toFixed(2)}</p>
           <p>Deposit: {lease.deposit ? `$${lease.deposit.toFixed(2)}` : 'N/A'}</p>
           <p>Terms: {lease.terms || 'N/A'}</p>
-          <p>Start Date: {lease.start_date}</p>
+          <p>Start Date: {formatDate(lease.start_date, "MM-DD-YYYY")}</p>
           <p>End Date: {lease.end_date || 'N/A'}</p>
         </div>
       ))

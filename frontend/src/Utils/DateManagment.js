@@ -1,3 +1,4 @@
+
 // This function returns the current date
 export const getCurrentDate = () => {
     return new Date();
@@ -27,11 +28,14 @@ export const getLastMonthDate = () => {
 };
 
 // Function to format a date into specified format
-export const formatDate = (date, format) => {
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // Months are 0-indexed
-    const year = date.getFullYear();
-  
+export const formatDate = (dateString, format) => {
+    // Create a Date object in UTC
+    const date = new Date(dateString + 'T00:00:00Z');
+
+    const day = date.getUTCDate();
+    const month = date.getUTCMonth() + 1; // Months are 0-indexed
+    const year = date.getUTCFullYear();
+
     // Replace format tokens with actual values
     return format
       .replace('DD', String(day).padStart(2, '0'))
