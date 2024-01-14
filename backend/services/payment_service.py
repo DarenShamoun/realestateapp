@@ -9,8 +9,8 @@ def add_payment(data):
 
 def get_payments(filters=None):
     query = Payment.query.join(Lease, Payment.lease_id == Lease.id)\
-                          .join(Unit, Lease.unit_id == Unit.id)\
-                          .join(Property, Unit.property_id == Property.id)
+        .join(Unit, Lease.unit_id == Unit.id)\
+        .join(Property, Unit.property_id == Property.id)
 
     if filters:
         if 'payment_id' in filters:
