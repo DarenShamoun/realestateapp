@@ -55,25 +55,27 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
         <h2 className="text-xl text-white mb-4">Financial History</h2>
         <div className="grid grid-cols-2 gap-4">
 
-          {/* Rent History */}
-          <div>
-            <h3 className="text-lg text-white mb-2">Rent History</h3>
-            {rentHistory.length > 0 ? (
-              <ul className="space-y-2">
-                {rentHistory.map((rent, index) => (
-                  <li key={index} className="text-gray-300">
+        {/* Rent History */}
+        <div>
+          <h3 className="text-lg text-white mb-2">Rent History</h3>
+          {rentHistory.length > 0 ? (
+            <ul className="space-y-2">
+              {rentHistory.map((rent, index) => (
+                <li key={index} className="text-gray-300 flex justify-between items-center">
+                  <div>
                     <p>Date: {formatDate(rent.date, "MM-DD-YYYY")}</p>
                     <p>Total Rent: ${rent.total_rent.toFixed(2)}</p>
-                    <button 
-                      onClick={() => onOpenEditRent(rent)} 
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
-                    >
-                      Edit
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : <p className="text-gray-300">No rent history available</p>}
+                  </div>
+                  <button 
+                    onClick={() => onOpenEditRent(rent)} 
+                    className="ml-4"
+                  >
+                    <img src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : <p className="text-gray-300">No rent history available</p>}
             {/* Add Rent Button */}
             <button
               onClick={onOpenCreateRent}
@@ -89,30 +91,30 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
             {payments.length > 0 ? (
               <ul className="space-y-2">
                 {payments.map((payment, index) => (
-                  <li key={index} className="text-gray-300">
-                    <p>Date: {formatDate(payment.date, "MM-DD-YYYY")}</p>
-                    <p>Amount: ${payment.amount.toFixed(2)}</p>
+                  <li key={index} className="text-gray-300 flex justify-between items-center">
+                    <div>
+                      <p>Date: {formatDate(payment.date, "MM-DD-YYYY")}</p>
+                      <p>Amount: ${payment.amount.toFixed(2)}</p>
+                    </div>
                     <button 
                       onClick={() => onOpenEditPayment(payment)} 
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
+                      className="ml-4"
                     >
-                      Edit
+                      <img src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
                     </button>
                   </li>
                 ))}
               </ul>
-            ) : (
-              <p className="text-gray-300">No payment history available</p>
-            )}
-            {/* Add Payment Button */}
-            {leases && leases.length > 0 && (
-              <button
-                onClick={onOpenCreatePayment}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
-              >
-                Add Payment
-              </button>
-            )}
+            ) : (<p className="text-gray-300">No payment history available</p>)}
+              {/* Add Payment Button */}
+              {leases && leases.length > 0 && (
+                <button
+                  onClick={onOpenCreatePayment}
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
+                >
+                  Add Payment
+                </button>
+              )}
           </div>
         </div>
       </div>
