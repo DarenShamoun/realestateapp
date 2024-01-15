@@ -51,21 +51,22 @@ const UnitDetails = ({ unit_id }) => {
           rentDate={currentMonthRent?.date} 
         />
         <CreateLeaseModal 
-        isOpen={isCreateLeaseModalOpen} 
-        onClose={() => setCreateLeaseModalOpen(false)}
-        unitId={unit_id}
+          isOpen={isCreateLeaseModalOpen} 
+          onClose={() => setCreateLeaseModalOpen(false)}
+          unitId={unit_id}
         />
       </section>
   
       <section className="flex flex-wrap -mx-4 my-4">
-      {/* Payment History */}
-      <FinancialHistory
+        {/* Financial History */}
+        <FinancialHistory
           payments={payments}
           rentHistory={rentHistory}
           leases={leases}
           onOpenCreatePayment={() => setCreatePaymentModalOpen(true)}
           onOpenCreateRent={() => setCreateRentModalOpen(true)}
-        />     
+        />
+
         {/* Financial Overview */}
         <div className="w-full lg:w-1/2 px-4">
           <div className="bg-gray-700 shadow rounded p-4">
@@ -80,6 +81,7 @@ const UnitDetails = ({ unit_id }) => {
           </div>
         </div>
       </section>
+
       <CreatePaymentModal 
         isOpen={isCreatePaymentModalOpen} 
         onClose={() => setCreatePaymentModalOpen(false)}
