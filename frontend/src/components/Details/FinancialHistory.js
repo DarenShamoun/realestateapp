@@ -2,10 +2,13 @@ import React from 'react';
 import { useState } from 'react';
 import { formatDate } from '@/Utils/DateManagment';
 import EditPaymentModal from '@/components/Modals/EditPaymentModal';
+import EditRentModal from '@/components/Modals/EditRentModal';
 
 const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, onOpenCreateRent }) => {
   const [editPaymentData, setEditPaymentData] = useState(null);
   const [isEditPaymentModalOpen, setIsEditPaymentModalOpen] = useState(false);
+  const [editRentData, setEditRentData] = useState(null);
+  const [isEditRentModalOpen, setIsEditRentModalOpen] = useState(false);
 
   const onOpenEditPayment = (payment) => {
     setEditPaymentData(payment);
@@ -17,14 +20,34 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
     setEditPaymentData(null);
   };
 
+  const onOpenEditRent = (rent) => {
+    setEditRentData(rent);
+    setIsEditRentModalOpen(true);
+  };
+
+  const onCloseEditRentModal = () => {
+    setIsEditRentModalOpen(false);
+    setEditRentData(null);
+  };
+
   return (
     <div className="w-full lg:w-1/2 px-4">
 
+      {/* Edit Payment Modal */}
       {isEditPaymentModalOpen && (
         <EditPaymentModal
           isOpen={isEditPaymentModalOpen}
           onClose={onCloseEditPaymentModal}
           payment={editPaymentData}
+        />
+      )}
+
+      {/* Edit Rent Modal */}
+      {isEditRentModalOpen && (
+        <EditRentModal
+          isOpen={isEditRentModalOpen}
+          onClose={onCloseEditRentModal}
+          rent={editRentData}
         />
       )}
 
