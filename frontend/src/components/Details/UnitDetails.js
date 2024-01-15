@@ -43,18 +43,25 @@ const UnitDetails = ({ unit_id }) => {
       <h1 className="text-3xl font-bold text-white mb-4">Unit {unit[0].unit_number}</h1>
       <section className="flex flex-wrap gap-4 justify-center">
         {/* Unit Details */}
+
+        {/* Tenant Details */}
         <TenantDetails 
           tenant={tenant} 
         />
+
+        {/* Lease Details */}
         <LeaseDetails 
           leases={leases} 
           onOpenCreateLease={() => setCreateLeaseModalOpen(true)} 
         />
+
+        {/* Rent Details */}
         <RentDetails 
           rentDetails={currentMonthRent} 
           totalRent={currentMonthRent?.total_rent} 
           rentDate={currentMonthRent?.date} 
         />
+
         <CreateLeaseModal 
           isOpen={isCreateLeaseModalOpen} 
           onClose={() => setCreateLeaseModalOpen(false)}
