@@ -45,7 +45,7 @@ const EditPaymentModal = ({ isOpen, onClose, payment }) => {
 
     try {
       await updatePayment(payment.id, paymentData);
-      onClose(console.log(paymentData));
+      onClose();
     } catch (error) {
       console.error('Error updating payment:', error);
       alert('An error occurred while updating the payment. Please try again.');

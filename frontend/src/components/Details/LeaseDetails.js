@@ -1,9 +1,19 @@
 import React from 'react';
 import { formatDate } from '@/Utils/DateManagment';
 
-const LeaseDetails = ({ leases, onOpenCreateLease }) => (
-  <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4">
-    <h2 className="text-xl text-white">Lease Details</h2>
+const LeaseDetails = ({ leases, onOpenCreateLease, onOpenEditLease }) => (
+  <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/4 relative">
+    <div className="flex justify-between items-center">
+      <h2 className="text-xl text-white">Lease Details</h2>
+      {/* Edit Lease Button */}
+      <button 
+        onClick={() => onOpenEditLease(leases[0])} // Assuming you want to edit the first lease
+        className="ml-4"
+      >
+        <img src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
+      </button>
+    </div>
+    
     {leases && leases.length > 0 ? (
       leases.map((lease, index) => (
         <div key={index} className="text-gray-300 mb-2">

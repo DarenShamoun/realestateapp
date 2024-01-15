@@ -2,7 +2,16 @@ import React from 'react';
 
 const TenantDetails = ({ tenant }) => (
   <div className="bg-gray-700 shadow rounded p-4 h-auto w-1/3">
-    <h2 className="text-xl text-white">Tenant Details</h2>
+    <div className="flex justify-between items-center">
+      <h2 className="text-xl text-white">Tenant Details</h2>
+      {/* Edit Tenant Button */}
+      <button 
+        onClick={() => onOpenEditTenant(tenant[0])}
+        className="ml-4"
+      >
+        <img src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
+      </button>
+    </div>
     {tenant ? (
       <>
         <p className="text-gray-300">Name: {tenant.full_name || 'None'}</p>
