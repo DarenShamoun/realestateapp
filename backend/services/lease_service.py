@@ -32,10 +32,13 @@ def update_lease(lease_id, data):
 
     for key, value in data.items():
         if hasattr(lease, key):
+            if key in ['start_date', 'end_date'] and value == '':
+                value = None
             setattr(lease, key, value)
 
     db.session.commit()
     return lease
+
 
 def delete_lease(lease_id):
     lease = Lease.query.get(lease_id)
