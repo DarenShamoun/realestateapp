@@ -9,7 +9,7 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
       {/* Payment History */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-        <h3 className="text-lg text-white mb-2">Payment History</h3>
+          <h3 className="text-lg text-white mb-2">Payment History</h3>
           {payments.length > 0 ? (
             <ul className="space-y-2">
               {payments.map((payment, index) => (
