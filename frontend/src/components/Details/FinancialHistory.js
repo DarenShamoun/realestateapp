@@ -75,14 +75,16 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
                 </li>
               ))}
             </ul>
-          ) : <p className="text-gray-300">No rent history available</p>}
+            ) : (<p className="text-gray-300">No rent history available</p>)}
             {/* Add Rent Button */}
-            <button
-              onClick={onOpenCreateRent}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
-            >
-              Add Rent
-            </button>
+            {rentHistory.length > 0 && (
+              <button
+                onClick={onOpenCreateRent}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
+              >
+                Add Rent
+              </button>
+            )}
           </div>
 
           {/* Payment History */}
