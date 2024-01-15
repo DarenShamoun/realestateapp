@@ -6,8 +6,8 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
     <div className="bg-gray-700 shadow rounded p-4 mb-4 lg:mb-0">
       <h2 className="text-xl text-white mb-4">Financial History</h2>
 
-      {/* Payment History */}
       <div className="grid grid-cols-2 gap-4">
+        {/* Payment History */}
         <div>
           <h3 className="text-lg text-white mb-2">Payment History</h3>
           {payments.length > 0 ? (
@@ -32,6 +32,7 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
             </button>
           )}
         </div>
+
         {/* Rent History */}
         <div>
           <h3 className="text-lg text-white mb-2">Rent History</h3>
