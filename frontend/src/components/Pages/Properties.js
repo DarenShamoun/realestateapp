@@ -89,7 +89,7 @@ const Properties = () => {
       </div>
 
       {/* Add Property Button */}
-      <div className="flex justify-center">
+      <div className="flex justify-center pb-4">
         <button 
           onClick={openCreatePropertyModal} 
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
