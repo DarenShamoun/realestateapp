@@ -83,25 +83,25 @@ const PropertyDetails = ({ property_id }) => {
         ))}
       </div>
       
-        {/* Add Unit Button */}
-        <div className="flex justify-center pb-4">
-          <button 
-            onClick={openCreateUnitModal} 
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
-          >
-            Add Unit
-          </button>
-        </div>
+      {/* Add Unit Button */}
+      <div className="flex justify-center pb-4">
+        <button 
+          onClick={openCreateUnitModal} 
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
+        >
+          Add Unit
+        </button>
+      </div>
 
-        {/* Create Unit Modal */}
-        {isCreateUnitModalOpen && (
-          <CreateUnitModal
-            isOpen={isCreateUnitModalOpen}
-            onClose={closeCreateUnitModal}
-            propertyId={property_id}
-          />
-        )}
-      </section>
+      {/* Create Unit Modal */}
+      {isCreateUnitModalOpen && (
+        <CreateUnitModal
+          isOpen={isCreateUnitModalOpen}
+          onClose={closeCreateUnitModal}
+          propertyId={property_id}
+        />
+      )}
+    </section>
   );
 };
 
