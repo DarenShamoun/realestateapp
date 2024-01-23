@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 
-const PropertyCard = ({ property, isManagementMode, onEdit, onDelete }) => {
+const PropertyCard = ({ property }) => {
   const cardContent = (
     <>
       <h3 className="text-white font-bold">{property.name}</h3>

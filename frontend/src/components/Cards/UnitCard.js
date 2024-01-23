@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 
-const UnitCard = ({ unit, isManagementMode, onEdit, onDelete }) => {
+const UnitCard = ({ unit }) => {
   const displayTotalRent = (totalRent) => totalRent ? totalRent.toFixed(2) : '0.00';
 
   const cardContent = (
