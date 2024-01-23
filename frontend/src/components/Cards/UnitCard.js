@@ -12,8 +12,8 @@ const UnitCard = ({ unit, isManagementMode, onEdit, onDelete }) => {
       <p className="text-gray-300">Occupied: {unit.is_occupied ? 'Yes' : 'No'}</p>
       {unit.is_occupied && unit.tenant && (
         <p className="text-gray-300">Tenant: {unit.tenant.full_name}</p>
-      )}
-      <p className="text-gray-300">Total Rent: ${displayTotalRent(unit.total_rent)}</p>
+        )}
+      <p className="text-gray-300">Current Rent: ${displayTotalRent(unit.total_rent)}</p>
     </>
   );
 

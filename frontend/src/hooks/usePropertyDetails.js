@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getProperties } from '@/api/propertyService';
 import { getUnits } from '@/api/unitService';
+import { getTenants } from '@/api/tenantService';
 import { getExpenses } from '@/api/expenseService';
 import { getPayments } from '@/api/paymentService';
 import { getRents } from '@/api/rentService';
@@ -39,9 +40,15 @@ export const usePropertyDetails = (property_id) => {
         }
 
         const unitsData = await getUnits({ property_id: property_id });
-        unitsData.sort((a, b) => a.unit_number.localeCompare(b.unit_number, undefined, {numeric: true}));
+        for (let unit of unitsData) {
+          if (unit.is_occupied) {
+            const tenantData = await getTenants({ unit_id: unit.id });
+            unit.tenant = tenantData.length > 0 ? tenantData[0] : null;
+          }
+        }
+        unitsData.sort((a, b) => a.unit_number.localeCompare(b.unit_number, undefined, { numeric: true }));
         setUnits(unitsData);
-
+        
         const YTDrents = await getRents({
           property_id: property_id,
           start_date: twelveMonthsAgo.toISOString().split('T')[0],
