@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUnitDetails } from '@/hooks/useUnitDetails';
+import { useUnitDetails } from '@/Hooks/useUnitDetails';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
 import TenantDetails from '@/components/Details/TenantDetails';
 import LeaseDetails from '@/components/Details/LeaseDetails';
