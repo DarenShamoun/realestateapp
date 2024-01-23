@@ -17,18 +17,7 @@ const UnitCard = ({ unit, isManagementMode, onEdit, onDelete }) => {
     </>
   );
 
-  return isManagementMode ? (
-    <div
-      className="unit-card bg-gray-700 shadow rounded p-4 cursor-pointer hover:bg-gray-600 transition ease-in-out duration-150"
-      onClick={() => onEdit(unit)}
-    >
-      {cardContent}
-      <div className="flex justify-end space-x-2 mt-4">
-        <button onClick={(e) => { e.stopPropagation(); onEdit(unit); }} className="text-blue-500 hover:text-blue-700">Edit</button>
-        <button onClick={(e) => { e.stopPropagation(); onDelete(unit.id); }} className="text-red-500 hover:text-red-700">Delete</button>
-      </div>
-    </div>
-  ) : (
+  return (
     <Link href={`/properties/${unit.property_id}/units/${unit.id}`} className="unit-card bg-gray-700 shadow rounded p-4 cursor-pointer hover:bg-gray-600 transition ease-in-out duration-150">
       {cardContent}
     </Link>
