@@ -111,6 +111,18 @@ const EditTenantModal = ({ isOpen, onClose, tenant }) => {
         />
         {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}
 
+        {/* Contact Notes */}
+        <label className="block mb-2 text-sm font-bold text-white">Contact Notes</label>
+        <textarea
+            type="text"
+            className="shadow border rounded w-full py-2 px-3 mb-3 text-gray-600"
+            name="contact_notes"
+            placeholder="Contact Notes"
+            value={tenantData.contact_notes}
+            onChange={handleInputChange}
+        />
+        {errors.contact_notes && <p className="text-red-500 text-xs italic">{errors.contact_notes}</p>}
+
         {/* Action Buttons */}
         <div className="flex justify-between mt-4">
           <button onClick={onClose} className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600">
