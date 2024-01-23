@@ -26,7 +26,7 @@ const PropertyDetails = ({ property_id }) => {
     isLoading, 
     error
   } = usePropertyDetails(property_id);
-  const [isCreateUnitModalOpen, setIsCreateUnitModalOpen] = React.useState(false);
+  const [isCreateUnitModalOpen, setCreateUnitModalOpen] = React.useState(false);
 
   const openCreateUnitModal = () => setCreateUnitModalOpen(true);
   const closeCreateUnitModal = () => setCreateUnitModalOpen(false);
