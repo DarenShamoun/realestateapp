@@ -5,11 +5,13 @@
  */
 'use client'
 
+import React, { useState } from 'react';
 import { useAllPropertyDetails } from '@/hooks/useAllPropertyDetails';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
 import PieChartPlot from '@/components/Charts/PieChartPlot';
 import PropertyCard from '@/components/Cards/PropertyCard';
 import FinancialCard from '@/components/Cards/FinancialCard';
+import CreatePropertyModal from '@/components/Modals/CreatePropertyModal';
 
 const Properties = () => {
   const {
@@ -30,6 +32,10 @@ const Properties = () => {
     isLoading,
     error
   } = useAllPropertyDetails();
+  const [isCreatePropertyModalOpen, setIsCreatePropertyModalOpen] = useState(false);
+
+  const openCreatePropertyModal = () => setIsCreatePropertyModalOpen(true);
+  const closeCreatePropertyModal = () => setIsCreatePropertyModalOpen(false);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -81,6 +87,25 @@ const Properties = () => {
           />
         ))}
       </div>
+
+      {/* Add Property Button */}
+      <div className="flex justify-center">
+        <button 
+          onClick={openCreatePropertyModal} 
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
+        >
+          Add Property
+        </button>
+      </div>
+
+      {/* Create Property Modal */}
+      {isCreatePropertyModalOpen && (
+        <CreatePropertyModal
+          isOpen={isCreatePropertyModalOpen}
+          onClose={closeCreatePropertyModal}
+        />
+      )}
+
     </section>
   );
 };
