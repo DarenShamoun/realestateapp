@@ -86,8 +86,6 @@ class Lease(db.Model):
     terms = db.Column(db.Text, nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     rents = db.relationship('Rent', backref='lease', lazy=True)
-    payment_id = db.Column(db.Integer, db.ForeignKey('payment.id'), nullable=True, index=True)
-    payments = db.relationship('Payment', backref='lease', lazy=True, foreign_keys=[payment_id])
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
