@@ -32,10 +32,12 @@ def upload_document_route():
 
 @document_bp.route('/documents', methods=['GET'])
 def get_documents_route():
-    filters = {k: v for k, v in request.args.items()}
     try:
-        documents = get_documents(filters)
-        return jsonify([document_to_json(doc) for doc in documents]), 200
+        documents = get_documents()
+        if documents:
+            return jsonify([document_to_json(doc) for doc in documents]), 200
+        else:
+            return jsonify([]), 200
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
