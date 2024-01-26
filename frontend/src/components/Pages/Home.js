@@ -10,7 +10,7 @@ import BarChartPlot from "@/components/Charts/BarChartPlot";
 import PieChartPlot from "@/components/Charts/PieChartPlot";
 import LineChartPlot from "@/components/Charts/LineChartPlot";
 import RadarChartPlot from "@/components/Charts/RadarChartPlot";
-import { useHomePageDetails } from '@/hooks/useHomePageDetails';
+import { useHomePageDetails } from '@/Hooks/useHomePageDetails';
 import FinancialCard from '@/components/Cards/FinancialCard';
 
 const Landing = () => {

@@ -28,6 +28,7 @@ const TenantDetails = ({ tenant }) => {
           <p className="text-gray-300">Name: {tenant.full_name || 'None'}</p>
           <p className="text-gray-300">Primary Phone: {tenant.primary_phone || 'None'}</p>
           <p className="text-gray-300">Secondary Phone: {tenant.secondary_phone || 'N/A'}</p>
+          <p className="text-gray-300">Email: {tenant.email || 'None'}</p>
           <p className="text-gray-300">Contact Notes: {tenant.contact_notes || 'None'}</p>
         </>
       ) : (

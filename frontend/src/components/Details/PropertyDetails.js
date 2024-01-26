@@ -1,9 +1,10 @@
 import React from 'react';
-import { usePropertyDetails } from '@/hooks/usePropertyDetails';
+import { usePropertyDetails } from '@/Hooks/usePropertyDetails';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
 import PieChartPlot from '@/components/Charts/PieChartPlot';
 import UnitCard from '@/components/Cards/UnitCard';
 import FinancialCard from '@/components/Cards/FinancialCard';
+import CreateUnitModal from '../Modals/CreateUnitModal';
 
 const PropertyDetails = ({ property_id }) => {
   const {
@@ -25,6 +26,10 @@ const PropertyDetails = ({ property_id }) => {
     isLoading, 
     error
   } = usePropertyDetails(property_id);
+  const [isCreateUnitModalOpen, setCreateUnitModalOpen] = React.useState(false);
+
+  const openCreateUnitModal = () => setCreateUnitModalOpen(true);
+  const closeCreateUnitModal = () => setCreateUnitModalOpen(false);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -77,6 +82,25 @@ const PropertyDetails = ({ property_id }) => {
           <UnitCard key={unit.id} unit={unit} />
         ))}
       </div>
+      
+      {/* Add Unit Button */}
+      <div className="flex justify-center pb-4">
+        <button 
+          onClick={openCreateUnitModal} 
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
+        >
+          Add Unit
+        </button>
+      </div>
+
+      {/* Create Unit Modal */}
+      {isCreateUnitModalOpen && (
+        <CreateUnitModal
+          isOpen={isCreateUnitModalOpen}
+          onClose={closeCreateUnitModal}
+          propertyId={property_id}
+        />
+      )}
     </section>
   );
 };
