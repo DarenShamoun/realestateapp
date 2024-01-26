@@ -52,6 +52,9 @@ class Rent(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 class RentHistory(db.Model):
+    """
+    Documents changes in the base rent for a unit in the real estate application.
+    """
     id = db.Column(db.Integer, primary_key=True)
     lease_id = db.Column(db.Integer, db.ForeignKey('lease.id'), nullable=False)
     old_rent = db.Column(db.Float, nullable=False)
@@ -116,3 +119,20 @@ class Expense(db.Model):
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class Document(db.Model):
+    """
+    Represents a document in the real estate application.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255), nullable=False)
+    document_type = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    file_path = db.Column(db.String(255))
+    property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=True)
+    tenant_id = db.Column(db.Integer, db.ForeignKey('tenant.id'), nullable=True)
+    lease_id = db.Column(db.Integer, db.ForeignKey('lease.id'), nullable=True)
+    property = db.relationship('Property', backref='documents')
+    tenant = db.relationship('Tenant', backref='documents')
+    lease = db.relationship('Lease', backref='documents')

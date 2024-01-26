@@ -21,7 +21,12 @@ CORS(app)
 # Database Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS')
-app.config['DOCUMENTS_FOLDER'] = os.path.join(os.getcwd(), os.getenv('DOCUMENTS_FOLDER'))
+
+# Set the absolute path for DOCUMENTS_FOLDER
+# This sets the path relative to the location of app.py
+base_dir = os.path.abspath(os.path.dirname(__file__))
+documents_folder = os.getenv('DOCUMENTS_FOLDER', 'documents')
+app.config['DOCUMENTS_FOLDER'] = os.path.join(base_dir, documents_folder)
 
 # Initialize Database and Migrate
 db.init_app(app)
