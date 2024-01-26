@@ -17,13 +17,15 @@ def upload_document_route():
     if file.filename == '':
         return jsonify({'message': 'No selected file'}), 400
 
+    document_type = request.form.get('document_type')
+
     try:
         new_document = add_document(
             file, 
             property_id=request.form.get('property_id'),
             tenant_id=request.form.get('tenant_id'),
             lease_id=request.form.get('lease_id'),
-            document_type=request.form.get('document_type')
+            document_type=document_type
         )
         return jsonify(document_to_json(new_document)), 201
     except Exception as e:

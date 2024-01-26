@@ -35,16 +35,23 @@ const Documents = () => {
             alert("Please select a file to upload");
             return;
         }
-
+    
         const formData = new FormData();
         formData.append('file', file);
+    
+        // Include document_type and other relevant fields
+        formData.append('document_type', 'YOUR_DOCUMENT_TYPE_HERE'); // Replace with actual value
+        // formData.append('property_id', 'PROPERTY_ID_IF_APPLICABLE');
+        // formData.append('tenant_id', 'TENANT_ID_IF_APPLICABLE');
+        // formData.append('lease_id', 'LEASE_ID_IF_APPLICABLE');
+    
         try {
             await uploadDocument(formData);
             fetchDocuments(); // Refresh the list after upload
         } catch (error) {
             setError(error.message);
         }
-    };
+    };    
 
     const handleDelete = async (documentId) => {
         try {
