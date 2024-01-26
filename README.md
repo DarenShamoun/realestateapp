@@ -18,11 +18,10 @@ git clone [repository-url]
 
 # Set Up a Python Virtual Environment
 
--Navigate to the project directory
+-Navigate to the \backend directory
 
 python -m venv venv
 .\venv\Scripts\activate  # Windows
-source venv/bin/activate  # Unix/MacOS
 
 # Install Dependencies
 
@@ -43,9 +42,7 @@ flask run
 
 # Frontend Setup
 
-- Navigate to the Frontend Directory
-
-cd realestate-frontend
+- Navigate to the \frontend Directory
 
 - Install Node Modules
 
