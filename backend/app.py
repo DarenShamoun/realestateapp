@@ -9,13 +9,19 @@ from routes.payment_routes import payment_bp
 from routes.expense_routes import expense_bp
 from routes.rent_routes import rent_bp
 from routes.rent_history_routes import rent_history_bp
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
 # Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:shamoun111@localhost/realestateapp'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS')
+app.config['DOCUMENTS_FOLDER'] = os.path.join(os.getcwd(), os.getenv('DOCUMENTS_FOLDER'))
 
 # Initialize Database and Migrate
 db.init_app(app)
@@ -36,4 +42,4 @@ def welcome():
     return 'Welcome to the Real Estate Management API!'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=os.getenv('FLASK_ENV') == 'development')
