@@ -1,17 +1,20 @@
 from models import db, Document
-import os
 from werkzeug.utils import secure_filename
 from flask import current_app
+import os
 
-def add_document(file, **kwargs):
+def add_document(file, custom_filename=None, **kwargs):
     filename = secure_filename(file.filename)
     file_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], filename)
     file.save(file_path)
 
+    normalized_file_path = os.path.normpath(file_path)
+
     new_document = Document(
         filename=filename,
-        file_path=file_path,
-        **kwargs # property_id, tenant_id, lease_id, document_type
+        custom_filename=custom_filename,
+        file_path=normalized_file_path,
+        **kwargs
     )
     db.session.add(new_document)
     db.session.commit()
@@ -37,6 +40,7 @@ def document_to_json(document):
     return {
         'id': document.id,
         'filename': document.filename,
+        'custom_filename': document.custom_filename,
         'document_type': document.document_type,
         'file_path': document.file_path,
         'created_at': document.created_at.strftime('%Y-%m-%d %H:%M:%S'),

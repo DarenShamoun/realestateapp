@@ -8,6 +8,7 @@ const Documents = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [file, setFile] = useState(null);
+    const [customFilename, setCustomFilename] = useState('');
 
     const fetchDocuments = async () => {
         setIsLoading(true);
@@ -35,23 +36,19 @@ const Documents = () => {
             alert("Please select a file to upload");
             return;
         }
-    
+
         const formData = new FormData();
         formData.append('file', file);
-    
-        // Include document_type and other relevant fields
-        formData.append('document_type', 'YOUR_DOCUMENT_TYPE_HERE'); // Replace with actual value
-        // formData.append('property_id', 'PROPERTY_ID_IF_APPLICABLE');
-        // formData.append('tenant_id', 'TENANT_ID_IF_APPLICABLE');
-        // formData.append('lease_id', 'LEASE_ID_IF_APPLICABLE');
-    
+        formData.append('custom_filename', customFilename); // Append custom filename
+        formData.append('document_type', documentType); // Append document type
+
         try {
             await uploadDocument(formData);
             fetchDocuments(); // Refresh the list after upload
         } catch (error) {
             setError(error.message);
         }
-    };    
+    };
 
     const handleDelete = async (documentId) => {
         try {
@@ -76,6 +73,13 @@ const Documents = () => {
             {/* Upload Form */}
             <form onSubmit={handleUpload}>
                 <input type="file" onChange={handleFileChange} />
+                <input 
+                    type="text" 
+                    placeholder="Custom filename (optional)" 
+                    value={customFilename} 
+                    onChange={(e) => setCustomFilename(e.target.value)} 
+                    className="custom-filename-input"
+                />
                 <button type="submit">Upload</button>
             </form>
 

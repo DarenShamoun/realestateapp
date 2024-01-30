@@ -17,15 +17,16 @@ def upload_document_route():
     if file.filename == '':
         return jsonify({'message': 'No selected file'}), 400
 
-    document_type = request.form.get('document_type')
+    custom_filename = request.form.get('custom_filename')
 
     try:
         new_document = add_document(
             file, 
+            custom_filename=custom_filename,
             property_id=request.form.get('property_id'),
             tenant_id=request.form.get('tenant_id'),
             lease_id=request.form.get('lease_id'),
-            document_type=document_type
+            document_type=request.form.get('document_type')
         )
         return jsonify(document_to_json(new_document)), 201
     except Exception as e:
@@ -44,7 +45,7 @@ def get_documents_route():
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
-@document_bp.route('/document/<int:document_id>/delete', methods=['DELETE'])
+@document_bp.route('/document/<int:document_id>', methods=['DELETE'])
 def delete_document_route(document_id):
     try:
         if delete_document(document_id):
