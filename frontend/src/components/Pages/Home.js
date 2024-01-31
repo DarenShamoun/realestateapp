@@ -1,8 +1,3 @@
-/**
- * Renders the Home page component.
- * 
- * @returns {JSX.Element} The rendered Home page component.
- */
 'use client'
 
 import AreaChartPlot from "@/components/Charts/AreaChartPlot";

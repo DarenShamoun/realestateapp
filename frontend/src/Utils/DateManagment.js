@@ -1,4 +1,3 @@
-
 // This function returns the current date
 export const getCurrentDate = () => {
     return new Date();

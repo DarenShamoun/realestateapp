@@ -1,8 +1,3 @@
-/**
- * Renders the Management page component.
- * 
- * @returns {JSX.Element} The rendered Management page component.
- */
 'use client';
 
 import React from 'react';
