@@ -134,6 +134,8 @@ class Document(db.Model):
     property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=True)
     tenant_id = db.Column(db.Integer, db.ForeignKey('tenant.id'), nullable=True)
     lease_id = db.Column(db.Integer, db.ForeignKey('lease.id'), nullable=True)
+    expense_id = db.Column(db.Integer, db.ForeignKey('expense.id'), nullable=True)
+    expense = db.relationship('Expense', backref='documents')
     property = db.relationship('Property', backref='documents')
     tenant = db.relationship('Tenant', backref='documents')
     lease = db.relationship('Lease', backref='documents')

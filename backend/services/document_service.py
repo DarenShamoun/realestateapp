@@ -1,20 +1,18 @@
 from models import db, Document
 from werkzeug.utils import secure_filename
-from flask import current_app
 import os
 
-def add_document(file, custom_filename=None, **kwargs):
+def add_document(data, file):
     filename = secure_filename(file.filename)
-    file_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], filename)
+    file_path = os.path.join(os.getenv('DOCUMENTS_FOLDER'), filename)
     file.save(file_path)
 
     normalized_file_path = os.path.normpath(file_path)
 
     new_document = Document(
         filename=filename,
-        custom_filename=custom_filename,
         file_path=normalized_file_path,
-        **kwargs
+        **data
     )
     db.session.add(new_document)
     db.session.commit()
@@ -26,6 +24,18 @@ def get_documents(filters=None):
         for key, value in filters.items():
             query = query.filter(getattr(Document, key) == value)
     return query.all()
+
+def update_document(document_id, data):
+    document = Document.query.get(document_id)
+    if not document:
+        return None
+    
+    for key, value in data.items():
+        if hasattr(document, key):
+            setattr(document, key, value)
+
+    db.session.commit()
+    return document
 
 def delete_document(document_id):
     document = Document.query.get(document_id)
