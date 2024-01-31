@@ -1,14 +1,5 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const getExpenses = async (filters = {}) => {
-  const queryParams = new URLSearchParams(filters);
-  const response = await fetch(`${API_URL}/expense?${queryParams}`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
 export const addExpense = async (expenseData) => {
   const response = await fetch(`${API_URL}/expense`, {
     method: 'POST',
@@ -17,6 +8,15 @@ export const addExpense = async (expenseData) => {
     },
     body: JSON.stringify(expenseData),
   });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
+export const getExpenses = async (filters = {}) => {
+  const queryParams = new URLSearchParams(filters);
+  const response = await fetch(`${API_URL}/expense?${queryParams}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }

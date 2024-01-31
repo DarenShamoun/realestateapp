@@ -20,6 +20,20 @@ export const getDocuments = async (filters = {}) => {
     return response.json();
 };
 
+export const updateDocument = async (document_id, documentData) => {
+    const response = await fetch(`${API_URL}/document/${document_id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(documentData),
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+};
+
 export const deleteDocument = async (document_id) => {
     const response = await fetch(`${API_URL}/document/${document_id}`, {
         method: 'DELETE'
