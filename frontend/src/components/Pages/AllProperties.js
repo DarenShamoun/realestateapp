@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { useAllPropertyDetails } from '@/Hooks/useAllPropertyDetails';
+import { useAllPropertyDetails } from '@/Hooks/useAllPropertiesDetails';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
 import PieChartPlot from '@/components/Charts/PieChartPlot';
 import PropertyCard from '@/components/Cards/PropertyCard';
