@@ -83,7 +83,7 @@ const Landing = () => {
           <AreaChartPlot/>
         </div>
         <div className="w-1/2 h-[500px] bg-gray-700 rounded">
-          <BarChartPlot data={barChartData} barKeys={barKeys} xAxisKey="name" title="6-Month Financial Overview"/>
+          <BarChartPlot data={barChartData} barKeys={barKeys} xAxisKey="monthYear" title="6-Month Financial Overview"/>
         </div>
       </section>
 
