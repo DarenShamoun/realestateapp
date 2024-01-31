@@ -4,7 +4,7 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import Sidebar from '@/components/Navigation/Sidebar';
 import Navbar from '@/components/Navigation/Navbar';
-import PropertyDetails from '@/components/Details/PropertyDetails';
+import PropertyDetails from '@/components/Pages/SingleProperty';
 
 const PropertyDetailPage = () => {
   const pathname = usePathname();

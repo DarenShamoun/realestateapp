@@ -1,10 +1,10 @@
 import React from 'react';
 import { useUnitDetails } from '@/Hooks/useUnitDetails';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
-import TenantDetails from '@/components/Details/TenantDetails';
-import LeaseDetails from '@/components/Details/LeaseDetails';
-import RentDetails from '@/components/Details/RentDetails';
-import FinancialHistory from '@/components/Details/FinancialHistory';
+import TenantDetails from '@/components/Cards/TenantDetailsCard';
+import LeaseDetails from '@/components/Cards/LeaseDetailsCard';
+import RentDetails from '@/components/Cards/RentDetailsCard';
+import FinancialHistory from '@/components/Cards/FinancialHistoryCard';
 import CreateLeaseModal from '@/components/Modals/CreateLeaseModal';
 import CreatePaymentModal from '@/components/Modals/CreatePaymentModal';
 import CreateRentModal from '@/components/Modals/CreateRentModal';

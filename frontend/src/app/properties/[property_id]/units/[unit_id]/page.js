@@ -3,7 +3,7 @@
 import React from 'react';
 import Sidebar from '@/components/Navigation/Sidebar';
 import Navbar from '@/components/Navigation/Navbar';
-import UnitDetails from '@/components/Details/UnitDetails';
+import UnitDetails from '@/components/Pages/Unit';
 
 const UnitDetailPage = ({ params }) => {
   const { unit_id } = params;
