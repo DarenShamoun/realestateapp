@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { uploadDocument, getDocuments, deleteDocument } from '@/api/documentService';
+import { addDocument, getDocuments, updateDocument, deleteDocument } from '@/api/documentService';
 
 const Documents = () => {
     const [documents, setDocuments] = useState([]);
@@ -49,7 +49,7 @@ const Documents = () => {
         formData.append('document_type', documentType);
 
         try {
-            await uploadDocument(formData);
+            await addDocument(formData);
             fetchDocuments(); // Refresh the list after upload
         } catch (error) {
             setError(error.message);

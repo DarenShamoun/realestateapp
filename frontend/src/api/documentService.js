@@ -1,7 +1,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const uploadDocument = async (formData) => {
-    const response = await fetch(`${API_URL}/document/upload`, {
+export const addDocument = async (formData) => {
+    const response = await fetch(`${API_URL}/document`, {
         method: 'POST',
         body: formData
     });
@@ -10,6 +10,7 @@ export const uploadDocument = async (formData) => {
     }
     return response.json();
 };
+
 
 export const getDocuments = async (filters = {}) => {
     const queryParams = new URLSearchParams(filters);
