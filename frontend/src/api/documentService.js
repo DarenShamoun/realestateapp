@@ -21,7 +21,7 @@ export const getDocuments = async (filters = {}) => {
 };
 
 export const deleteDocument = async (document_id) => {
-    const response = await fetch(`${API_URL}/document/${document_id}/delete`, {
+    const response = await fetch(`${API_URL}/document/${document_id}`, {
         method: 'DELETE'
     });
     if (!response.ok) {

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import React, { useState, useEffect } from 'react';
 import { uploadDocument, getDocuments, deleteDocument } from '@/api/documentService';
@@ -9,6 +9,7 @@ const Documents = () => {
     const [error, setError] = useState(null);
     const [file, setFile] = useState(null);
     const [customFilename, setCustomFilename] = useState('');
+    const [documentType, setDocumentType] = useState('');
 
     const fetchDocuments = async () => {
         setIsLoading(true);
@@ -27,7 +28,12 @@ const Documents = () => {
     }, []);
 
     const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
+        const selectedFile = e.target.files[0];
+        setFile(selectedFile);
+
+        // Determine document type based on file extension
+        const fileExtension = selectedFile.name.split('.').pop();
+        setDocumentType(fileExtension);
     };
 
     const handleUpload = async (e) => {
@@ -39,8 +45,8 @@ const Documents = () => {
 
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('custom_filename', customFilename); // Append custom filename
-        formData.append('document_type', documentType); // Append document type
+        formData.append('custom_filename', customFilename);
+        formData.append('document_type', documentType);
 
         try {
             await uploadDocument(formData);
@@ -70,7 +76,6 @@ const Documents = () => {
     return (
         <div>
             <h1>Documents</h1>
-            {/* Upload Form */}
             <form onSubmit={handleUpload}>
                 <input type="file" onChange={handleFileChange} />
                 <input 
@@ -78,16 +83,14 @@ const Documents = () => {
                     placeholder="Custom filename (optional)" 
                     value={customFilename} 
                     onChange={(e) => setCustomFilename(e.target.value)} 
-                    className="custom-filename-input"
                 />
                 <button type="submit">Upload</button>
             </form>
 
-            {/* Documents List */}
             <div>
                 {documents.map(doc => (
                     <div key={doc.id}>
-                        <span>{doc.filename}</span>
+                        <span>{doc.custom_filename || doc.filename}</span>
                         <button onClick={() => handleDelete(doc.id)}>Delete</button>
                     </div>
                 ))}
