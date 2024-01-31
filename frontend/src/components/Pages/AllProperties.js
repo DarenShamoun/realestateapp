@@ -68,7 +68,7 @@ const Properties = () => {
           <PieChartPlot data={pieChartData} title="Rent Status Overview"/>
         </div>
         <div className="w-1/2 h-[450px] bg-gray-700 rounded">
-          <BarChartPlot data={barChartData} barKeys={barKeys} xAxisKey="name" title="6-Month Financial Overview" />
+          <BarChartPlot data={barChartData} barKeys={barKeys} xAxisKey="monthYear" title="6-Month Financial Overview" />
         </div>
       </section>
 
@@ -78,7 +78,6 @@ const Properties = () => {
           <PropertyCard
             key={property.id}
             property={property}
-            isManagementMode={false}
           />
         ))}
       </div>

@@ -3,7 +3,7 @@ import { getProperties } from '@/api/propertyService';
 import { getExpenses } from '@/api/expenseService';
 import { getPayments } from '@/api/paymentService';
 import { getRents } from '@/api/rentService';
-import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo } from '@/Utils/DateManagment';
+import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo, formatDate } from '@/Utils/DateManagment';
 
 export const useAllPropertyDetails = () => {
   const [properties, setProperties] = useState([]);
@@ -99,32 +99,9 @@ export const useAllPropertyDetails = () => {
         setPieChartData(pieData);
 
         // Preparing Bar Chart Data
-        const barData = [];
-        for (let i = 0; i < 6; i++) {
-          const month = new Date();
-          month.setMonth(currentMonth - i - 1);
-
-          const monthlyIncome = YTDpayments.filter(p => {
-            const paymentMonth = new Date(p.date).getMonth() + 1;
-            const paymentYear = new Date(p.date).getFullYear();
-            return paymentMonth === month.getMonth() + 1 && paymentYear === month.getFullYear();
-          }).reduce((acc, payment) => acc + payment.amount, 0);
-
-          const monthlyExpenses = YTDexpenses.filter(e => {
-            const expenseMonth = new Date(e.date).getMonth() + 1;
-            const expenseYear = new Date(e.date).getFullYear();
-            return expenseMonth === month.getMonth() + 1 && expenseYear === month.getFullYear();
-          }).reduce((acc, expense) => acc + expense.amount, 0);
-
-          const formattedMonthYear = `${String(month.getMonth() + 1).padStart(2, '0')}/${month.getFullYear().toString().substr(2, 2)}`;
-          barData.push({
-            name: formattedMonthYear,
-            Income: monthlyIncome,
-            Expenses: monthlyExpenses
-          });
-        }
-        setBarChartData(barData.reverse());
-
+        const barData = mergeFinancialData(YTDpayments, YTDexpenses, YTDrents);
+        setBarChartData(barData);      
+  
         const barKeys = [
           { name: "Income", color: "#82ca9d" },
           { name: "Expenses", color: "#FA8072" }
@@ -141,6 +118,50 @@ export const useAllPropertyDetails = () => {
               
     fetchAllPropertyDetails();
   }, []);
+
+  const mergeFinancialData = (payments, expenses, rents) => {
+    const combinedData = {};
+
+    // Use YYYY-MM format for sorting
+    rents.forEach(rent => {
+      const monthYearForSorting = formatDate(rent.date, 'YYYY-MM');
+      combinedData[monthYearForSorting] = {
+        ...combinedData[monthYearForSorting],
+        monthYearForSorting,
+        Income: (combinedData[monthYearForSorting]?.Income || 0) + (rent.total_rent - rent.debt)
+      };
+    });
+
+    expenses.forEach(expense => {
+      const monthYearForSorting = formatDate(expense.date, 'YYYY-MM');
+      combinedData[monthYearForSorting] = {
+        ...combinedData[monthYearForSorting],
+        monthYearForSorting,
+        Expenses: (combinedData[monthYearForSorting]?.Expenses || 0) + expense.amount
+      };
+    });
+
+    payments.forEach(payment => {
+      const monthYearForSorting = formatDate(payment.date, 'YYYY-MM');
+      combinedData[monthYearForSorting] = {
+        ...combinedData[monthYearForSorting],
+        monthYearForSorting,
+        Income: (combinedData[monthYearForSorting]?.Income || 0) + payment.amount
+      };
+    });
+
+    // Sort data based on YYYY-MM format
+    const sortedData = Object.values(combinedData).sort((a, b) => a.monthYearForSorting.localeCompare(b.monthYearForSorting));
+
+    // Convert to MM-YY format for display
+    return sortedData.map(item => {
+      const [year, month] = item.monthYearForSorting.split('-');
+      return {
+        ...item,
+        monthYear: `${month}-${year.substring(2)}` // MM-YY format
+      };
+    });
+  };
 
   return {
       properties,
