@@ -1,10 +1,11 @@
 from models import db, Document
 from werkzeug.utils import secure_filename
 import os
+from flask import current_app
 
 def add_document(data, file):
     filename = secure_filename(file.filename)
-    file_path = os.path.join(os.getenv('DOCUMENTS_FOLDER'), filename)
+    file_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], filename)
     file.save(file_path)
 
     normalized_file_path = os.path.normpath(file_path)
