@@ -10,25 +10,13 @@ import traceback
 
 document_bp = Blueprint('document_bp', __name__)
 
-@document_bp.route('/document/upload', methods=['POST'])
+@document_bp.route('/document', methods=['POST'])
 def add_document_route():
-    if 'file' not in request.files:
-        return jsonify({'message': 'No file part'}), 400
+    data = request.form.to_dict()
     file = request.files['file']
-    if file.filename == '':
-        return jsonify({'message': 'No selected file'}), 400
-
-    data = {
-        'custom_filename': request.form.get('custom_filename'),
-        'document_type': request.form.get('document_type'),
-        'property_id': request.form.get('property_id'),
-        'tenant_id': request.form.get('tenant_id'),
-        'lease_id': request.form.get('lease_id')
-    }
-
     try:
-        new_document = add_document(data, file)
-        return jsonify(document_to_json(new_document)), 201
+        document = add_document(data, file)
+        return jsonify(document_to_json(document)), 201
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
@@ -56,7 +44,7 @@ def update_document_route(document_id):
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
-@document_bp.route('/document/<int:document_id>/delete', methods=['DELETE'])
+@document_bp.route('/document/<int:document_id>', methods=['DELETE'])
 def delete_document_route(document_id):
     try:
         if delete_document(document_id):
