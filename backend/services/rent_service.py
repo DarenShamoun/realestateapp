@@ -70,9 +70,8 @@ def update_rent(rent_id, data):
 
     rent.total_rent = calculate_total_rent(rent)
     
-    # Check if rent amount has changed
     if old_rent != rent.rent:
-        add_rent_history(unit_id=rent.unit_id, old_rent=old_rent, new_rent=rent.rent)
+        add_rent_history(lease_id=rent.lease_id, old_rent=old_rent, new_rent=rent.rent)
 
     db.session.commit()
     return rent

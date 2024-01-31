@@ -6,10 +6,9 @@ def add_rent_history(lease_id, old_rent, new_rent):
     lease = Lease.query.get(lease_id)
     if not lease:
         raise ValueError("Lease not found")
-    unit_id = lease.unit_id
 
     rent_history = RentHistory(
-        unit_id=unit_id,
+        lease_id=lease_id,
         old_rent=old_rent,
         new_rent=new_rent,
         change_date=datetime.utcnow()
