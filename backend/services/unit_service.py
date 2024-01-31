@@ -18,11 +18,18 @@ def get_units(filters=None):
             query = query.filter(Unit.property_id == filters['property_id'])
         if 'is_occupied' in filters:
             query = query.filter(Unit.is_occupied == filters['is_occupied'])
+
         if 'tenant_id' in filters:
-            tenant_id = filters['tenant_id']
-            query = query.join(Unit.lease_details).filter(Lease.tenant_id == tenant_id)
+            query = query.join(Lease, Unit.lease_details).filter(Lease.tenant_id == filters['tenant_id'])
+        if 'lease_id' in filters:
+            query = query.join(Lease, Unit.lease_details).filter(Lease.id == filters['lease_id'])
+        if 'payment_id' in filters:
+            query = query.join(Lease, Unit.lease_details).join(Payment, Lease.payments).filter(Payment.id == filters['payment_id'])
+        if 'expense_id' in filters:
+            query = query.join(Lease, Unit.lease_details).join(Payment, Lease.payments).filter(Payment.expense_id == filters['expense_id'])
 
     return query.all()
+
 
 def update_unit(unit_id, data):
     unit = Unit.query.get(unit_id)

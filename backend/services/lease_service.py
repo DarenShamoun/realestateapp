@@ -1,4 +1,4 @@
-from models import db, Property, Lease, Unit, Tenant
+from models import db, Property, Lease, Unit, Tenant, Payment
 from datetime import datetime
 
 def add_lease(data):
@@ -18,6 +18,8 @@ def get_leases(filters=None):
             query = query.filter(Lease.unit_id == filters['unit_id'])
         if 'tenant_id' in filters:
             query = query.filter(Lease.tenant_id == filters['tenant_id'])
+        if 'payment_id' in filters:
+            query = query.join(Payment, Lease.id == Payment.lease_id).filter(Payment.id == filters['payment_id'])
         if 'property_id' in filters:
             query = query.join(Property).filter(Property.id == filters['property_id'])
         if 'is_active' in filters:

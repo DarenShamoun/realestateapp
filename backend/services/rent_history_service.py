@@ -26,10 +26,18 @@ def get_rent_histories(filters=None):
             query = query.filter(RentHistory.unit_id == filters['unit_id'])
         if 'lease_id' in filters:
             query = query.filter(RentHistory.lease_id == filters['lease_id'])
+        if 'property_id' in filters:
+            query = query.filter(Lease.unit.property_id == filters['property_id'])
         if 'year' in filters:
             query = query.filter(db.extract('year', RentHistory.change_date) == int(filters['year']))
         if 'month' in filters:
             query = query.filter(db.extract('month', RentHistory.change_date) == int(filters['month']))
+        if 'start_date' in filters:
+            start_date = datetime.strptime(filters['start_date'], '%Y-%m-%d')
+            query = query.filter(RentHistory.change_date >= start_date)
+        if 'end_date' in filters:
+            end_date = datetime.strptime(filters['end_date'], '%Y-%m-%d')
+            query = query.filter(RentHistory.change_date <= end_date)
 
     return query.all()
 

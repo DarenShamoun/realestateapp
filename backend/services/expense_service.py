@@ -1,4 +1,4 @@
-from models import db, Expense
+from models import db, Expense, Property, Unit
 from datetime import datetime
 
 def add_expense(data):
@@ -13,14 +13,17 @@ def get_expenses(filters=None):
     if filters:
         if 'expense_id' in filters:
             query = query.filter(Expense.id == filters['expense_id'])
-        if 'property_id' in filters:
-            query = query.filter(Expense.property_id == filters['property_id'])
-        if 'unit_id' in filters:
-            query = query.filter(Expense.unit_id == filters['unit_id'])
         if 'year' in filters:
             query = query.filter(db.extract('year', Expense.date) == filters['year'])
         if 'month' in filters:
             query = query.filter(db.extract('month', Expense.date) == filters['month'])
+
+        if 'property_id' in filters:
+            query = query.join(Property, Expense.property_id == Property.id)\
+                         .filter(Property.id == filters['property_id'])
+        if 'unit_id' in filters:
+            query = query.join(Unit, Expense.unit_id == Unit.id)\
+                         .filter(Unit.id == filters['unit_id'])
 
     return query.all()
 

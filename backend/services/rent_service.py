@@ -40,6 +40,8 @@ def get_rents(filters):
         query = query.filter(Unit.id == filters['unit_id'])
     if 'property_id' in filters:
         query = query.filter(Unit.property_id == filters['property_id'])
+    if 'tenant_id' in filters:
+        query = query.filter(Lease.tenant_id == filters['tenant_id'])
     if 'year' in filters:
         query = query.filter(db.extract('year', Rent.date) == int(filters['year']))
     if 'month' in filters:
