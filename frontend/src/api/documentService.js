@@ -11,7 +11,6 @@ export const addDocument = async (formData) => {
     return response.json();
 };
 
-
 export const getDocuments = async (filters = {}) => {
     const queryParams = new URLSearchParams(filters);
     const response = await fetch(`${API_URL}/documents?${queryParams}`);
