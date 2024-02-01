@@ -6,7 +6,6 @@ import { getRents } from '@/api/rentService';
 import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo, formatDate } from '@/Utils/DateManagment';
 
 export const useHomePageDetails = () => {
-
     const [properties, setProperties] = useState([]);
     const [currentMonth] = useState(getCurrentMonth());
     const [currentYear] = useState(getCurrentYear());
