@@ -35,66 +35,12 @@ export const useHomePageDetails = () => {
     useEffect(() => {
         const fetchHomePageDetails = async () => {
             try {
-                const propertiesData = await getProperties();
-                let totalIncome = 0;
-                let totalExpenses = 0;
-                const radarData = [];
-                const barData = {};
-
-                for (const property of propertiesData) {
-                    const propertyPayments = await getPayments({ property_id: property.id });
-                    const propertyExpenses = await getExpenses({ property_id: property.id });
-
-                    const propertyIncome = propertyPayments.reduce((acc, payment) => acc + payment.amount, 0);
-                    const propertyExpense = propertyExpenses.reduce((acc, expense) => acc + expense.amount, 0);
-
-                    totalIncome += propertyIncome;
-                    totalExpenses += propertyExpense;
-
-                    radarData.push({
-                        property: property.name,
-                        income: propertyIncome,
-                        expenses: propertyExpense,
-                    });
-
-                    // Process bar chart data
-                    propertyPayments.forEach(payment => {
-                        const monthYear = formatDate(payment.date, 'YYYY-MM');
-                        barData[monthYear] = barData[monthYear] || { Income: 0, Expenses: 0 };
-                        barData[monthYear].Income += payment.amount;
-                    });
-
-                    propertyExpenses.forEach(expense => {
-                        const monthYear = formatDate(expense.date, 'YYYY-MM');
-                        barData[monthYear] = barData[monthYear] || { Income: 0, Expenses: 0 };
-                        barData[monthYear].Expenses += expense.amount;
-                    });
-                }
-
-                // Set total income, expenses, and net profit
-                setMonthlyTotalIncome(totalIncome);
-                setMonthlyTotalExpenses(totalExpenses);
-                setMonthlyNetProfit(totalIncome - totalExpenses);
-
-                // Set radar chart data
-                setRadarChartData(radarData);
-
-                // Prepare bar chart data
-                const formattedBarData = Object.keys(barData).map(monthYear => ({
-                    monthYear,
-                    ...barData[monthYear]
-                })).sort((a, b) => a.monthYear.localeCompare(b.monthYear));
-                setBarChartData(formattedBarData);
-
-                // Set bar chart keys
-                setBarKeys([
-                    { name: "Income", color: "#82ca9d" },
-                    { name: "Expenses", color: "#FA8072" }
-                ]);
-
                 const sixMonthsAgo = getDateMonthsAgo(6).toISOString().split('T')[0];
         
                 const twelveMonthsAgo = getDateMonthsAgo(12).toISOString().split('T')[0];
+        
+                const propertiesData = await getProperties();
+                setProperties(propertiesData);
 
                 const CurrentMonthRents = await getRents({
                 month: currentMonth,
@@ -187,6 +133,30 @@ export const useHomePageDetails = () => {
                 ];
                 setPieChartData(pieData);
 
+                // Preparing Bar Chart Data
+                const barData = mergeBarChartData(YTDpayments, YTDexpenses);
+                setBarChartData(barData);      
+    
+                const barKeys = [
+                    { name: "Income", color: "#82ca9d" },
+                    { name: "Expenses", color: "#FA8072" }
+                ];
+                setBarKeys(barKeys);
+
+                // Preparing Radar Chart Data
+                const radarData = [];
+                for (let i = 0; i < propertiesData.length; i++) {
+                    const property = propertiesData[i];
+                    const propertyIncome = YTDpayments.filter(p => p.property_id === property.id).reduce((acc, payment) => acc + payment.amount, 0);
+                    const propertyExpenses = YTDexpenses.filter(e => e.property_id === property.id).reduce((acc, expense) => acc + expense.amount, 0);
+                    radarData.push({
+                        property: property.name,
+                        income: propertyIncome,
+                        expenses: propertyExpenses
+                    });
+                }
+                setRadarChartData(radarData);
+
             } catch (error) {
                 console.error('Failed to fetch property details:', error);
                 setError(error);
@@ -198,6 +168,41 @@ export const useHomePageDetails = () => {
         setIsLoading(true);
         fetchHomePageDetails();
     }, []);
+
+    const mergeBarChartData = (payments, expenses) => {
+        const combinedData = {};
+
+        // Use YYYY-MM format for sorting
+        payments.forEach(payment => {
+            const monthYearForSorting = formatDate(payment.date, 'YYYY-MM');
+            combinedData[monthYearForSorting] = {
+                ...combinedData[monthYearForSorting],
+                monthYearForSorting,
+                Income: (combinedData[monthYearForSorting]?.Income || 0) + payment.amount
+            };
+        });
+
+        expenses.forEach(expense => {
+            const monthYearForSorting = formatDate(expense.date, 'YYYY-MM');
+            combinedData[monthYearForSorting] = {
+                ...combinedData[monthYearForSorting],
+                monthYearForSorting,
+                Expenses: (combinedData[monthYearForSorting]?.Expenses || 0) + expense.amount
+            };
+        });
+
+        // Sort data based on YYYY-MM format
+        const sortedData = Object.values(combinedData).sort((a, b) => a.monthYearForSorting.localeCompare(b.monthYearForSorting));
+
+        // Convert to MM-YY format for display
+        return sortedData.map(item => {
+            const [year, month] = item.monthYearForSorting.split('-');
+            return {
+                ...item,
+                monthYear: `${month}-${year.substring(2)}` // MM-YY format
+            };
+        });
+    };
 
     return {
         properties,
