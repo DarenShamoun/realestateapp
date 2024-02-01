@@ -99,7 +99,7 @@ export const useAllPropertyDetails = () => {
         setPieChartData(pieData);
 
         // Preparing Bar Chart Data
-        const barData = mergeFinancialData(YTDpayments, YTDexpenses, YTDrents);
+        const barData = mergeBarChartData(YTDpayments, YTDexpenses, YTDrents);
         setBarChartData(barData);      
   
         const barKeys = [
@@ -119,35 +119,26 @@ export const useAllPropertyDetails = () => {
     fetchAllPropertyDetails();
   }, []);
 
-  const mergeFinancialData = (payments, expenses, rents) => {
+  const mergeBarChartData = (payments, expenses, rents) => {
     const combinedData = {};
 
     // Use YYYY-MM format for sorting
-    rents.forEach(rent => {
-      const monthYearForSorting = formatDate(rent.date, 'YYYY-MM');
-      combinedData[monthYearForSorting] = {
-        ...combinedData[monthYearForSorting],
-        monthYearForSorting,
-        Income: (combinedData[monthYearForSorting]?.Income || 0) + (rent.total_rent - rent.debt)
-      };
+    payments.forEach(payment => {
+        const monthYearForSorting = formatDate(payment.date, 'YYYY-MM');
+        combinedData[monthYearForSorting] = {
+            ...combinedData[monthYearForSorting],
+            monthYearForSorting,
+            Income: (combinedData[monthYearForSorting]?.Income || 0) + payment.amount
+        };
     });
 
     expenses.forEach(expense => {
-      const monthYearForSorting = formatDate(expense.date, 'YYYY-MM');
-      combinedData[monthYearForSorting] = {
-        ...combinedData[monthYearForSorting],
-        monthYearForSorting,
-        Expenses: (combinedData[monthYearForSorting]?.Expenses || 0) + expense.amount
-      };
-    });
-
-    payments.forEach(payment => {
-      const monthYearForSorting = formatDate(payment.date, 'YYYY-MM');
-      combinedData[monthYearForSorting] = {
-        ...combinedData[monthYearForSorting],
-        monthYearForSorting,
-        Income: (combinedData[monthYearForSorting]?.Income || 0) + payment.amount
-      };
+        const monthYearForSorting = formatDate(expense.date, 'YYYY-MM');
+        combinedData[monthYearForSorting] = {
+            ...combinedData[monthYearForSorting],
+            monthYearForSorting,
+            Expenses: (combinedData[monthYearForSorting]?.Expenses || 0) + expense.amount
+        };
     });
 
     // Sort data based on YYYY-MM format
@@ -155,13 +146,14 @@ export const useAllPropertyDetails = () => {
 
     // Convert to MM-YY format for display
     return sortedData.map(item => {
-      const [year, month] = item.monthYearForSorting.split('-');
-      return {
-        ...item,
-        monthYear: `${month}-${year.substring(2)}` // MM-YY format
-      };
+        const [year, month] = item.monthYearForSorting.split('-');
+        return {
+            ...item,
+            monthYear: `${month}-${year.substring(2)}` // MM-YY format
+        };
     });
-  };
+};
+
 
   return {
       properties,

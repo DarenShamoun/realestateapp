@@ -109,7 +109,7 @@ export const usePropertyDetails = (property_id) => {
         setYTDExpectedIncome(YTDExpectedIncome);
 
         // Preparing Bar Chart Data
-        const barData = mergeFinancialData(YTDpayments, YTDexpenses, YTDrents);
+        const barData = mergeBarChartData(YTDpayments, YTDexpenses, YTDrents);
         setBarChartData(barData);      
 
         // Preparing Bar Chart Keys
@@ -144,7 +144,7 @@ export const usePropertyDetails = (property_id) => {
     }
   }, [property_id]);
 
-  const mergeFinancialData = (payments, expenses, rents) => {
+  const mergeBarChartData = (payments, expenses, rents) => {
     const combinedData = {};
   
     // Use YYYY-MM format for sorting

@@ -135,7 +135,7 @@ export const useHomePageDetails = () => {
                 setPieChartData(pieData);
 
                 // Preparing Bar Chart Data
-                const barData = mergeFinancialData(YTDpayments, YTDexpenses);
+                const barData = mergeBarChartData(YTDpayments, YTDexpenses);
                 setBarChartData(barData);      
     
                 const barKeys = [
@@ -147,14 +147,14 @@ export const useHomePageDetails = () => {
                 // Preparing Radar Chart Data
                 const radarData = [];
                 for (let i = 0; i < propertiesData.length; i++) {
-                const property = propertiesData[i];
-                const propertyIncome = YTDpayments.filter(p => p.property_id === property.id).reduce((acc, payment) => acc + payment.amount, 0);
-                const propertyExpenses = YTDexpenses.filter(e => e.property_id === property.id).reduce((acc, expense) => acc + expense.amount, 0);
-                radarData.push({
-                    property: property.name,
-                    income: propertyIncome,
-                    expenses: propertyExpenses
-                });
+                    const property = propertiesData[i];
+                    const propertyIncome = YTDpayments.filter(p => p.property_id === property.id).reduce((acc, payment) => acc + payment.amount, 0);
+                    const propertyExpenses = YTDexpenses.filter(e => e.property_id === property.id).reduce((acc, expense) => acc + expense.amount, 0);
+                    radarData.push({
+                        property: property.name,
+                        income: propertyIncome,
+                        expenses: propertyExpenses
+                    });
                 }
                 setRadarChartData(radarData);
 
@@ -170,7 +170,7 @@ export const useHomePageDetails = () => {
         fetchHomePageDetails();
     }, []);
 
-    const mergeFinancialData = (payments, expenses) => {
+    const mergeBarChartData = (payments, expenses) => {
         const combinedData = {};
 
         // Use YYYY-MM format for sorting
