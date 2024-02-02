@@ -11,24 +11,11 @@ import FinancialCard from '@/components/Cards/FinancialCard';
 const Landing = () => {
   const {
     properties,
-    currentDate,
-    currentMonth,
-    currentYear,
-    lastMonthDate,
-    monthlyTotalIncome,
-    monthlyTotalExpenses,
-    monthlyNetProfit,
-    monthlyExpectedIncome,
-    lastMonthTotalIncome,
-    lastMonthTotalExpenses,
-    lastMonthNetProfit,
-    lastMonthExpectedIncome,
-    radarChartData,
-    pieChartData,
-    barChartData,
-    barKeys,
+    financialData,
+    chartData,
     isLoading,
-    error
+    error,
+    dates
   } = useHomePageDetails();
 
   if (isLoading) {
@@ -49,31 +36,31 @@ const Landing = () => {
         <div className="flex m-4 gap-2">
           <FinancialCard
             title="Total income for"
-            amount={monthlyTotalIncome}
-            previousAmount={lastMonthTotalIncome}
-            startDate={lastMonthDate} 
-            endDate={currentDate}
+            amount={financialData.CurrentMonth.totalIncome}
+            previousAmount={financialData.lastMonth.totalIncome}
+            startDate={dates.lastMonthDate} 
+            endDate={dates.currentDate}
           />
           <FinancialCard 
             title="Expected Income" 
-            amount={monthlyExpectedIncome} 
-            previousAmount={lastMonthExpectedIncome}
-            startDate={lastMonthDate}
-            endDate={currentDate}
+            amount={financialData.CurrentMonth.expectedIncome} 
+            previousAmount={financialData.lastMonth.expectedIncome}
+            startDate={dates.lastMonthDate}
+            endDate={dates.currentDate}
           />
           <FinancialCard 
             title="Total expenses" 
-            amount={monthlyTotalExpenses} 
-            previousAmount={lastMonthTotalExpenses}             
-            startDate={lastMonthDate} 
-            endDate={currentDate}
+            amount={financialData.CurrentMonth.totalExpenses} 
+            previousAmount={financialData.lastMonth.totalExpenses}             
+            startDate={dates.lastMonthDate} 
+            endDate={dates.currentDate}
           />
           <FinancialCard 
             title="Net profit" 
-            amount={monthlyNetProfit} 
-            previousAmount={lastMonthNetProfit} 
-            startDate={lastMonthDate} 
-            endDate={currentDate}
+            amount={financialData.CurrentMonth.netProfit} 
+            previousAmount={financialData.lastMonth.netProfit} 
+            startDate={dates.lastMonthDate} 
+            endDate={dates.currentDate}
           />
         </div>
       </section>
@@ -83,19 +70,19 @@ const Landing = () => {
           <AreaChartPlot/>
         </div>
         <div className="w-1/2 h-[500px] bg-gray-700 rounded">
-          <BarChartPlot data={barChartData} barKeys={barKeys} xAxisKey="monthYear" title="6-Month Financial Overview"/>
+          <BarChartPlot data={chartData.bar} barKeys={chartData.barKeys} xAxisKey="monthYear" title="6-Month Financial Overview"/>
         </div>
       </section>
 
       <section className="flex my-4 px-4 gap-2">
         <div className=" w-1/3 h-[400px] bg-gray-700 rounded">
-          <PieChartPlot data={pieChartData} title="Rent Status Overview"/>
+          <PieChartPlot data={chartData.pie} title="Rent Status Overview"/>
         </div>
         <div className=" w-1/3 h-[400px] bg-gray-700 rounded">
           <LineChartPlot/>
         </div>
         <div className=" w-1/3 h-[400px] bg-gray-700 rounded">
-          <RadarChartPlot data={radarChartData} title="Property Income Breakdown"/>
+          <RadarChartPlot data={chartData.radar} title="Property Income Breakdown"/>
         </div>
       </section>
     </>
