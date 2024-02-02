@@ -3,7 +3,11 @@ import { getProperties } from '@/api/propertyService';
 import { getExpenses } from '@/api/expenseService';
 import { getPayments } from '@/api/paymentService';
 import { getRents } from '@/api/rentService';
-import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo, formatDate } from '@/Utils/DateManagment';
+import { 
+    getCurrentDate, getCurrentMonth, getStartOfCurrentMonth, getEndOfCurrentMonth, getCurrentYear, 
+    getDateMonthsAgo, getStartOfMonthMonthsAgo, getEndOfMonthMonthsAgo,
+    formatDate 
+} from '@/Utils/DateManagment';
 
 export const useHomePageDetails = () => {
     const [properties, setProperties] = useState([]);
@@ -22,52 +26,53 @@ export const useHomePageDetails = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [dates, setDates] = useState({
-        currentDate: getCurrentDate().toISOString().split('T')[0],
-        currentMonth: getCurrentMonth(),
-        currentYear: getCurrentYear(),
-        lastMonth: getDateMonthsAgo(1).getMonth() + 1,
-        lastYear: getDateMonthsAgo(1).getFullYear(),
-        lastMonthDate: getDateMonthsAgo(1),
-        sixMonthsAgo: getDateMonthsAgo(6).toISOString().split('T')[0],
-        twelveMonthsAgo: getDateMonthsAgo(12).toISOString().split('T')[0]
+        currentDate: formatDate(getCurrentDate(), 'YYYY-MM-DD'),
+        currentMonthStart: getStartOfMonthMonthsAgo(0),
+        currentMonthEnd: getEndOfMonthMonthsAgo(0),
+        lastMonthStart: getStartOfMonthMonthsAgo(1),
+        lastMonthEnd: getEndOfMonthMonthsAgo(1),
+        sixMonthsAgoStart: getStartOfMonthMonthsAgo(6),
+        sixMonthsAgoEnd: getEndOfMonthMonthsAgo(6),
+        twelveMonthsAgoStart: getStartOfMonthMonthsAgo(12),
+        twelveMonthsAgoEnd: getEndOfMonthMonthsAgo(12)
     });
 
     useEffect(() => {
         const fetchFinancialDataForProperty = async (propertyId) => {
-            const YTDpayments = await getPayments({ property_id: propertyId, start_date: dates.twelveMonthsAgo, end_date: dates.currentDate });
-            const YTDexpenses = await getExpenses({ property_id: propertyId, start_date: dates.twelveMonthsAgo, end_date: dates.currentDate });
-            const YTDrents = await getRents({ property_id: propertyId, start_date: dates.twelveMonthsAgo, end_date: dates.currentDate });
-
+            const YTDpayments = await getPayments({ property_id: propertyId, start_date: dates.twelveMonthsAgoStart, end_date: dates.currentDate });
+            const YTDexpenses = await getExpenses({ property_id: propertyId, start_date: dates.twelveMonthsAgoStart, end_date: dates.currentDate });
+            const YTDrents = await getRents({ property_id: propertyId, start_date: dates.twelveMonthsAgoStart, end_date: dates.currentDate });
+        
             const lastMonthPayments = YTDpayments.filter(payment => {
                 const paymentDate = new Date(payment.date);
-                return paymentDate.getMonth() === dates.currentMonth && paymentDate.getFullYear() === dates.currentYear;
+                return paymentDate >= new Date(dates.lastMonthStart) && paymentDate <= new Date(dates.lastMonthEnd);
             });
-
+    
             const lastMonthExpenses = YTDexpenses.filter(expense => {
                 const expenseDate = new Date(expense.date);
-                return expenseDate.getMonth() === dates.currentMonth && expenseDate.getFullYear() === dates.currentYear;
+                return expenseDate >= new Date(dates.lastMonthStart) && expenseDate <= new Date(dates.lastMonthEnd);
             });
-
+    
             const lastMonthRents = YTDrents.filter(rent => {
                 const rentDate = new Date(rent.date);
-                return rentDate.getMonth() === dates.currentMonth && rentDate.getFullYear() === dates.currentYear;
+                return rentDate >= new Date(dates.lastMonthStart) && rentDate <= new Date(dates.lastMonthEnd);
             });
-
+    
             const CurrentMonthPayments = YTDpayments.filter(payment => {
                 const paymentDate = new Date(payment.date);
-                return paymentDate.getMonth() === dates.currentMonth && paymentDate.getFullYear() === dates.currentYear;
+                return paymentDate >= new Date(dates.currentMonthStart) && paymentDate <= new Date(dates.currentMonthEnd);
             });
-
+    
             const CurrentMonthExpenses = YTDexpenses.filter(expense => {
                 const expenseDate = new Date(expense.date);
-                return expenseDate.getMonth() === dates.currentMonth && expenseDate.getFullYear() === dates.currentYear;
+                return expenseDate >= new Date(dates.currentMonthStart) && expenseDate <= new Date(dates.currentMonthEnd);
             });
-
+    
             const CurrentMonthRents = YTDrents.filter(rent => {
                 const rentDate = new Date(rent.date);
-                return rentDate.getMonth() === dates.currentMonth && rentDate.getFullYear() === dates.currentYear;
+                return rentDate >= new Date(dates.currentMonthStart) && rentDate <= new Date(dates.currentMonthEnd);
             });
-
+    
             return { 
                 propertyId, 
                 YTDpayments, YTDexpenses, YTDrents, 
@@ -120,6 +125,8 @@ export const useHomePageDetails = () => {
                     grandTotals.YTD.totalExpenses += sumAmounts(YTDexpenses);
                     grandTotals.YTD.netProfit += sumNetProfit(YTDpayments, YTDexpenses);
                     grandTotals.YTD.expectedIncome += sumExpectedIncome(YTDrents);
+
+                    console.log('grandTotals:', grandTotals);
                 });
                 setFinancialData(grandTotals);
 
