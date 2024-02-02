@@ -7,6 +7,7 @@ import { getCurrentDate, getCurrentMonth, getCurrentYear, getDateMonthsAgo, form
 
 export const useHomePageDetails = () => {
     const [properties, setProperties] = useState([]);
+    const [financialDataByProperty, setFinancialDataByProperty] = useState([]);
     const [financialData, setFinancialData] = useState({
         CurrentMonth: { totalIncome: 0, totalExpenses: 0, netProfit: 0, expectedIncome: 0 },
         lastMonth: { totalIncome: 0, totalExpenses: 0, netProfit: 0, expectedIncome: 0 },
@@ -32,127 +33,127 @@ export const useHomePageDetails = () => {
     });
 
     useEffect(() => {
+        const fetchFinancialDataForProperty = async (propertyId) => {
+            const YTDpayments = await getPayments({ property_id: propertyId, start_date: dates.twelveMonthsAgo, end_date: dates.currentDate });
+            const YTDexpenses = await getExpenses({ property_id: propertyId, start_date: dates.twelveMonthsAgo, end_date: dates.currentDate });
+            const YTDrents = await getRents({ property_id: propertyId, start_date: dates.twelveMonthsAgo, end_date: dates.currentDate });
+
+            const lastMonthPayments = YTDpayments.filter(payment => {
+                const paymentDate = new Date(payment.date);
+                return paymentDate.getMonth() === dates.currentMonth && paymentDate.getFullYear() === dates.currentYear;
+            });
+
+            const lastMonthExpenses = YTDexpenses.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                return expenseDate.getMonth() === dates.currentMonth && expenseDate.getFullYear() === dates.currentYear;
+            });
+
+            const lastMonthRents = YTDrents.filter(rent => {
+                const rentDate = new Date(rent.date);
+                return rentDate.getMonth() === dates.currentMonth && rentDate.getFullYear() === dates.currentYear;
+            });
+
+            const CurrentMonthPayments = YTDpayments.filter(payment => {
+                const paymentDate = new Date(payment.date);
+                return paymentDate.getMonth() === dates.currentMonth && paymentDate.getFullYear() === dates.currentYear;
+            });
+
+            const CurrentMonthExpenses = YTDexpenses.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                return expenseDate.getMonth() === dates.currentMonth && expenseDate.getFullYear() === dates.currentYear;
+            });
+
+            const CurrentMonthRents = YTDrents.filter(rent => {
+                const rentDate = new Date(rent.date);
+                return rentDate.getMonth() === dates.currentMonth && rentDate.getFullYear() === dates.currentYear;
+            });
+
+            return { 
+                propertyId, 
+                YTDpayments, YTDexpenses, YTDrents, 
+                lastMonthPayments, lastMonthExpenses, lastMonthRents, 
+                CurrentMonthPayments, CurrentMonthExpenses, CurrentMonthRents 
+            };
+        };
+
         const fetchHomePageDetails = async () => {
             try {    
                 const propertiesData = await getProperties();
                 setProperties(propertiesData);
 
-                const CurrentMonthRents = await getRents({
-                month: dates.currentMonth,
-                year: dates.currentYear
+                const financialDataPromises = propertiesData.map(property => fetchFinancialDataForProperty(property.id));
+                const financialResults = await Promise.all(financialDataPromises);
+                setFinancialDataByProperty(financialResults);
+
+                // Initialize grand totals
+                let grandTotals = {
+                    CurrentMonth: { totalIncome: 0, totalExpenses: 0, netProfit: 0, expectedIncome: 0 },
+                    lastMonth: { totalIncome: 0, totalExpenses: 0, netProfit: 0, expectedIncome: 0 },
+                    YTD: { totalIncome: 0, totalExpenses: 0, netProfit: 0, expectedIncome: 0 },
+                };
+
+                // Initialize chart data
+                let radarChartData = [];
+                let pieChartData = { "Rent Paid": 0, "Remaining Rent": 0 };
+                let barChartData = {};
+
+                // Aggregate data for each time period across all properties
+                financialResults.forEach(({ 
+                    CurrentMonthPayments, CurrentMonthExpenses, CurrentMonthRents, 
+                    lastMonthPayments, lastMonthExpenses, lastMonthRents, 
+                    YTDpayments, YTDexpenses, YTDrents 
+                }) => {
+                    // Calculate totals for the current month
+                    grandTotals.CurrentMonth.totalIncome += sumAmounts(CurrentMonthPayments);
+                    grandTotals.CurrentMonth.totalExpenses += sumAmounts(CurrentMonthExpenses);
+                    grandTotals.CurrentMonth.netProfit += sumNetProfit(CurrentMonthPayments, CurrentMonthExpenses);
+                    grandTotals.CurrentMonth.expectedIncome += sumExpectedIncome(CurrentMonthRents);
+
+                    // Calculate totals for the last month
+                    grandTotals.lastMonth.totalIncome += sumAmounts(lastMonthPayments);
+                    grandTotals.lastMonth.totalExpenses += sumAmounts(lastMonthExpenses);
+                    grandTotals.lastMonth.netProfit += sumNetProfit(lastMonthPayments, lastMonthExpenses);
+                    grandTotals.lastMonth.expectedIncome += sumExpectedIncome(lastMonthRents);
+
+                    // Calculate totals for YTD
+                    grandTotals.YTD.totalIncome += sumAmounts(YTDpayments);
+                    grandTotals.YTD.totalExpenses += sumAmounts(YTDexpenses);
+                    grandTotals.YTD.netProfit += sumNetProfit(YTDpayments, YTDexpenses);
+                    grandTotals.YTD.expectedIncome += sumExpectedIncome(YTDrents);
                 });
-        
-                const CurrentMonthExpenses = await getExpenses({
-                month: dates.currentMonth,
-                year: dates.currentYear
-                });
-        
-                const CurrentMonthPayments = await getPayments({
-                month: dates.currentMonth,
-                });
+                setFinancialData(grandTotals);
 
-                const lastMonthRents = await getRents({
-                month: dates.lastMonth,
-                year: dates.lastYear
-                });
-
-                const lastMonthExpenses = await getExpenses({
-                month: dates.lastMonth,
-                year: dates.lastYear
-                });
-
-                const lastMonthPayments = await getPayments({
-                month: dates.lastMonth,
-                year: dates.lastYear
-                });
-
-                const YTDrents = await getRents({
-                start_date: dates.twelveMonthsAgo,
-                end_date: dates.currentDate
-                });
-        
-                const YTDexpenses = await getExpenses({ 
-                start_date: dates.twelveMonthsAgo,
-                end_date: dates.currentDate
-                });
-        
-                const YTDpayments = await getPayments({
-                start_date: dates.twelveMonthsAgo,
-                end_date: dates.currentDate
-                });
-
-                const MonthlyTotalIncome = CurrentMonthPayments.reduce((acc, payment) => acc + payment.amount, 0);
-                const MonthlyTotalExpenses = CurrentMonthExpenses.reduce((acc, expense) => acc + expense.amount, 0);
-                const MonthlyNetProfit = MonthlyTotalIncome - MonthlyTotalExpenses;
-                const MonthlyExpectedIncome = CurrentMonthRents.reduce((acc, rent) => acc + (rent.total_rent - rent.debt), 0);
-                
-                const lastMonthTotalIncome = lastMonthPayments.reduce((acc, payment) => acc + payment.amount, 0);
-                const lastMonthTotalExpenses = lastMonthExpenses.reduce((acc, expense) => acc + expense.amount, 0);
-                const lastMonthNetProfit = lastMonthTotalIncome - lastMonthTotalExpenses;
-                const lastMonthExpectedIncome = lastMonthRents.reduce((acc, rent) => acc + (rent.total_rent - rent.debt), 0);
-
-                const YTDTotalIncome = YTDpayments.reduce((acc, payment) => acc + payment.amount, 0);
-                const YTDTotalExpenses = YTDexpenses.reduce((acc, expense) => acc + expense.amount, 0);
-                const YTDNetProfit = YTDTotalIncome - YTDTotalExpenses;
-                const YTDExpectedIncome = YTDrents.reduce((acc, rent) => acc + (rent.total_rent - rent.debt), 0);
-
-                setFinancialData({
-                    CurrentMonth: {
-                        totalIncome: MonthlyTotalIncome,
-                        totalExpenses: MonthlyTotalExpenses,
-                        netProfit: MonthlyNetProfit,
-                        expectedIncome: MonthlyExpectedIncome
-                    },
-                    lastMonth: {
-                        totalIncome: lastMonthTotalIncome,
-                        totalExpenses: lastMonthTotalExpenses,
-                        netProfit: lastMonthNetProfit,
-                        expectedIncome: lastMonthExpectedIncome
-                    },
-                    YTD: {
-                        totalIncome: YTDTotalIncome,
-                        totalExpenses: YTDTotalExpenses,
-                        netProfit: YTDNetProfit,
-                        expectedIncome: YTDExpectedIncome
-                    }
-                });
-
-                // Preparing Pie Chart Data
-                let rentPaidThisMonth = CurrentMonthPayments.reduce((acc, payment) => acc + payment.amount, 0);
-                let remainingRent = MonthlyExpectedIncome - rentPaidThisMonth;
-                remainingRent = Math.max(0, remainingRent);
-
-                const pieData = [
-                { name: "Rent Paid", value: rentPaidThisMonth },
-                { name: "Remaining Rent", value: remainingRent }
-                ];
-
-                // Preparing Bar Chart Data
-                const barData = mergeBarChartData(YTDpayments, YTDexpenses);
-                const barKeys = [
-                    { name: "Income", color: "#82ca9d" },
-                    { name: "Expenses", color: "#FA8072" }
-                ];
-
-                // Preparing Radar Chart Data
-                const radarData = [];
-                for (let i = 0; i < propertiesData.length; i++) {
-                    const property = propertiesData[i];
-                    const propertyIncome = YTDpayments.filter(p => p.property_id === property.id).reduce((acc, payment) => acc + payment.amount, 0);
-                    const propertyExpenses = YTDexpenses.filter(e => e.property_id === property.id).reduce((acc, expense) => acc + expense.amount, 0);
-                    radarData.push({
-                        property: property.name,
-                        income: propertyIncome,
-                        expenses: propertyExpenses
+                financialResults.forEach((financialData) => {
+                    // Process radar chart data
+                    radarChartData.push({
+                        property: propertiesData.find(p => p.id === financialData.propertyId).name,
+                        income: sumAmounts(financialData.YTDpayments),
+                        expenses: sumAmounts(financialData.YTDexpenses)
                     });
-                }
-
-                setChartData({
-                    radar: radarData,
-                    pie: pieData,
-                    bar: barData,
-                    barKeys
+    
+                    // Process pie chart data
+                    pieChartData["Rent Paid"] += sumAmounts(financialData.CurrentMonthPayments);
+                    pieChartData["Remaining Rent"] += sumExpectedIncome(financialData.CurrentMonthRents) - sumAmounts(financialData.CurrentMonthPayments);
+    
+                    // Process bar chart data
+                    processBarChartData(barChartData, financialData);
                 });
+    
+                setChartData({
+                    radar: radarChartData,
+                    pie: [
+                        { name: "Rent Paid", value: pieChartData["Rent Paid"] },
+                        { name: "Remaining Rent", value: pieChartData["Remaining Rent"] }
+                    ],
+                    bar: Object.values(barChartData).sort((a, b) => a.monthYearForSorting.localeCompare(b.monthYearForSorting)).map(item => ({
+                        monthYear: formatDate(item.monthYearForSorting, 'MM-YY'),
+                        Income: item.Income,
+                        Expenses: item.Expenses
+                    })),
+                    barKeys: [{ name: "Income", color: "#82ca9d" }, { name: "Expenses", color: "#FA8072" }]
+                });    
+
+
             } catch (error) {
                 console.error('Failed to fetch property details:', error);
                 setError(error);
@@ -160,45 +161,31 @@ export const useHomePageDetails = () => {
                 setIsLoading(false);
             }
         };
+
         setIsLoading(true);
         fetchHomePageDetails();
     }, []);
 
-    const mergeBarChartData = (payments, expenses) => {
-        const combinedData = {};
+    const sumAmounts = (data) => data.reduce((acc, item) => acc + item.amount, 0);
+    const sumExpectedIncome = (rents) => rents.reduce((acc, rent) => acc + (rent.total_rent - rent.debt), 0);
+    const sumNetProfit = (income, expenses) => sumAmounts(income) - sumAmounts(expenses);
 
-        // Use YYYY-MM format for sorting
-        payments.forEach(payment => {
-            const monthYearForSorting = formatDate(payment.date, 'YYYY-MM');
-            combinedData[monthYearForSorting] = {
-                ...combinedData[monthYearForSorting],
-                monthYearForSorting,
-                Income: (combinedData[monthYearForSorting]?.Income || 0) + payment.amount
-            };
-        });
-
-        expenses.forEach(expense => {
-            const monthYearForSorting = formatDate(expense.date, 'YYYY-MM');
-            combinedData[monthYearForSorting] = {
-                ...combinedData[monthYearForSorting],
-                monthYearForSorting,
-                Expenses: (combinedData[monthYearForSorting]?.Expenses || 0) + expense.amount
-            };
-        });
-
-        // Sort data based on YYYY-MM format
-        const sortedData = Object.values(combinedData).sort((a, b) => a.monthYearForSorting.localeCompare(b.monthYearForSorting));
-
-        // Convert to MM-YY format for display
-        return sortedData.map(item => {
-            const [year, month] = item.monthYearForSorting.split('-');
-            return {
-                ...item,
-                monthYear: `${month}-${year.substring(2)}` // MM-YY format
-            };
-        });
+    const processBarChartData = (barChartData, financialData) => {
+        const processData = (data, key) => {
+            data.forEach(item => {
+                const monthYearForSorting = formatDate(item.date, 'YYYY-MM');
+                barChartData[monthYearForSorting] = {
+                    ...barChartData[monthYearForSorting],
+                    monthYearForSorting,
+                    [key]: (barChartData[monthYearForSorting]?.[key] || 0) + item.amount
+                };
+            });
+        };
+    
+        processData(financialData.YTDpayments, 'Income');
+        processData(financialData.YTDexpenses, 'Expenses');
     };
-
+    
     return {
         properties,
         financialData,
