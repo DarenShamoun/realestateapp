@@ -125,8 +125,6 @@ export const useHomePageDetails = () => {
                     grandTotals.YTD.totalExpenses += sumAmounts(YTDexpenses);
                     grandTotals.YTD.netProfit += sumNetProfit(YTDpayments, YTDexpenses);
                     grandTotals.YTD.expectedIncome += sumExpectedIncome(YTDrents);
-
-                    console.log('grandTotals:', grandTotals);
                 });
                 setFinancialData(grandTotals);
 
