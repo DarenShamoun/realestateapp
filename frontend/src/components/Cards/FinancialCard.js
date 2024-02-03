@@ -1,12 +1,20 @@
+import { formatDate } from '@/Utils/DateManagment'; // Import formatDate function
 const FinancialCard = ({ title, amount, previousAmount, startDate, endDate }) => {
-    const monthName = new Date().toLocaleString('default', { month: 'long' });
-    let updatedTitle = title.replace('Monthly', monthName);
+
+    console.log('startDate:', startDate);
+    console.log('endDate:', endDate);
+
+    let updatedTitle = title;
     let dateRangeText = '';
 
     // Add date range to title if startDate and endDate are provided
     if (startDate && endDate) {
-        const formattedStartDate = new Date(startDate).toLocaleDateString();
-        const formattedEndDate = new Date(endDate).toLocaleDateString();
+        const formattedStartDate = formatDate(startDate, 'MM/DD/YY');
+        const formattedEndDate = formatDate(endDate, 'MM/DD/YY');
+
+        console.log('formattedStartDate:', formattedStartDate);
+        console.log('formattedEndDate:', formattedEndDate);
+        
         dateRangeText = `(${formattedStartDate} - ${formattedEndDate})`;
     }
 

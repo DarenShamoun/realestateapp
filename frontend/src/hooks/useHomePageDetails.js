@@ -27,15 +27,15 @@ export const useHomePageDetails = () => {
     const [error, setError] = useState(null);
     const [dates, setDates] = useState({
         currentDate: formatDate(getCurrentDate(), 'YYYY-MM-DD'),
-        currentMonthStart: getStartOfMonthMonthsAgo(0),
-        currentMonthEnd: getEndOfMonthMonthsAgo(0),
-        lastMonthStart: getStartOfMonthMonthsAgo(1),
-        lastMonthEnd: getEndOfMonthMonthsAgo(1),
-        sixMonthsAgoStart: getStartOfMonthMonthsAgo(6),
-        sixMonthsAgoEnd: getEndOfMonthMonthsAgo(6),
-        twelveMonthsAgoStart: getStartOfMonthMonthsAgo(12),
-        twelveMonthsAgoEnd: getEndOfMonthMonthsAgo(12)
-    });
+        currentMonthStart: formatDate(getStartOfCurrentMonth(), 'YYYY-MM-DD'),
+        currentMonthEnd: formatDate(getEndOfCurrentMonth(), 'YYYY-MM-DD'),
+        lastMonthStart: formatDate(getStartOfMonthMonthsAgo(1), 'YYYY-MM-DD'),
+        lastMonthEnd: formatDate(getEndOfMonthMonthsAgo(1), 'YYYY-MM-DD'),
+        sixMonthsAgoStart: formatDate(getStartOfMonthMonthsAgo(6), 'YYYY-MM-DD'),
+        sixMonthsAgoEnd: formatDate(getEndOfMonthMonthsAgo(6), 'YYYY-MM-DD'),
+        twelveMonthsAgoStart: formatDate(getStartOfMonthMonthsAgo(12), 'YYYY-MM-DD'),
+        twelveMonthsAgoEnd: formatDate(getEndOfMonthMonthsAgo(12), 'YYYY-MM-DD')
+    });    
 
     useEffect(() => {
         const fetchFinancialDataForProperty = async (propertyId) => {
@@ -153,13 +153,12 @@ export const useHomePageDetails = () => {
                         { name: "Remaining Rent", value: pieChartData["Remaining Rent"] }
                     ],
                     bar: Object.values(barChartData).sort((a, b) => a.monthYearForSorting.localeCompare(b.monthYearForSorting)).map(item => ({
-                        monthYear: formatDate(item.monthYearForSorting, 'MM-YY'),
+                        monthYear: item.monthYear,
                         Income: item.Income,
                         Expenses: item.Expenses
-                    })),
+                    })),            
                     barKeys: [{ name: "Income", color: "#82ca9d" }, { name: "Expenses", color: "#FA8072" }]
                 });    
-
 
             } catch (error) {
                 console.error('Failed to fetch property details:', error);
@@ -180,10 +179,14 @@ export const useHomePageDetails = () => {
     const processBarChartData = (barChartData, financialData) => {
         const processData = (data, key) => {
             data.forEach(item => {
+                // Format date in 'YYYY-MM' for sorting and 'MM-YY' for display
                 const monthYearForSorting = formatDate(item.date, 'YYYY-MM');
+                const monthYearForDisplay = formatDate(item.date, 'MM-YY');
+    
                 barChartData[monthYearForSorting] = {
                     ...barChartData[monthYearForSorting],
                     monthYearForSorting,
+                    monthYear: monthYearForDisplay, // Used for display in the chart
                     [key]: (barChartData[monthYearForSorting]?.[key] || 0) + item.amount
                 };
             });

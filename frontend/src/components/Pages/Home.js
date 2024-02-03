@@ -35,32 +35,32 @@ const Landing = () => {
       <section>
         <div className="flex m-4 gap-2">
           <FinancialCard
-            title="Total income for"
+            title="Total Income"
             amount={financialData.CurrentMonth.totalIncome}
             previousAmount={financialData.lastMonth.totalIncome}
-            startDate={dates.lastMonthDate} 
-            endDate={dates.currentDate}
+            startDate={dates.currentMonthStart} 
+            endDate={dates.currentMonthEnd}
           />
           <FinancialCard 
             title="Expected Income" 
             amount={financialData.CurrentMonth.expectedIncome} 
             previousAmount={financialData.lastMonth.expectedIncome}
-            startDate={dates.lastMonthDate}
-            endDate={dates.currentDate}
+            startDate={dates.currentMonthStart}
+            endDate={dates.currentMonthEnd}
           />
           <FinancialCard 
-            title="Total expenses" 
+            title="Total Expenses" 
             amount={financialData.CurrentMonth.totalExpenses} 
-            previousAmount={financialData.lastMonth.totalExpenses}             
-            startDate={dates.lastMonthDate} 
-            endDate={dates.currentDate}
+            previousAmount={financialData.lastMonth.totalExpenses}
+            startDate={dates.currentMonthStart} 
+            endDate={dates.currentMonthEnd}
           />
           <FinancialCard 
-            title="Net profit" 
+            title="Net Profit" 
             amount={financialData.CurrentMonth.netProfit} 
-            previousAmount={financialData.lastMonth.netProfit} 
-            startDate={dates.lastMonthDate} 
-            endDate={dates.currentDate}
+            previousAmount={financialData.lastMonth.netProfit}
+            startDate={dates.currentMonthStart} 
+            endDate={dates.currentMonthEnd}
           />
         </div>
       </section>
