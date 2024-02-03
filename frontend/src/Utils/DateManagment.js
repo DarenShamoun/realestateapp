@@ -8,19 +8,16 @@ export const getCurrentMonth = () => {
     return getCurrentDate().getMonth() + 1;
 };
 
-// This function returns the first day of the current month
+// Returns the first day of the current month
 export const getStartOfCurrentMonth = () => {
     const date = new Date();
-    date.setDate(1); // Set to the first day of the month
-    return formatDate(date.toISOString(), 'YYYY-MM-DD');
+    return new Date(date.getFullYear(), date.getMonth(), 1);
 };
 
-// This function returns the last day of the current month
+// Returns the last day of the current month
 export const getEndOfCurrentMonth = () => {
     const date = new Date();
-    date.setMonth(date.getMonth() + 1);
-    date.setDate(0); // Set to the last day of the current month
-    return formatDate(date.toISOString(), 'YYYY-MM-DD');
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0);
 };
 
 // This function returns the current year
@@ -35,20 +32,18 @@ export const getDateMonthsAgo = (monthsAgo) => {
     return currentDate;
 };
 
-// This function returns the first day of the month X months ago
+// Returns the first day of the month X months ago
 export const getStartOfMonthMonthsAgo = (monthsAgo) => {
     const date = new Date();
     date.setMonth(date.getMonth() - monthsAgo);
-    date.setDate(1); // Set to the first day of that month
-    return formatDate(date.toISOString(), 'YYYY-MM-DD');
+    return new Date(date.getFullYear(), date.getMonth(), 1);
 };
 
-// This function returns the last day of the month X months ago
+// Returns the last day of the month X months ago
 export const getEndOfMonthMonthsAgo = (monthsAgo) => {
     const date = new Date();
     date.setMonth(date.getMonth() - monthsAgo + 1);
-    date.setDate(0); // Set to the last day of that month
-    return formatDate(date.toISOString(), 'YYYY-MM-DD');
+    return new Date(date.getFullYear(), date.getMonth(), 0);
 };
 
 // This function returns the last day of the previous month
@@ -58,16 +53,35 @@ export const getLastMonthDate = () => {
 };
 
 // Function to format a date into specified format
-export const formatDate = (dateString, format) => {
-    const date = new Date(dateString);
+export const formatDate = (input, format) => {
+    let dateString;
 
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // Months are 0-indexed
-    const year = date.getFullYear();
+    // Check if the input is a Date object or a string
+    if (input instanceof Date) {
+        // Convert the Date object to an ISO string
+        dateString = input.toISOString().split('T')[0];
+    } else if (typeof input === 'string') {
+        // Use the string as is
+        dateString = input;
+    } else {
+        // Log error for invalid input and return empty string
+        console.error('Invalid date input:', input);
+        return '';
+    }
 
+    // Split the dateString into components
+    const [year, month, day] = dateString.split('-');
+
+    // Validate date components
+    if (!year || !month || !day) {
+        console.error('Invalid date format:', dateString);
+        return '';
+    }
+
+    // Format the date according to the specified format
     return format
-      .replace('DD', String(day).padStart(2, '0'))
-      .replace('MM', String(month).padStart(2, '0'))
-      .replace('YYYY', String(year))
-      .replace('YY', String(year).substr(2));
+        .replace('YYYY', year)
+        .replace('YY', year.substr(2))
+        .replace('MM', month)
+        .replace('DD', day);
 };
