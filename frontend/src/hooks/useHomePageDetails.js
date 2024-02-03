@@ -143,21 +143,33 @@ export const useHomePageDetails = () => {
                     // Process bar chart data
                     processBarChartData(barChartData, financialData);
                 });
+
+                let areaChartData = [];
+                Object.values(barChartData).sort((a, b) => a.monthYearForSorting.localeCompare(b.monthYearForSorting))
+                  .forEach(item => {
+                    areaChartData.push({
+                      monthYear: item.monthYear,
+                      Income: item.Income,
+                      Expenses: item.Expenses
+                    });
+                  });        
     
                 setChartData({
                     radar: radarChartData,
                     pie: [
-                        { name: "Rent Paid", value: pieChartData["Rent Paid"] },
-                        { name: "Remaining Rent", value: pieChartData["Remaining Rent"] }
+                      { name: "Rent Paid", value: pieChartData["Rent Paid"] },
+                      { name: "Remaining Rent", value: pieChartData["Remaining Rent"] }
                     ],
-                    bar: Object.values(barChartData).sort((a, b) => a.monthYearForSorting.localeCompare(b.monthYearForSorting)).map(item => ({
+                    bar: Object.values(barChartData).sort((a, b) => a.monthYearForSorting.localeCompare(b.monthYearForSorting))
+                      .map(item => ({
                         monthYear: item.monthYear,
                         Income: item.Income,
                         Expenses: item.Expenses
-                    })),            
+                      })),
+                    area: areaChartData, // Added line for area chart data
                     barKeys: [{ name: "Income", color: "#82ca9d" }, { name: "Expenses", color: "#FA8072" }]
-                });    
-
+                });
+          
             } catch (error) {
                 console.error('Failed to fetch property details:', error);
                 setError(error);

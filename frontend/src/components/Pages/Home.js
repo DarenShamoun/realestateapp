@@ -67,7 +67,7 @@ const Landing = () => {
 
       <section className="flex my-4 px-4 gap-3">
         <div className="w-1/2 h-[500px] bg-gray-700 rounded">
-          <AreaChartPlot/>
+          <AreaChartPlot data={chartData.area} areaKeys={chartData.barKeys} xAxisKey="monthYear" title="6-Month Financial Overview"/>
         </div>
         <div className="w-1/2 h-[500px] bg-gray-700 rounded">
           <BarChartPlot data={chartData.bar} barKeys={chartData.barKeys} xAxisKey="monthYear" title="6-Month Financial Overview"/>
