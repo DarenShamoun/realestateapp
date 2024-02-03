@@ -1,9 +1,5 @@
 import { formatDate } from '@/Utils/DateManagment'; // Import formatDate function
 const FinancialCard = ({ title, amount, previousAmount, startDate, endDate }) => {
-
-    console.log('startDate:', startDate);
-    console.log('endDate:', endDate);
-
     let updatedTitle = title;
     let dateRangeText = '';
 
@@ -14,7 +10,7 @@ const FinancialCard = ({ title, amount, previousAmount, startDate, endDate }) =>
 
         console.log('formattedStartDate:', formattedStartDate);
         console.log('formattedEndDate:', formattedEndDate);
-        
+
         dateRangeText = `(${formattedStartDate} - ${formattedEndDate})`;
     }
 
