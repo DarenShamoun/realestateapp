@@ -7,10 +7,6 @@ const FinancialCard = ({ title, amount, previousAmount, startDate, endDate }) =>
     if (startDate && endDate) {
         const formattedStartDate = formatDate(startDate, 'MM/DD/YY');
         const formattedEndDate = formatDate(endDate, 'MM/DD/YY');
-
-        console.log('formattedStartDate:', formattedStartDate);
-        console.log('formattedEndDate:', formattedEndDate);
-
         dateRangeText = `(${formattedStartDate} - ${formattedEndDate})`;
     }
 
