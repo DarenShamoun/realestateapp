@@ -59,19 +59,19 @@ const AreaChartPlot = ({ data, areaKeys, xAxisKey, title }) => {
     }
   ];
 
+  const chartData = data && data.length > 0 ? data : defaultData;
   const defaultAreaKeys = [
     { name: "profit", color: "#82ca9d", fill: "#82ca9d" },
     { name: "expenses", color: "#8884d8", fill: "#8884d8" }
   ];
 
-  const chartData = data && data.length > 0 ? data : defaultData;
   const keys = areaKeys || defaultAreaKeys;
   const xKey = xAxisKey || "year";
   const titleText = title || "Area Chart";
 
   return (
     <>
-      <h1 style={{ paddingLeft: '20px', paddingTop: '10px', color: 'white', fontWeight: 'bold' }}>{titleText}</h1> 
+      <h1 style={{ paddingLeft: '20px', paddingTop: '10px', color: 'white', fontWeight: 'bold' }}>{titleText}</h1>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart width={730} height={250} data={chartData}
           margin={{ top: 30, right: 40, left: 30, bottom: 40 }}>
@@ -83,20 +83,19 @@ const AreaChartPlot = ({ data, areaKeys, xAxisKey, title }) => {
               </linearGradient>
             ))}
           </defs>
-          <XAxis dataKey={xKey || "name"} stroke="white" />
+          <XAxis dataKey={xKey} stroke="white" />
           <YAxis stroke="white" tickFormatter={yAxisTickFormatter} />
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          {keys.map((key, index) => (
+          {keys.map(key => (
             <Area 
               key={key.name} 
               type="monotone" 
               dataKey={key.name} 
               stroke={key.color} 
-              strokeWidth={2}
               fillOpacity={0.4}
-              fill={defaultAreaKeys[index].fill}
+              fill={`url(#color${key.name})`} 
             />
           ))}
         </AreaChart>
