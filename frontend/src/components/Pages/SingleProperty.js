@@ -1,10 +1,12 @@
 import React from 'react';
+import { useState } from 'react';
 import { usePropertyDetails } from '@/Hooks/useSinglePropertyDetails';
 import PieChartPlot from '@/components/Charts/PieChartPlot';
 import AreaChartPlot from '../Charts/AreaChartPlot';
 import UnitCard from '@/components/Cards/UnitCard';
 import FinancialCard from '@/components/Cards/FinancialCard';
 import CreateUnitModal from '../Modals/CreateUnitModal';
+import CreateExpenseModal from '../Modals/CreateExpenseModal';
 
 const PropertyDetails = ({ property_id }) => {
   const {
@@ -27,9 +29,13 @@ const PropertyDetails = ({ property_id }) => {
     error
   } = usePropertyDetails(property_id);
   const [isCreateUnitModalOpen, setCreateUnitModalOpen] = React.useState(false);
+  const [isCreateExpenseModalOpen, setIsCreateExpenseModalOpen] = useState(false);
 
   const openCreateUnitModal = () => setCreateUnitModalOpen(true);
   const closeCreateUnitModal = () => setCreateUnitModalOpen(false);
+
+  const openCreateExpenseModal = () => setIsCreateExpenseModalOpen(true);
+  const closeCreateExpenseModal = () => setIsCreateExpenseModalOpen(false);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -98,7 +104,16 @@ const PropertyDetails = ({ property_id }) => {
         >
           Add Unit
         </button>
+        
+      <div className="w-4"></div>
+        <button 
+          onClick={openCreateExpenseModal} 
+          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-4"
+        >
+          Add Expense
+        </button>
       </div>
+
 
       {/* Create Unit Modal */}
       {isCreateUnitModalOpen && (
@@ -108,6 +123,18 @@ const PropertyDetails = ({ property_id }) => {
           propertyId={property_id}
         />
       )}
+
+        {/* Create Expense Modal */}
+        {isCreateExpenseModalOpen && (
+        <CreateExpenseModal
+          isOpen={isCreateExpenseModalOpen}
+          onClose={closeCreateExpenseModal}
+          properties={[property]} // Pass the current property as an array
+          units={units}
+          context="unit"
+        />
+      )}
+
     </section>
   );
 };

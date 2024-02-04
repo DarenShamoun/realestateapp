@@ -7,6 +7,7 @@ import PieChartPlot from '@/components/Charts/PieChartPlot';
 import PropertyCard from '@/components/Cards/PropertyCard';
 import FinancialCard from '@/components/Cards/FinancialCard';
 import CreatePropertyModal from '@/components/Modals/CreatePropertyModal';
+import CreateExpenseModal from '../Modals/CreateExpenseModal';
 
 const Properties = () => {
   const {
@@ -28,9 +29,13 @@ const Properties = () => {
     error
   } = useAllPropertyDetails();
   const [isCreatePropertyModalOpen, setIsCreatePropertyModalOpen] = useState(false);
+  const [isCreateExpenseModalOpen, setIsCreateExpenseModalOpen] = useState(false); // New state for expense modal
 
   const openCreatePropertyModal = () => setIsCreatePropertyModalOpen(true);
   const closeCreatePropertyModal = () => setIsCreatePropertyModalOpen(false);
+
+  const openCreateExpenseModal = () => setIsCreateExpenseModalOpen(true);
+  const closeCreateExpenseModal = () => setIsCreateExpenseModalOpen(false);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -90,6 +95,14 @@ const Properties = () => {
         >
           Add Property
         </button>
+        
+      <div className="w-4"></div>
+        <button 
+          onClick={openCreateExpenseModal} 
+          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-4"
+        >
+          Add Expense
+        </button>
       </div>
 
       {/* Create Property Modal */}
@@ -97,6 +110,16 @@ const Properties = () => {
         <CreatePropertyModal
           isOpen={isCreatePropertyModalOpen}
           onClose={closeCreatePropertyModal}
+        />
+      )}
+
+      {/* Add Expense Button */}
+      {isCreateExpenseModalOpen && (
+        <CreateExpenseModal
+          isOpen={isCreateExpenseModalOpen}
+          onClose={closeCreateExpenseModal}
+          properties={properties}
+          context="property"
         />
       )}
 
