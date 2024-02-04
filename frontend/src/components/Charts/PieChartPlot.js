@@ -50,7 +50,7 @@ const PieChartPlot = ({ data, title }) => {
     <>
       <h1 style={{ paddingLeft: '20px', paddingTop: '10px', color: 'white', fontWeight: 'bold' }}>{title}</h1> 
       <ResponsiveContainer width="100%" height="100%">
-        <PieChart width={730} height={250} margin={{
+        <PieChart width={400} height={300} margin={{
             top: 10,
             right: 30,
             left: 30,
@@ -62,7 +62,7 @@ const PieChartPlot = ({ data, title }) => {
             nameKey="name"
             cx="50%"
             cy="50%"
-            outerRadius={80}
+            outerRadius={110}
             fill="#8884d8"
             label={renderCustomizedLabel}
             >

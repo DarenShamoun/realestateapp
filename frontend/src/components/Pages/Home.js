@@ -12,6 +12,7 @@ const Landing = () => {
   const {
     properties,
     financialData,
+    financialDataByProperty,
     chartData,
     isLoading,
     error,
@@ -29,6 +30,8 @@ const Landing = () => {
   if (!properties) {
     return <div>No properties found.</div>;
   }
+
+  console.log('line chart data', chartData.line);
 
   return (
     <>
@@ -79,7 +82,7 @@ const Landing = () => {
           <PieChartPlot data={chartData.pie} title="Rent Status Overview"/>
         </div>
         <div className=" w-1/3 h-[400px] bg-gray-700 rounded">
-          <LineChartPlot/>
+          <LineChartPlot data={chartData.bar} lineKeys={chartData.lineKeys} xAxisKey="monthYear" title="Line Chart"/>
         </div>
         <div className=" w-1/3 h-[400px] bg-gray-700 rounded">
           <RadarChartPlot data={chartData.radar} title="Property Income Breakdown"/>

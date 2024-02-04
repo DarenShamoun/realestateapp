@@ -1,7 +1,27 @@
+import React from 'react';
 import { LineChart, XAxis, YAxis, Line, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts";
 
-const LineChartPlot = () => {
-  const data = [
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="custom-tooltip" style={{ backgroundColor: '#6B7280', padding: '10px', border: '1px solid #ccc' }}>
+        <p className="label">{`${label}`}</p>
+        {payload.map((entry, index) => (
+          <p key={`item-${index}`} style={{ color: entry.color }}>
+            {`${entry.name}: $${entry.value.toFixed(2)}`}
+          </p>
+        ))}
+      </div>
+    );
+  }
+
+  return null;
+};
+
+const yAxisTickFormatter = (value) => `$${value.toFixed(0)}`;
+
+const LineChartPlot = ({ data, lineKeys, xAxisKey, title }) => {
+  const defaultData = [
     {
       month: 'Jan',
       paid: 5000,
@@ -29,32 +49,40 @@ const LineChartPlot = () => {
     }
   ];
 
+  const defaultLineKeys = [
+    { name: "Income", stroke: "#8884d8" },
+    { name: "Expenses", stroke: "#82ca9d" }
+  ];
+
+  const chartData = data && data.length > 0 ? data : defaultData;
+  const keys = lineKeys || defaultLineKeys;
+  const xKey = xAxisKey || "monthYear";
+  const titleText = title || "Line Chart";
+
   return (
     <>
-      <ResponsiveContainer width="100%" height="100%">
+      <h1 style={{ paddingLeft: '20px', paddingTop: '10px', color: 'white', fontWeight: 'bold' }}>{titleText}</h1> 
+      <ResponsiveContainer width="90%" height="90%" >
         <LineChart
-          width={500}
-          height={300}
-          data={data}
+          data={chartData}
           margin={{
-            top: 5,
-            right: 30,
-            left: 20,
+            top: 20,
+            right: 5,
+            left: 30,
             bottom: 5,
-          }}
-          >
+          }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
+          <XAxis dataKey={xKey} stroke="white" />
+          <YAxis stroke="white" tickFormatter={yAxisTickFormatter} />
+          <Tooltip content={<CustomTooltip />} />
           <Legend />
-          <Line type="monotone" dataKey="paid" stroke="#8884d8" strokeWidth={2} />
-          <Line type="monotone" dataKey="organic" stroke="#82ca9d" strokeWidth={2}/>
+          {keys.map(key => (
+            <Line key={key.name} type="monotone" dataKey={key.name} stroke={key.stroke} strokeWidth={2} />
+          ))}
         </LineChart>
       </ResponsiveContainer>
     </>
   );
 };
-  
+
 export default LineChartPlot;
-  
