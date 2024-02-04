@@ -62,7 +62,7 @@ const PieChartPlot = ({ data, title }) => {
             nameKey="name"
             cx="50%"
             cy="50%"
-            outerRadius={110}
+            outerRadius={85}
             fill="#8884d8"
             label={renderCustomizedLabel}
             >

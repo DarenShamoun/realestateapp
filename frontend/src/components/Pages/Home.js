@@ -70,7 +70,7 @@ const Landing = () => {
 
       <section className="flex my-4 px-4 gap-3">
         <div className="w-1/2 h-[500px] bg-gray-700 rounded">
-          <AreaChartPlot data={chartData.area} areaKeys={chartData.barKeys} xAxisKey="monthYear" title="6-Month Financial Overview"/>
+          <AreaChartPlot data={chartData.area} areaKeys={chartData.barKeys} xAxisKey="monthYear" title="Income VS Expenses"/>
         </div>
         <div className="w-1/2 h-[500px] bg-gray-700 rounded">
           <BarChartPlot data={chartData.bar} barKeys={chartData.barKeys} xAxisKey="monthYear" title="6-Month Financial Overview"/>
@@ -82,7 +82,7 @@ const Landing = () => {
           <PieChartPlot data={chartData.pie} title="Rent Status Overview"/>
         </div>
         <div className=" w-1/3 h-[400px] bg-gray-700 rounded">
-          <LineChartPlot data={chartData.bar} lineKeys={chartData.lineKeys} xAxisKey="monthYear" title="Line Chart"/>
+          <LineChartPlot data={chartData.bar} lineKeys={chartData.lineKeys} xAxisKey="monthYear" title="Overview Of Profits"/>
         </div>
         <div className=" w-1/3 h-[400px] bg-gray-700 rounded">
           <RadarChartPlot data={chartData.radar} title="Property Income Breakdown"/>
