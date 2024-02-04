@@ -44,7 +44,11 @@ const PieChartPlot = ({ data, title }) => {
     { name: "Remaining Rent", value: 5000 }
   ];
 
-  const chartData = data && data.length > 0 ? data : defaultData;
+  // Calculate the sum of values in the data
+  const dataSum = data?.reduce((acc, item) => acc + item.value, 0);
+
+  // Use default data if the original data is empty or sums to zero
+  const chartData = data && data.length > 0 && dataSum > 0 ? data : defaultData;
 
   return (
     <>

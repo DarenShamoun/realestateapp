@@ -42,6 +42,8 @@ const PropertyDetails = ({ property_id }) => {
   if (!property) {
     return <div>No property found.</div>;
   }
+
+  console.log('pie chart data', pieChartData);
   
   return (
     <section>
