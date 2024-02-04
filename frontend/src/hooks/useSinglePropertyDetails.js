@@ -22,8 +22,8 @@ export const usePropertyDetails = (property_id) => {
   const [YTDNetProfit, setYTDNetProfit] = useState(0);
   const [YTDExpectedIncome, setYTDExpectedIncome] = useState(0);
   const [pieChartData, setPieChartData] = useState([]);
-  const [barChartData, setBarChartData] = useState([]);
-  const [barKeys, setBarKeys] = useState([]);
+  const [areaChartData, setAreaChartData] = useState([]);
+  const [areaKeys, setAreaKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -109,15 +109,15 @@ export const usePropertyDetails = (property_id) => {
         setYTDExpectedIncome(YTDExpectedIncome);
 
         // Preparing Bar Chart Data
-        const barData = mergeBarChartData(YTDpayments, YTDexpenses, YTDrents);
-        setBarChartData(barData);      
+        const areaData = mergeAreaChartData(YTDpayments, YTDexpenses, YTDrents);
+        setAreaChartData(areaData);      
 
         // Preparing Bar Chart Keys
-        const barKeys = [
+        const areaKeys = [
           { name: "Income", color: "#82ca9d" },
           { name: "Expenses", color: "#FA8072" }
         ];
-        setBarKeys(barKeys);
+        setAreaKeys(areaKeys);
 
         // Preparing Pie Chart Data
         if (CurrentMonthPayments && CurrentMonthRents) {
@@ -144,7 +144,7 @@ export const usePropertyDetails = (property_id) => {
     }
   }, [property_id]);
 
-  const mergeBarChartData = (payments, expenses, rents) => {
+  const mergeAreaChartData = (payments, expenses, rents) => {
     const combinedData = {};
   
     // Use YYYY-MM format for sorting
@@ -193,8 +193,8 @@ export const usePropertyDetails = (property_id) => {
     YTDNetProfit,
     YTDExpectedIncome,
     pieChartData,
-    barChartData,
-    barKeys,
+    areaChartData,
+    areaKeys,
     isLoading, 
     error };
 };

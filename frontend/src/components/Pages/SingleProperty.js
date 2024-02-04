@@ -2,6 +2,7 @@ import React from 'react';
 import { usePropertyDetails } from '@/Hooks/useSinglePropertyDetails';
 import BarChartPlot from "@/components/Charts/BarChartPlot";
 import PieChartPlot from '@/components/Charts/PieChartPlot';
+import AreaChartPlot from '../Charts/AreaChartPlot';
 import UnitCard from '@/components/Cards/UnitCard';
 import FinancialCard from '@/components/Cards/FinancialCard';
 import CreateUnitModal from '../Modals/CreateUnitModal';
@@ -21,8 +22,8 @@ const PropertyDetails = ({ property_id }) => {
     YTDNetProfit,
     YTDExpectedIncome,
     pieChartData,
-    barChartData,
-    barKeys,
+    areaChartData,
+    areaKeys,
     isLoading, 
     error
   } = usePropertyDetails(property_id);
@@ -74,9 +75,9 @@ const PropertyDetails = ({ property_id }) => {
           <PieChartPlot data={pieChartData} title="Rent Status Overview"/>
         </div>
         <div className="w-1/2 h-[450px] bg-gray-700 rounded">
-          <BarChartPlot 
-            data={barChartData} 
-            barKeys={barKeys} 
+          <AreaChartPlot 
+            data={areaChartData} 
+            areaKeys={areaKeys} 
             xAxisKey="monthYear" 
             title="6-Month Financial Overview"
           />

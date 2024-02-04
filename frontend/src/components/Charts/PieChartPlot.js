@@ -37,8 +37,10 @@ const renderCustomizedLabel = ({
 };
 
 const PieChartPlot = ({ data, title }) => {
-  const colors = ["#82ca9d", "#FA8072"];
-
+  const colors = [
+    "rgba(130, 202, 157, 0.8)", // Light green with opacity
+    "rgba(250, 128, 114, 0.8)"  // Light red with opacity
+  ];
   const defaultData = [
     { name: "Rent Paid", value: 20000 },
     { name: "Remaining Rent", value: 5000 }
