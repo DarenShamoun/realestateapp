@@ -1,6 +1,5 @@
 import React from 'react';
 import { usePropertyDetails } from '@/Hooks/useSinglePropertyDetails';
-import BarChartPlot from "@/components/Charts/BarChartPlot";
 import PieChartPlot from '@/components/Charts/PieChartPlot';
 import AreaChartPlot from '../Charts/AreaChartPlot';
 import UnitCard from '@/components/Cards/UnitCard';
