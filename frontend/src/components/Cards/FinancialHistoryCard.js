@@ -30,6 +30,9 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
     setEditRentData(null);
   };
 
+  // Check if there is an active lease
+  const hasActiveLease = leases.some(lease => lease.is_active);
+
   return (
     <div className="w-full lg:w-1/2 px-4">
 
@@ -55,36 +58,37 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
         <h2 className="text-xl text-white mb-4">Financial History</h2>
         <div className="grid grid-cols-2 gap-4">
 
-        {/* Rent History */}
-        <div>
-          <h3 className="text-lg text-white mb-2">Rent History</h3>
-          {rentHistory.length > 0 ? (
-            <ul className="space-y-2">
-              {rentHistory.map((rent, index) => (
-                <li key={index} className="text-gray-300 flex justify-between items-center">
-                  <div>
-                    <p>Date: {formatDate(rent.date, "MM-DD-YYYY")}</p>
-                    <p>Total Rent: ${rent.total_rent.toFixed(2)}</p>
-                  </div>
-                  <button 
-                    onClick={() => onOpenEditRent(rent)} 
-                    className="ml-4"
-                  >
-                    <img src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
-                  </button>
-                </li>
-              ))}
-            </ul>
+          {/* Rent History */}
+          <div>
+            <h3 className="text-lg text-white mb-2">Rent History</h3>
+            {rentHistory.length > 0 ? (
+              <ul className="space-y-2">
+                {rentHistory.map((rent, index) => (
+                  <li key={index} className="text-gray-300 flex justify-between items-center">
+                    <div>
+                      <p>Date: {formatDate(rent.date, "MM-DD-YYYY")}</p>
+                      <p>Total Rent: ${rent.total_rent.toFixed(2)}</p>
+                    </div>
+                    <button 
+                      onClick={() => onOpenEditRent(rent)} 
+                      className="ml-4"
+                    >
+                      <img src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
             ) : (<p className="text-gray-300">No rent history available</p>)}
-            {/* Add Rent Button */}
-            {rentHistory.length > 0 && (
+
+            {/* Show Add Rent Button if there is an active lease */}
+            {hasActiveLease && (
               <button
                 onClick={onOpenCreateRent}
                 className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
               >
                 Add Rent
               </button>
-            )}
+                )}
           </div>
 
           {/* Payment History */}
@@ -108,11 +112,11 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
                 ))}
               </ul>
             ) : (<p className="text-gray-300">No payment history available</p>)}
-              {/* Add Payment Button */}
-              {leases && leases.length > 0 && (
+              {/* Show Add Payment Button if there is an active lease */}
+              {hasActiveLease && (
                 <button
                   onClick={onOpenCreatePayment}
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
+                  className="bg-blue-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4"
                 >
                   Add Payment
                 </button>
