@@ -86,7 +86,7 @@ const Documents = () => {
             <h1 className="text-2xl font-bold text-white mb-4">Documents</h1>
             
             {/* Search and Upload Section */}
-            <div className="bg-gray-800 p-4 rounded-lg flex items-center justify-between mb-6">
+            <div className="bg-gray-800 p-4 rounded-t-lg flex items-center justify-between">
                 {/* Search Input */}
                 <div className="flex flex-grow items-center rounded-full bg-gray-700 mr-3">
                     <input 
@@ -130,7 +130,7 @@ const Documents = () => {
                                 onChange={(e) => setCustomFilename(e.target.value)} 
                                 className="bg-gray-700 text-white rounded-l-full py-2 px-4 leading-tight focus:outline-none"
                             />
-                            <button onClick={handleUpload} className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 ">
+                            <button onClick={handleUpload} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 ">
                                 {/* Upload icon */}
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -154,13 +154,13 @@ const Documents = () => {
             </div>
 
             {/* Document List Section */}
-            <div className="bg-gray-700 p-4 rounded-b-lg">
+            <div className="bg-gray-700 pl-4 pr-4 pb-4 rounded-b-lg">
                 {filteredDocuments.length > 0 ? (
                     filteredDocuments.map(doc => (
                         <div key={doc.id} className="flex items-center justify-between border-b border-gray-300 py-2">
                             <span className="text-lg text-white">{doc.custom_filename || doc.filename}</span>
                             <div className="flex items-center">
-                                <button onClick={() => {/* handle view logic */}} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-2">
+                                <button onClick={() => {/* handle view logic */}} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2">
                                     View
                                 </button>
                                 <button onClick={() => handleDelete(doc.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
@@ -170,7 +170,7 @@ const Documents = () => {
                         </div>
                     ))
                 ) : (
-                    <div className="text-white text-center py-2">No documents found.</div>
+                    <div className="text-white text-center pt-6 pb-4">No documents found.</div>
                 )}
             </div>
         </div>
