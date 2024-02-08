@@ -5,6 +5,7 @@ import { addDocument, getDocuments, updateDocument, deleteDocument } from '@/api
 
 const Documents = () => {
     const [documents, setDocuments] = useState([]);
+    const [documentType, setDocumentType] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -36,16 +37,19 @@ const Documents = () => {
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         if (selectedFile) {
+            const fileExtension = selectedFile.name.split('.').pop();
+            setDocumentType(fileExtension);
             setFile(selectedFile);
             setIsFileSelected(true);
         }
     };
-
+    
     const handleUpload = async () => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('custom_filename', customFilename);
-
+        formData.append('document_type', documentType);
+    
         try {
             await addDocument(formData);
             fetchDocuments(); 
@@ -54,13 +58,14 @@ const Documents = () => {
             setError(error.message);
         }
     };
-
+    
     const resetUploadState = () => {
+        hiddenFileInput.current.value = '';
         setFile(null);
         setCustomFilename('');
-        setIsReadyToUpload(false);
+        setIsFileSelected(false);
     };
-
+    
     const handleDelete = async (documentId) => {
         try {
             await deleteDocument(documentId);
