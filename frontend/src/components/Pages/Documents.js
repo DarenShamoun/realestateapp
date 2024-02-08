@@ -82,9 +82,12 @@ const Documents = () => {
 
     return (
         <div className="container mx-auto p-4">
+            {/* Page Title */}
             <h1 className="text-2xl font-bold text-white mb-4">Documents</h1>
-
+            
+            {/* Search and Upload Section */}
             <div className="bg-gray-800 p-4 rounded-lg flex items-center justify-between mb-6">
+                {/* Search Input */}
                 <div className="flex flex-grow items-center rounded-full bg-gray-700 mr-3">
                     <input 
                         type="text" 
@@ -107,6 +110,7 @@ const Documents = () => {
                     </button>
                 </div>
 
+                {/* Upload Section */}
                 <div className="flex items-center">
                     <input 
                         type="file" 
@@ -115,7 +119,9 @@ const Documents = () => {
                         style={{display: 'none'}} 
                     />
 
+                    {/* Upload Button and Custom Filename Input */}
                     {isFileSelected ? (
+                        // Shown when a file is selected
                         <div className="flex items-center bg-gray-700 rounded-full">
                             <input 
                                 type="text" 
@@ -138,23 +144,22 @@ const Documents = () => {
                             </button>
                         </div>
                     ) : (
+                        // Upload Button
                         <button onClick={handleClickUploadButton} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full">
-                            {/* File upload icon */}
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.586-6.586a2 2 0 10-2.828-2.828z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.414 10.586l-4-4A2 2 0 0014 7h6v6a2 2 0 01-.586-1.414z" />
-                            </svg>
+                            {/* Custom File upload icon */}
+                            <img src="/upload-file.svg" alt="Upload" className="h-5 w-5" />
                         </button>
                     )}
                 </div>
             </div>
 
-            {/* Document List */}
+            {/* Document List Section */}
             <div>
                 {filteredDocuments.map(doc => (
                     <div key={doc.id} className="flex items-center justify-between border-b border-gray-300 py-2">
                         <span className="text-lg text-white">{doc.custom_filename || doc.filename}</span>
                         <div>
+                            {/* View and Delete Buttons */}
                             <button onClick={() => {/* handle view logic */}} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-2">
                                 View
                             </button>
@@ -167,6 +172,6 @@ const Documents = () => {
             </div>
         </div>
     );
-};
+}
 
 export default Documents;
