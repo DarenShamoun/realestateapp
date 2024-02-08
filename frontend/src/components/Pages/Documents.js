@@ -154,21 +154,24 @@ const Documents = () => {
             </div>
 
             {/* Document List Section */}
-            <div>
-                {filteredDocuments.map(doc => (
-                    <div key={doc.id} className="flex items-center justify-between border-b border-gray-300 py-2">
-                        <span className="text-lg text-white">{doc.custom_filename || doc.filename}</span>
-                        <div>
-                            {/* View and Delete Buttons */}
-                            <button onClick={() => {/* handle view logic */}} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-2">
-                                View
-                            </button>
-                            <button onClick={() => handleDelete(doc.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                Delete
-                            </button>
+            <div className="bg-gray-700 p-4 rounded-b-lg">
+                {filteredDocuments.length > 0 ? (
+                    filteredDocuments.map(doc => (
+                        <div key={doc.id} className="flex items-center justify-between border-b border-gray-300 py-2">
+                            <span className="text-lg text-white">{doc.custom_filename || doc.filename}</span>
+                            <div className="flex items-center">
+                                <button onClick={() => {/* handle view logic */}} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-2">
+                                    View
+                                </button>
+                                <button onClick={() => handleDelete(doc.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                    Delete
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    <div className="text-white text-center py-2">No documents found.</div>
+                )}
             </div>
         </div>
     );
