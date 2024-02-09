@@ -5,7 +5,9 @@ import { getProperties } from '@/api/propertyService';
 import { getUnits } from '@/api/unitService';
 import { getLeases } from '@/api/leaseService';
 import { getTenants } from '@/api/tenantService';
-import { addDocument, getDocuments, updateDocument, deleteDocument } from '@/api/documentService';
+import { getExpenses } from '@/api/expenseService';
+import { getPayments } from '@/api/paymentService';
+import { addDocument, getDocuments, deleteDocument } from '@/api/documentService';
 
 const Documents = () => {
     const [documents, setDocuments] = useState([]);
@@ -28,7 +30,9 @@ const Documents = () => {
     const [tenantId, setTenantId] = useState('');
     const [tenants, setTenants] = useState([]);
     const [expenseId, setExpenseId] = useState('');
+    const [expenses, setExpenses] = useState([]);
     const [paymentId, setPaymentId] = useState('');
+    const [payments, setPayments] = useState([]);
 
     // Fetch documents for the document list
     const fetchDocuments = async () => {
@@ -47,7 +51,7 @@ const Documents = () => {
         }
     };
 
-    // Fetch properties, units, leases, and tenants for dropdowns
+    // Fetch properties, units, leases, tenants, payments, and expenses for dropdowns
     const fetchProperties = async () => {
         try {
             const fetchedProperties = await getProperties();
@@ -77,7 +81,6 @@ const Documents = () => {
         }
     };
 
-
     const fetchTenants = async () => {
         try {
             const fetchedTenants = await getTenants();
@@ -87,6 +90,46 @@ const Documents = () => {
         }
     };
 
+    const fetchPayments = async () => {
+        try {
+            const filters = {};
+            if (propertyId) filters.property_id = propertyId;
+            if (unitId) filters.unit_id = unitId;
+            if (leaseId) filters.lease_id = leaseId;
+    
+            const fetchedPayments = await getPayments(filters);
+            setPayments(fetchedPayments);
+        } catch (error) {
+            console.error('Failed to fetch payments:', error);
+        }
+    };
+    
+    const fetchExpenses = async () => {
+        try {
+            const filters = {};
+            if (propertyId) filters.property_id = propertyId;
+            if (unitId) filters.unit_id = unitId;
+    
+            const fetchedExpenses = await getExpenses(filters);
+            setExpenses(fetchedExpenses);
+        } catch (error) {
+            console.error('Failed to fetch expenses:', error);
+        }
+    };
+    
+    // Event handlers for dropdown selections
+    const handleExpenseChange = async (e) => {
+        const selectedExpenseId = e.target.value;
+        setExpenseId(selectedExpenseId);
+    
+        const selectedExpense = expenses.find(expense => expense.id.toString() === selectedExpenseId);
+        if (selectedExpense) {
+            setUnitId(selectedExpense.unit_id ? selectedExpense.unit_id.toString() : '');
+            setLeaseId('');
+            setTenantId('');
+        }
+    };
+    
     // Helper function to get tenant name from tenant id
     const getTenantName = (tenantId) => {
         const tenant = tenants.find(t => t.id === tenantId);
@@ -104,8 +147,25 @@ const Documents = () => {
     useEffect(() => {
         if (propertyId) {
             fetchUnits(propertyId);
-        } else {
+            // Reset states for unit, lease, tenant, payment, and expense
+            setUnitId('');
+            setLeaseId('');
+            setTenantId('');
+            setExpenseId('');
+            setPaymentId('');
+            // Clear the dependent dropdowns
             setUnits([]);
+            setLeases([]);
+            setTenants([]);
+            setExpenses([]);
+            setPayments([]);
+        } else {
+            // Clear all dropdowns if no property is selected
+            setUnits([]);
+            setLeases([]);
+            setTenants([]);
+            setExpenses([]);
+            setPayments([]);
         }
     }, [propertyId]);
 
@@ -113,10 +173,29 @@ const Documents = () => {
     useEffect(() => {
         if (unitId) {
             fetchLeases(unitId);
+            // Reset states for lease, tenant, payment, and expense
+            setLeaseId('');
+            setTenantId('');
+            setExpenseId('');
+            setPaymentId('');
+            // Clear the dependent dropdowns
+            setLeases([]);
+            setTenants([]);
+            setExpenses([]);
+            setPayments([]);
         } else {
-            setLeases([]); 
+            setLeases([]);
+            setTenants([]);
+            setExpenses([]);
+            setPayments([]);
         }
     }, [unitId]);
+
+    // Fetch payments and expenses when leaseId changes
+    useEffect(() => {
+        fetchPayments();
+        fetchExpenses();
+    }, [propertyId, unitId, leaseId]);
 
     // Event handlers
     const handleClickUploadButton = () => {
@@ -274,6 +353,7 @@ const Documents = () => {
             {isFileSelected && (
                 <div className="bg-gray-700 p-4 mb-4 rounded-b-lg">
                     <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
+
                         {/* Dropdown for Property */}
                         <div>
                             <label className="text-white block mb-2">Property</label>
@@ -312,7 +392,7 @@ const Documents = () => {
                                 className="p-2 rounded bg-gray-800 text-white w-full"
                                 value={leaseId}
                                 onChange={handleLeaseChange}
-                                disabled={!unitId} // Disable if no unit is selected
+                                disabled={!unitId || expenseId} // Disable if no unit is selected or an expense is selected
                             >
                                 <option value="">Select Lease</option>
                                 {leases.map(lease => (
@@ -330,7 +410,7 @@ const Documents = () => {
                                 className="p-2 rounded bg-gray-800 text-white w-full"
                                 value={tenantId}
                                 onChange={(e) => setTenantId(e.target.value)}
-                                disabled={!!propertyId} // Disable if a property is selected
+                                disabled={!!propertyId || expenseId} // Disable if a property is selected or an expense is selected
                             >
                                 <option value="">Select Tenant</option>
                                 {tenants.map(tenant => (
@@ -345,10 +425,13 @@ const Documents = () => {
                             <select
                                 className="p-2 rounded bg-gray-800 text-white w-full"
                                 value={expenseId}
-                                onChange={(e) => setExpenseId(e.target.value)}
+                                onChange={handleExpenseChange}
+                                disabled={!propertyId || paymentId}
                             >
                                 <option value="">Select Expense</option>
-                                {/* Replace with actual options */}
+                                {expenses.map(expense => (
+                                    <option key={expense.id} value={expense.id}>{expense.description}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -359,11 +442,15 @@ const Documents = () => {
                                 className="p-2 rounded bg-gray-800 text-white w-full"
                                 value={paymentId}
                                 onChange={(e) => setPaymentId(e.target.value)}
+                                disabled={!propertyId || !unitId || !leaseId || expenseId} // Disable if no property, unit, or lease is selected or an expense is selected
                             >
                                 <option value="">Select Payment</option>
-                                {/* Replace with actual options */}
+                                {payments.map(payment => (
+                                    <option key={payment.id} value={payment.id}>{`Amount: ${payment.amount}, Date: ${payment.date}`}</option>
+                                ))}
                             </select>
                         </div>
+
                     </div>
                 </div>
             )}
@@ -375,9 +462,11 @@ const Documents = () => {
                         <div key={doc.id} className="flex items-center justify-between border-b border-gray-300 py-2">
                             <span className="text-lg text-white">{doc.custom_filename || doc.filename}</span>
                             <div className="flex items-center">
+                                {/* View icon */}
                                 <button onClick={() => {/* handle view logic */}} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2">
                                     View
                                 </button>
+                                {/* Delete icon */}
                                 <button onClick={() => handleDelete(doc.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                     Delete
                                 </button>
