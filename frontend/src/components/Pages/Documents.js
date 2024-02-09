@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getProperties } from '@/api/propertyService';
 import { getUnits } from '@/api/unitService';
+import { getLeases } from '@/api/leaseService';
+import { getTenants } from '@/api/tenantService';
 import { addDocument, getDocuments, updateDocument, deleteDocument } from '@/api/documentService';
 
 const Documents = () => {
@@ -22,15 +24,22 @@ const Documents = () => {
     const [unitId, setUnitId] = useState('');
     const [units, setUnits] = useState([]);
     const [leaseId, setLeaseId] = useState('');
+    const [leases, setLeases] = useState([]);
     const [tenantId, setTenantId] = useState('');
+    const [tenants, setTenants] = useState([]);
     const [expenseId, setExpenseId] = useState('');
     const [paymentId, setPaymentId] = useState('');
 
+    // Fetch documents for the document list
     const fetchDocuments = async () => {
         setIsLoading(true);
         try {
             const data = await getDocuments();
-            setDocuments(data);
+            const filteredDocuments = data.filter(doc => 
+                doc.filename.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                doc.custom_filename.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setDocuments(filteredDocuments);
         } catch (error) {
             setError(error.message);
         } finally {
@@ -38,6 +47,7 @@ const Documents = () => {
         }
     };
 
+    // Fetch properties, units, leases, and tenants for dropdowns
     const fetchProperties = async () => {
         try {
             const fetchedProperties = await getProperties();
@@ -57,9 +67,41 @@ const Documents = () => {
         }
     };
 
+    const fetchLeases = async (unitId) => {
+        try {
+            const fetchedLeases = await getLeases({ unit_id: unitId });
+            setLeases(fetchedLeases);
+            fetchTenants();
+        } catch (error) {
+            console.error('Failed to fetch leases:', error);
+        }
+    };
+
+
+    const fetchTenants = async () => {
+        try {
+            const fetchedTenants = await getTenants();
+            setTenants(fetchedTenants);
+        } catch (error) {
+            console.error('Failed to fetch tenants:', error);
+        }
+    };
+
+    // Helper function to get tenant name from tenant id
+    const getTenantName = (tenantId) => {
+        const tenant = tenants.find(t => t.id === tenantId);
+        return tenant ? tenant.full_name : 'Unknown';
+    };
+
+    // Fetch documents, properties on component mount
     useEffect(() => {
         fetchDocuments();
         fetchProperties();
+        fetchTenants();
+    }, []);
+
+    // Fetch units when propertyId changes
+    useEffect(() => {
         if (propertyId) {
             fetchUnits(propertyId);
         } else {
@@ -67,10 +109,21 @@ const Documents = () => {
         }
     }, [propertyId]);
 
+    // Fetch leases when unitId changes
+    useEffect(() => {
+        if (unitId) {
+            fetchLeases(unitId);
+        } else {
+            setLeases([]); 
+        }
+    }, [unitId]);
+
+    // Event handlers
     const handleClickUploadButton = () => {
         hiddenFileInput.current.click();
     };
 
+    // Handle file selection
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         if (selectedFile) {
@@ -80,7 +133,25 @@ const Documents = () => {
             setIsFileSelected(true);
         }
     };
+
+    // Update leaseId and set tenantId based on the selected lease
+    const handleLeaseChange = (e) => {
+        const selectedLeaseId = e.target.value;
+        setLeaseId(selectedLeaseId);
+
+        const selectedLease = leases.find(lease => lease.id.toString() === selectedLeaseId);
+        if (selectedLease) {
+            setTenantId(selectedLease.tenant_id.toString());
+            // Filter tenants to include only the one associated with the selected lease
+            const filteredTenant = tenants.filter(tenant => tenant.id === selectedLease.tenant_id);
+            setTenants(filteredTenant);
+        } else {
+            setTenantId('');
+            fetchTenants(); // Reload all tenants if no lease is selected
+        }
+    };
     
+    // Upload document
     const handleUpload = async () => {
         const formData = new FormData();
         formData.append('file', file);
@@ -102,6 +173,7 @@ const Documents = () => {
         }
     };
     
+    // Reset file upload state to initial state
     const resetUploadState = () => {
         hiddenFileInput.current.value = '';
         setFile(null);
@@ -115,6 +187,7 @@ const Documents = () => {
         setPaymentId('');
     };
     
+    // Delete document
     const handleDelete = async (documentId) => {
         try {
             await deleteDocument(documentId);
@@ -123,11 +196,6 @@ const Documents = () => {
             setError(error.message);
         }
     };
-
-    const filteredDocuments = documents.filter(doc => 
-        doc.filename.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doc.custom_filename.toLowerCase().includes(searchTerm.toLowerCase())
-    );
 
     return (
         <div className="container mx-auto p-4">
@@ -243,10 +311,15 @@ const Documents = () => {
                             <select
                                 className="p-2 rounded bg-gray-800 text-white w-full"
                                 value={leaseId}
-                                onChange={(e) => setLeaseId(e.target.value)}
+                                onChange={handleLeaseChange}
+                                disabled={!unitId} // Disable if no unit is selected
                             >
                                 <option value="">Select Lease</option>
-                                {/* Replace with actual options */}
+                                {leases.map(lease => (
+                                    <option key={lease.id} value={lease.id}>
+                                        {`${lease.is_active ? 'Active' : 'Inactive'} - ${getTenantName(lease.tenant_id)}`}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
@@ -257,9 +330,12 @@ const Documents = () => {
                                 className="p-2 rounded bg-gray-800 text-white w-full"
                                 value={tenantId}
                                 onChange={(e) => setTenantId(e.target.value)}
+                                disabled={!!propertyId} // Disable if a property is selected
                             >
                                 <option value="">Select Tenant</option>
-                                {/* Replace with actual options */}
+                                {tenants.map(tenant => (
+                                    <option key={tenant.id} value={tenant.id}>{tenant.full_name}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -294,8 +370,8 @@ const Documents = () => {
 
             {/* Document List Section */}
             <div className="bg-gray-700 pl-4 pr-4 pb-4 rounded-b-lg">
-                {filteredDocuments.length > 0 ? (
-                    filteredDocuments.map(doc => (
+                {documents.length > 0 ? (
+                    documents.map(doc => (
                         <div key={doc.id} className="flex items-center justify-between border-b border-gray-300 py-2">
                             <span className="text-lg text-white">{doc.custom_filename || doc.filename}</span>
                             <div className="flex items-center">
