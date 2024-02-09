@@ -463,12 +463,12 @@ const Documents = () => {
                             <span className="text-lg text-white">{doc.custom_filename || doc.filename}</span>
                             <div className="flex items-center">
                                 {/* View icon */}
-                                <button onClick={() => {/* handle view logic */}} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2">
-                                    View
+                                <button onClick={() => {/* handle view logic */}} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded mx-2">
+                                    <img src="/view.svg" alt="Upload" className="h-5 w-5" />
                                 </button>
                                 {/* Delete icon */}
-                                <button onClick={() => handleDelete(doc.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                    Delete
+                                <button onClick={() => handleDelete(doc.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded">
+                                    <img src="/trash-can.svg" alt="Delete" className="h-5 w-5" />
                                 </button>
                             </div>
                         </div>
