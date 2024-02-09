@@ -10,6 +10,11 @@ def add_document(data, file):
 
     normalized_file_path = os.path.normpath(file_path)
 
+    # Convert empty strings to None for integer fields
+    for field in ['property_id', 'unit_id', 'lease_id', 'tenant_id', 'expense_id', 'payment_id']:
+        if field in data and data[field] == '':
+            data[field] = None
+
     new_document = Document(
         filename=filename,
         file_path=normalized_file_path,
@@ -18,6 +23,7 @@ def add_document(data, file):
     db.session.add(new_document)
     db.session.commit()
     return new_document
+
 
 def get_documents(filters=None):
     query = Document.query

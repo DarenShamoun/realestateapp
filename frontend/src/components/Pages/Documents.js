@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react';
+import { getProperties } from '@/api/propertyService';
 import { addDocument, getDocuments, updateDocument, deleteDocument } from '@/api/documentService';
 
 const Documents = () => {
@@ -14,6 +15,15 @@ const Documents = () => {
     const [isFileSelected, setIsFileSelected] = useState(false);
     const hiddenFileInput = useRef(null);
 
+    // New state variables for dropdown selections
+    const [properties, setProperties] = useState([]);
+    const [propertyId, setPropertyId] = useState('');
+    const [unitId, setUnitId] = useState('');
+    const [leaseId, setLeaseId] = useState('');
+    const [tenantId, setTenantId] = useState('');
+    const [expenseId, setExpenseId] = useState('');
+    const [paymentId, setPaymentId] = useState('');
+
     const fetchDocuments = async () => {
         setIsLoading(true);
         try {
@@ -26,9 +36,21 @@ const Documents = () => {
         }
     };
 
+    const fetchProperties = async () => {
+        try {
+            const fetchedProperties = await getProperties();
+            setProperties(fetchedProperties);
+        } catch (error) {
+            console.error('Failed to fetch properties:', error);
+        }
+    };
+
     useEffect(() => {
         fetchDocuments();
+        fetchProperties();
     }, []);
+
+
 
     const handleClickUploadButton = () => {
         hiddenFileInput.current.click();
@@ -49,6 +71,12 @@ const Documents = () => {
         formData.append('file', file);
         formData.append('custom_filename', customFilename);
         formData.append('document_type', documentType);
+        formData.append('property_id', propertyId);
+        formData.append('unit_id', unitId);
+        formData.append('lease_id', leaseId);
+        formData.append('tenant_id', tenantId);
+        formData.append('expense_id', expenseId);
+        formData.append('payment_id', paymentId);
     
         try {
             await addDocument(formData);
@@ -64,6 +92,12 @@ const Documents = () => {
         setFile(null);
         setCustomFilename('');
         setIsFileSelected(false);
+        setPropertyId('');
+        setUnitId('');
+        setLeaseId('');
+        setTenantId('');
+        setExpenseId('');
+        setPaymentId('');
     };
     
     const handleDelete = async (documentId) => {
@@ -125,7 +159,7 @@ const Documents = () => {
                         <div className="flex items-center bg-gray-700 rounded-full">
                             <input 
                                 type="text" 
-                                placeholder="Custom filename (optional)" 
+                                placeholder="Custom filename" 
                                 value={customFilename} 
                                 onChange={(e) => setCustomFilename(e.target.value)} 
                                 className="bg-gray-700 text-white rounded-l-full py-2 px-4 leading-tight focus:outline-none"
@@ -152,6 +186,93 @@ const Documents = () => {
                     )}
                 </div>
             </div>
+
+            {/* Dropdown Grid Section */}
+            {isFileSelected && (
+                <div className="bg-gray-700 p-4 mb-4 rounded-b-lg">
+                    <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
+                        {/* Dropdown for Property */}
+                        <div>
+                            <label className="text-white block mb-2">Property</label>
+                            <select
+                                className="p-2 rounded bg-gray-800 text-white w-full"
+                                value={propertyId}
+                                onChange={(e) => setPropertyId(e.target.value)}
+                            >
+                                <option value="">Select Property</option>
+                                {properties.map(property => (
+                                    <option key={property.id} value={property.id}>{property.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Dropdown for Unit */}
+                        <div>
+                            <label className="text-white block mb-2">Unit</label>
+                            <select
+                                className="p-2 rounded bg-gray-800 text-white w-full"
+                                value={unitId}
+                                onChange={(e) => setUnitId(e.target.value)}
+                            >
+                                <option value="">Select Unit</option>
+                                {/* Replace with actual options */}
+                            </select>
+                        </div>
+
+                        {/* Dropdown for Lease */}
+                        <div>
+                            <label className="text-white block mb-2">Lease</label>
+                            <select
+                                className="p-2 rounded bg-gray-800 text-white w-full"
+                                value={leaseId}
+                                onChange={(e) => setLeaseId(e.target.value)}
+                            >
+                                <option value="">Select Lease</option>
+                                {/* Replace with actual options */}
+                            </select>
+                        </div>
+
+                        {/* Dropdown for Tenant */}
+                        <div>
+                            <label className="text-white block mb-2">Tenant</label>
+                            <select
+                                className="p-2 rounded bg-gray-800 text-white w-full"
+                                value={tenantId}
+                                onChange={(e) => setTenantId(e.target.value)}
+                            >
+                                <option value="">Select Tenant</option>
+                                {/* Replace with actual options */}
+                            </select>
+                        </div>
+
+                        {/* Dropdown for Expense */}
+                        <div>
+                            <label className="text-white block mb-2">Expense</label>
+                            <select
+                                className="p-2 rounded bg-gray-800 text-white w-full"
+                                value={expenseId}
+                                onChange={(e) => setExpenseId(e.target.value)}
+                            >
+                                <option value="">Select Expense</option>
+                                {/* Replace with actual options */}
+                            </select>
+                        </div>
+
+                        {/* Dropdown for Payment */}
+                        <div>
+                            <label className="text-white block mb-2">Payment</label>
+                            <select
+                                className="p-2 rounded bg-gray-800 text-white w-full"
+                                value={paymentId}
+                                onChange={(e) => setPaymentId(e.target.value)}
+                            >
+                                <option value="">Select Payment</option>
+                                {/* Replace with actual options */}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Document List Section */}
             <div className="bg-gray-700 pl-4 pr-4 pb-4 rounded-b-lg">
