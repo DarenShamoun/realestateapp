@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { getProperties } from '@/api/propertyService';
+import { getUnits } from '@/api/unitService';
 import { addDocument, getDocuments, updateDocument, deleteDocument } from '@/api/documentService';
 
 const Documents = () => {
@@ -19,6 +20,7 @@ const Documents = () => {
     const [properties, setProperties] = useState([]);
     const [propertyId, setPropertyId] = useState('');
     const [unitId, setUnitId] = useState('');
+    const [units, setUnits] = useState([]);
     const [leaseId, setLeaseId] = useState('');
     const [tenantId, setTenantId] = useState('');
     const [expenseId, setExpenseId] = useState('');
@@ -45,12 +47,25 @@ const Documents = () => {
         }
     };
 
+    const fetchUnits = async (propertyId) => {
+        try {
+            const fetchedUnits = await getUnits({ property_id: propertyId });
+            const sortedUnits = fetchedUnits.sort((a, b) => parseInt(a.unit_number) - parseInt(b.unit_number));
+            setUnits(sortedUnits);
+            } catch (error) {
+            console.error('Failed to fetch units:', error);
+        }
+    };
+
     useEffect(() => {
         fetchDocuments();
         fetchProperties();
-    }, []);
-
-
+        if (propertyId) {
+            fetchUnits(propertyId);
+        } else {
+            setUnits([]);
+        }
+    }, [propertyId]);
 
     const handleClickUploadButton = () => {
         hiddenFileInput.current.click();
@@ -213,9 +228,12 @@ const Documents = () => {
                                 className="p-2 rounded bg-gray-800 text-white w-full"
                                 value={unitId}
                                 onChange={(e) => setUnitId(e.target.value)}
+                                disabled={!propertyId} // Disable if no property is selected
                             >
                                 <option value="">Select Unit</option>
-                                {/* Replace with actual options */}
+                                {units.map(unit => (
+                                    <option key={unit.id} value={unit.id}>{unit.unit_number}</option>
+                                ))}
                             </select>
                         </div>
 
