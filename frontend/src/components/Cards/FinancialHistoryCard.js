@@ -79,16 +79,6 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
                 ))}
               </ul>
             ) : (<p className="text-gray-300">No rent history available</p>)}
-
-            {/* Show Add Rent Button if there is an active lease */}
-            {hasActiveLease && (
-              <button
-                onClick={onOpenCreateRent}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
-              >
-                Add Rent
-              </button>
-                )}
           </div>
 
           {/* Payment History */}
@@ -112,16 +102,26 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
                 ))}
               </ul>
             ) : (<p className="text-gray-300">No payment history available</p>)}
-              {/* Show Add Payment Button if there is an active lease */}
-              {hasActiveLease && (
-                <button
-                  onClick={onOpenCreatePayment}
-                  className="bg-blue-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4"
-                >
-                  Add Payment
-                </button>
-              )}
           </div>
+            {/* Show Add Rent Button if there is an active lease */}
+            {hasActiveLease && (
+              <button
+                onClick={onOpenCreateRent}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
+              >
+                Add Rent
+              </button>
+            )}
+              
+            {/* Show Add Payment Button if there is an active lease */}
+            {hasActiveLease && (
+                  <button
+                    onClick={onOpenCreatePayment}
+                    className="bg-blue-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4"
+                  >
+                    Add Payment
+                  </button>
+            )}
         </div>
       </div>
     </div>
