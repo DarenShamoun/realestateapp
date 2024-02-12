@@ -96,7 +96,7 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
             <h3 className="text-lg text-white mb-2">Payment History</h3>
             {payments.length > 0 ? (
               <ul className="space-y-2">
-                {payments.map((payment, index) => (
+                {payments.slice(0, 6).map((payment, index) => (
                   <li key={index} className="text-gray-300 flex justify-between items-center">
                     <div>
                       <p>Date: {formatDate(payment.date, "MM-DD-YYYY")}</p>
