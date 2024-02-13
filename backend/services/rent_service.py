@@ -91,9 +91,8 @@ def calculate_total_rent(rent):
         rent.trash or 0,
         rent.water_sewer or 0,
         rent.parking or 0,
-        rent.debt or 0,
-        rent.breaks or 0
-    ])
+        rent.debt or 0
+    ]) - (rent.breaks or 0)
 
 def rent_to_json(rent):
     lease = Lease.query.get(rent.lease_id)
