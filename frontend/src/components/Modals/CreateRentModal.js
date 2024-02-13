@@ -10,12 +10,13 @@ const CreateRentModal = ({ isOpen, onClose, leaseId }) => {
 
   const validateRentDetails = () => {
     let newErrors = {};
-    const fields = ['rent', 'trash', 'water_sewer', 'parking', 'debt', 'breaks'];
+    const fields = ['rent', 'trash', 'water_sewer', 'parking', 'breaks'];
     fields.forEach(field => {
-      if (rentDetails[field] < 0) {
+      if (rentDetails[field] && rentDetails[field] < 0) {
         newErrors[field] = `The ${field} value cannot be negative.`;
       }
     });
+    
     setErrors({...errors, ...newErrors});
     return Object.keys(newErrors).length === 0;
   };
