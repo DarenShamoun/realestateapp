@@ -12,7 +12,6 @@ const Landing = () => {
   const {
     properties,
     financialData,
-    financialDataByProperty,
     chartData,
     isLoading,
     error,
@@ -30,8 +29,6 @@ const Landing = () => {
   if (!properties) {
     return <div>No properties found.</div>;
   }
-
-  console.log('line chart data', chartData.line);
 
   return (
     <>
