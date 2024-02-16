@@ -24,6 +24,10 @@ export const getDocumentViewUrl = (documentId) => {
     return `${API_URL}/document/view/${documentId}`;
 };
 
+export const getDocumentDownloadUrl = (documentId) => {
+    return `${API_URL}/document/download/${documentId}`;
+};
+
 export const updateDocument = async (document_id, documentData) => {
     const response = await fetch(`${API_URL}/document/${document_id}`, {
         method: 'PUT',

@@ -38,6 +38,13 @@ def view_document(document_id):
     if file_path:
         return send_file(file_path, mimetype='application/pdf')
     return jsonify({'error': 'Document not found'}), 404
+
+@document_bp.route('/document/download/<int:document_id>')
+def download_document(document_id):
+    file_path = get_document_file_path(document_id)
+    if file_path:
+        return send_file(file_path, as_attachment=True)
+    return jsonify({'error': 'Document not found'}), 404
     
 @document_bp.route('/document/<int:document_id>', methods=['PUT'])
 def update_document_route(document_id):

@@ -7,7 +7,7 @@ import { getLeases } from '@/api/leaseService';
 import { getTenants } from '@/api/tenantService';
 import { getExpenses } from '@/api/expenseService';
 import { getPayments } from '@/api/paymentService';
-import { addDocument, getDocuments, getDocumentViewUrl, deleteDocument } from '@/api/documentService';
+import { addDocument, getDocuments, getDocumentViewUrl, getDocumentDownloadUrl, deleteDocument } from '@/api/documentService';
 
 const Documents = () => {
     const [documents, setDocuments] = useState([]);
@@ -117,19 +117,6 @@ const Documents = () => {
         }
     };
     
-    // Event handlers for dropdown selections
-    const handleExpenseChange = async (e) => {
-        const selectedExpenseId = e.target.value;
-        setExpenseId(selectedExpenseId);
-    
-        const selectedExpense = expenses.find(expense => expense.id.toString() === selectedExpenseId);
-        if (selectedExpense) {
-            setUnitId(selectedExpense.unit_id ? selectedExpense.unit_id.toString() : '');
-            setLeaseId('');
-            setTenantId('');
-        }
-    };
-    
     // Helper function to get tenant name from tenant id
     const getTenantName = (tenantId) => {
         const tenant = tenants.find(t => t.id === tenantId);
@@ -229,6 +216,19 @@ const Documents = () => {
             fetchTenants(); // Reload all tenants if no lease is selected
         }
     };
+
+    // Event handlers for dropdown selections
+    const handleExpenseChange = async (e) => {
+        const selectedExpenseId = e.target.value;
+        setExpenseId(selectedExpenseId);
+    
+        const selectedExpense = expenses.find(expense => expense.id.toString() === selectedExpenseId);
+        if (selectedExpense) {
+            setUnitId(selectedExpense.unit_id ? selectedExpense.unit_id.toString() : '');
+            setLeaseId('');
+            setTenantId('');
+        }
+    };
     
     // Upload document
     const handleUpload = async () => {
@@ -251,6 +251,11 @@ const Documents = () => {
             setError(error.message);
         }
     };
+
+    const handleDownloadDocument = (documentId) => {
+        const downloadUrl = getDocumentDownloadUrl(documentId);
+        window.open(downloadUrl, '_blank');
+    };    
     
     // Reset file upload state to initial state
     const resetUploadState = () => {
@@ -467,6 +472,10 @@ const Documents = () => {
                         <div key={doc.id} className="flex items-center justify-between border-b border-gray-300 py-2">
                             <span className="text-lg text-white">{doc.custom_filename || doc.filename}</span>
                             <div className="flex items-center">
+                                {/* Download icon */}
+                                <button onClick={() => handleDownloadDocument(doc.id)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-2 rounded mx-2">
+                                    <img src="/download.svg" alt="Download" className="h-5 w-5" />
+                                </button>
                                 {/* View icon */}
                                 <button onClick={() => handleViewDocument(doc.id)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded mx-2">
                                     <img src="/view.svg" alt="View" className="h-5 w-5" />
