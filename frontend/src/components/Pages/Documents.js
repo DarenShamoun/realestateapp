@@ -42,19 +42,27 @@ const Documents = () => {
     const [payments, setPayments] = useState([]);
 
     // Fetch documents for the document list
-    const fetchDocuments = async () => {
+    const fetchDocuments = async (filters = {}) => {
         setIsLoading(true);
         try {
-            // Include filename in the filters
-            const documentsData = await getDocuments({ filename: searchFilename });
+            const queryParameters = {};
+            if (filters.propertyId) queryParameters.property_id = filters.propertyId;
+            if (filters.unitId) queryParameters.unit_id = filters.unitId;
+            if (filters.leaseId) queryParameters.lease_id = filters.leaseId;
+            if (filters.tenantId) queryParameters.tenant_id = filters.tenantId;
+            if (filters.expenseId) queryParameters.expense_id = filters.expenseId;
+            if (filters.paymentId) queryParameters.payment_id = filters.paymentId;
+            if (searchFilename) queryParameters.filename = searchFilename;
+    
+            const documentsData = await getDocuments(queryParameters);
             setDocuments(documentsData);
         } catch (error) {
             setError(error.message);
         } finally {
             setIsLoading(false);
         }
-    };
-
+    };    
+    
     // Effect hook to fetch documents when searchFilename changes, debounced
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
@@ -62,8 +70,21 @@ const Documents = () => {
         }, 300); // Delay for debounce
 
         return () => clearTimeout(delayDebounce);
-    }, [searchFilename]);    
-
+    }, [searchFilename]);   
+    
+    // Fetch documents with filters whenever a dropdown value changes
+    useEffect(() => {
+        const filters = {
+            propertyId,
+            unitId,
+            leaseId,
+            tenantId,
+            expenseId,
+            paymentId
+        };
+        fetchDocuments(filters);
+    }, [propertyId, unitId, leaseId, tenantId, expenseId, paymentId, searchFilename]);
+    
     // Function to toggle filter dropdowns for filtering
     const toggleFilterDropdowns = () => {
         setShowFilterDropdowns(!showFilterDropdowns);
@@ -600,7 +621,7 @@ const Documents = () => {
             )}
 
             {/* Document List Section */}
-            <div className={`bg-gray-700 pl-4 pr-4 pb-4 ${isFileSelected ? 'rounded-lg' : 'rounded-b-lg'}`}>
+            <div className={`bg-gray-700 pl-4 pr-4 pb-4 ${isFileSelected || showFilterDropdowns ? 'rounded-lg' : 'rounded-b-lg'}`}>
                 {documents.length > 0 ? (
                     documents.map(doc => (
                         <div key={doc.id} className="flex items-center justify-between border-b border-gray-300 py-2">
