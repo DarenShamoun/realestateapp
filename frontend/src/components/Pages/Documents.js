@@ -602,14 +602,14 @@ const Documents = () => {
                             <div className="self-end ml-auto">
                                 <button
                                     onClick={handleUpload}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
                                     aria-label="Upload document"
                                 >
                                     Upload
                                 </button>
                                 <button
                                     onClick={resetUploadState}
-                                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
                                     aria-label="Cancel upload"
                                 >
                                     Cancel
@@ -632,11 +632,11 @@ const Documents = () => {
                                     <img src="/view.svg" alt="View" className="h-5 w-5" />
                                 </button>
                                 {/* Download icon */}
-                                <button onClick={() => handleDownloadDocument(doc.id)} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded mx-1">
+                                <button onClick={() => handleDownloadDocument(doc.id)} className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-2 rounded mx-1">
                                     <img src="/download.svg" alt="Download" className="h-5 w-5" />
                                 </button>
                                 {/* Delete icon */}
-                                <button onClick={() => handleDelete(doc.id)} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-2 rounded mx-1">
+                                <button onClick={() => handleDelete(doc.id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded mx-1">
                                     <img src="/trash-can.svg" alt="Delete" className="h-5 w-5" />
                                 </button>
                             </div>
