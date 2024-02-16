@@ -314,17 +314,13 @@ const Documents = () => {
                         onChange={(e) => setSearchFilename(e.target.value)} 
                         className="py-2 px-4 w-full leading-tight focus:outline-none text-black rounded-l-full"
                     />
+                    {/* Search icon */}
                     <button className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-r-full">
-                        {/* Search icon */}
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                        </svg>
+                        <img src="/search.svg" alt="View" className="h-5 w-5" />
                     </button>
+                    {/* Filter icon */}
                     <button className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-full mx-2">
-                        {/* Filter icon */}
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M3 5a1 1 0 001 1h12a1 1 0 100-2H4a1 1 0 00-1 1zm0 6a1 1 0 001 1h12a1 1 0 100-2H4a1 1 0 00-1 1zm0 6a1 1 0 001 1h12a1 1 0 100-2H4a1 1 0 00-1 1z" />
-                        </svg>
+                        <img src="/filter.svg" alt="View" className="h-5 w-5" />
                     </button>
                 </div>
 
@@ -489,14 +485,14 @@ const Documents = () => {
             )}
 
             {/* Document List Section */}
-            <div className="bg-gray-700 pl-4 pr-4 pb-4 rounded-b-lg">
+            <div className={`bg-gray-700 pl-4 pr-4 pb-4 ${isFileSelected ? 'rounded-lg' : 'rounded-b-lg'}`}>
                 {documents.length > 0 ? (
                     documents.map(doc => (
                         <div key={doc.id} className="flex items-center justify-between border-b border-gray-300 py-2">
                             <span className="text-lg text-white">{doc.custom_filename || doc.filename}</span>
                             <div className="flex items-center">
                                 {/* View icon */}
-                                <button onClick={() => handleViewDocument(doc.id)} className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-2 rounded mx-1">
+                                <button onClick={() => handleViewDocument(doc.id)} className="bg-gray-600 hover:bg-gray-800 text-white font-bold py-2 px-2 rounded mx-1">
                                     <img src="/view.svg" alt="View" className="h-5 w-5" />
                                 </button>
                                 {/* Download icon */}
