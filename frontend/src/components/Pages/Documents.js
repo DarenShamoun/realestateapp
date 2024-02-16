@@ -314,12 +314,8 @@ const Documents = () => {
                         onChange={(e) => setSearchFilename(e.target.value)} 
                         className="py-2 px-4 w-full leading-tight focus:outline-none text-black rounded-l-full"
                     />
-                    {/* Search icon */}
-                    <button className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-r-full">
-                        <img src="/search.svg" alt="View" className="h-5 w-5" />
-                    </button>
-                    {/* Filter icon */}
-                    <button className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-full mx-2">
+                    {/* Filter button */}
+                    <button className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-r-full">
                         <img src="/filter.svg" alt="View" className="h-5 w-5" />
                     </button>
                 </div>
