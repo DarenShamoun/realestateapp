@@ -8,9 +8,9 @@ const PropertyCard = ({ property }) => {
     <>
       <h3 className="text-white font-bold">{property.name}</h3>
       <p className="text-gray-300">{property.address}</p>
-      <p className="text-gray-300">{property.property_type}</p>
       <p className="text-gray-300">Built in {property.year_built}</p>
       <p className="text-gray-300">{property.square_footage} Square Feet</p>
+      <p className="text-gray-300">{property.property_type}</p>
     </>
   );
 
