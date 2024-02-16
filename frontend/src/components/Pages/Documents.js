@@ -298,10 +298,6 @@ const Documents = () => {
         window.open(viewUrl, '_blank');
     };
 
-    const getFilenameFromPath = (filePath) => {
-        return filePath.split('/').pop();
-    };
-
     return (
         <div className="container mx-auto p-4">
             {/* Page Title */}
