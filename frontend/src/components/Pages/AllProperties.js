@@ -29,7 +29,7 @@ const Properties = () => {
     error
   } = useAllPropertyDetails();
   const [isCreatePropertyModalOpen, setIsCreatePropertyModalOpen] = useState(false);
-  const [isCreateExpenseModalOpen, setIsCreateExpenseModalOpen] = useState(false); // New state for expense modal
+  const [isCreateExpenseModalOpen, setIsCreateExpenseModalOpen] = useState(false);
 
   const openCreatePropertyModal = () => setIsCreatePropertyModalOpen(true);
   const closeCreatePropertyModal = () => setIsCreatePropertyModalOpen(false);
