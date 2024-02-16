@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { addExpense } from '@/api/expenseService'; // Assuming this is the correct path to your expense service
+import { addExpense } from '@/api/expenseService';
 
 const CreateExpenseModal = ({ isOpen, onClose, properties, units, context }) => {
     const [expenseData, setExpenseData] = useState({
