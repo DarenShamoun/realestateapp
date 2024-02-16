@@ -24,6 +24,7 @@ const Documents = () => {
     const [customFilename, setCustomFilename] = useState('');
     const [searchFilename, setSearchFilename] = useState('');
     const [isFileSelected, setIsFileSelected] = useState(false);
+    const [showFilterDropdowns, setShowFilterDropdowns] = useState(false);
     const hiddenFileInput = useRef(null);
 
     // New state variables for dropdown selections
@@ -62,6 +63,20 @@ const Documents = () => {
 
         return () => clearTimeout(delayDebounce);
     }, [searchFilename]);    
+
+    // Function to toggle filter dropdowns for filtering
+    const toggleFilterDropdowns = () => {
+        setShowFilterDropdowns(!showFilterDropdowns);
+        // If we're closing the filter dropdowns, reset the filters
+        if (showFilterDropdowns) {
+            setPropertyId('');
+            setUnitId('');
+            setLeaseId('');
+            setTenantId('');
+            setExpenseId('');
+            setPaymentId('');
+        }
+    };
 
     // Fetch properties, units, leases, tenants, payments, and expenses for dropdowns
     const fetchProperties = async () => {
@@ -315,7 +330,7 @@ const Documents = () => {
                         className="py-2 px-4 w-full leading-tight focus:outline-none text-black rounded-l-full"
                     />
                     {/* Filter button */}
-                    <button className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-r-full">
+                    <button onClick={toggleFilterDropdowns} className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-r-full">
                         <img src="/filter.svg" alt="View" className="h-5 w-5" />
                     </button>
                 </div>
@@ -353,7 +368,111 @@ const Documents = () => {
                 </div>
             )}
 
-            {/* Dropdown Grid Section */}
+            {/* Filter Dropdowns Section */}
+            {showFilterDropdowns && (
+                <div className="bg-gray-700 p-4 mb-4 rounded-b-lg">
+                    <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
+                        {/* Dropdown for Property */}
+                        <div>
+                            <label className="text-white block mb-2">Property</label>
+                            <select
+                                className="p-2 rounded bg-gray-800 text-white w-full"
+                                value={propertyId}
+                                onChange={(e) => setPropertyId(e.target.value)}
+                            >
+                                <option value="">Select Property</option>
+                                {properties.map(property => (
+                                    <option key={property.id} value={property.id}>{property.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Dropdown for Unit */}
+                        <div>
+                            <label className="text-white block mb-2">Unit</label>
+                            <select
+                                className="p-2 rounded bg-gray-800 text-white w-full"
+                                value={unitId}
+                                onChange={(e) => setUnitId(e.target.value)}
+                                disabled={!propertyId} // Disable if no property is selected
+                            >
+                                <option value="">Select Unit</option>
+                                {units.map(unit => (
+                                    <option key={unit.id} value={unit.id}>{unit.unit_number}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Dropdown for Lease */}
+                        <div>
+                            <label className="text-white block mb-2">Lease</label>
+                            <select
+                                className="p-2 rounded bg-gray-800 text-white w-full"
+                                value={leaseId}
+                                onChange={handleLeaseChange}
+                                disabled={!unitId || expenseId} // Disable if no unit is selected or an expense is selected
+                            >
+                                <option value="">Select Lease</option>
+                                {leases.map(lease => (
+                                    <option key={lease.id} value={lease.id}>
+                                        {`${lease.is_active ? 'Active' : 'Inactive'} - ${getTenantName(lease.tenant_id)}`}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Dropdown for Tenant */}
+                        <div>
+                            <label className="text-white block mb-2">Tenant</label>
+                            <select
+                                className="p-2 rounded bg-gray-800 text-white w-full"
+                                value={tenantId}
+                                onChange={(e) => setTenantId(e.target.value)}
+                                disabled={!!propertyId || expenseId} // Disable if a property is selected or an expense is selected
+                            >
+                                <option value="">Select Tenant</option>
+                                {tenants.map(tenant => (
+                                    <option key={tenant.id} value={tenant.id}>{tenant.full_name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Dropdown for Expense */}
+                        <div>
+                            <label className="text-white block mb-2">Expense</label>
+                            <select
+                                className="p-2 rounded bg-gray-800 text-white w-full"
+                                value={expenseId}
+                                onChange={handleExpenseChange}
+                                disabled={!propertyId || paymentId}
+                            >
+                                <option value="">Select Expense</option>
+                                {expenses.map(expense => (
+                                    <option key={expense.id} value={expense.id}>{expense.description}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Dropdown for Payment */}
+                        <div>
+                            <label className="text-white block mb-2">Payment</label>
+                            <select
+                                className="p-2 rounded bg-gray-800 text-white w-full"
+                                value={paymentId}
+                                onChange={(e) => setPaymentId(e.target.value)}
+                                disabled={!propertyId || !unitId || !leaseId || expenseId} // Disable if no property, unit, or lease is selected or an expense is selected
+                            >
+                                <option value="">Select Payment</option>
+                                {payments.map(payment => (
+                                    <option key={payment.id} value={payment.id}>{`Amount: ${payment.amount}, Date: ${payment.date}`}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Upload Dropdowns Section */}
             {isFileSelected && (
                 <div className="bg-gray-700 p-4 mb-4 rounded-b-lg">
                     <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
