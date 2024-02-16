@@ -19,7 +19,7 @@ const FinancialCard = ({ title, amount, previousAmount, startDate, endDate }) =>
     }
 
     // Determine color for amount based on title
-    const amountColor = (title.includes("Net profit") || title.includes("Total income")) ? 'text-green-300' : (isPositiveChange ? 'text-green-300' : 'text-red-500');
+    const amountColor = (title.includes("Net profit") || title.includes("Total income")) ? 'text-green-300' : (isPositiveChange ? 'text-green-300' : 'text-red-400');
 
     return (
         <div className="flex-1 px-2 justify-center w-16 bg-gray-700 shadow rounded h-300px">
@@ -30,7 +30,7 @@ const FinancialCard = ({ title, amount, previousAmount, startDate, endDate }) =>
                 </p>
                 <p className={`py-4 font-bold self-start ${amountColor}`}>${amount}</p>
                 {percentageChange !== null && (
-                    <p className={`text-xs ${isPositiveChange ? 'text-green-300' : 'text-red-500'}`}>
+                    <p className={`text-xs ${isPositiveChange ? 'text-green-300' : 'text-red-400'}`}>
                         {isPositiveChange ? '+' : ''}{percentageChange.toFixed(2)}%
                     </p>
                 )}

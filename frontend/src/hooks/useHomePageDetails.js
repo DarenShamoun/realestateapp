@@ -130,7 +130,7 @@ export const useHomePageDetails = () => {
                       })),
                     area: areaChartData,
                     barKeys: [{ name: "Income", color: "#82ca9d" }, { name: "Expenses", color: "#FA8072" }],
-                    lineKeys: [{ name: "Income", stroke: "#82ca9d" }, { name: "Expenses", stroke: "#8884d8" }],
+                    lineKeys: [{ name: "Income", stroke: "#82ca9d" }, { name: "Expenses", stroke: "#FA8072" }],
                 });
           
             } catch (error) {

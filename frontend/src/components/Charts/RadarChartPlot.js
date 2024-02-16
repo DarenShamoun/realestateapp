@@ -32,7 +32,7 @@ const RadarChartPlot = ({ data, keys, title }) => {
   // Default keys for radar areas
   const defaultKeys = [
     { key: 'income', color: '#82ca9d', fill: '#82ca9d'},
-    { key: 'expenses', color: '#8884d8', fill: '#8884d8'}
+    { key: 'expenses', color: '#FA8072', fill: '#8884d8'}
   ];
 
   const chartData = data && data.length > 0 ? data : defaultData;
