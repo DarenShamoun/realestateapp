@@ -286,6 +286,10 @@ const Documents = () => {
         window.open(viewUrl, '_blank');
     };
 
+    const getFilenameFromPath = (filePath) => {
+        return filePath.split('/').pop();
+    };
+
     return (
         <div className="container mx-auto p-4">
             {/* Page Title */}
@@ -325,39 +329,29 @@ const Documents = () => {
                         style={{display: 'none'}} 
                     />
 
-                    {/* Upload Button and Custom Filename Input */}
-                    {isFileSelected ? (
-                        // Shown when a file is selected
-                        <div className="flex items-center bg-gray-700 rounded-full">
-                            <input 
-                                type="text" 
-                                placeholder="Custom filename" 
-                                value={customFilename} 
-                                onChange={(e) => setCustomFilename(e.target.value)} 
-                                className="bg-gray-700 text-white rounded-l-full py-2 px-4 leading-tight focus:outline-none"
-                            />
-                            <button onClick={handleUpload} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 ">
-                                {/* Upload icon */}
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                            </button>
-                            <button onClick={resetUploadState} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-r-full">
-                                {/* Cancel icon */}
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-                    ) : (
-                        // Upload Button
-                        <button onClick={handleClickUploadButton} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full">
-                            {/* Custom File upload icon */}
-                            <img src="/upload-file.svg" alt="Upload" className="h-5 w-5" />
-                        </button>
-                    )}
+                    <button onClick={handleClickUploadButton} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full">
+                        {/* Custom File upload icon */}
+                        <img src="/upload-file.svg" alt="Upload" className="h-5 w-5" />
+                    </button>
                 </div>
             </div>
+
+            {/* Selected File Display Section */}
+            {isFileSelected && file && (
+                <div className="bg-gray-800 px-4 py-2 text-white flex justify-between items-center">
+                    <p>Selected File: {file.name}</p>
+                    {/* Upload and Custom Filename Input */}
+                    <div className="flex items-center">
+                        <input 
+                            type="text" 
+                            placeholder="Custom filename (Optional)" 
+                            value={customFilename} 
+                            onChange={(e) => setCustomFilename(e.target.value)} 
+                            className="bg-gray-700 text-white py-2 px-4 leading-tight focus:outline-none rounded-full"
+                        />
+                    </div>
+                </div>
+            )}
 
             {/* Dropdown Grid Section */}
             {isFileSelected && (
@@ -460,7 +454,28 @@ const Documents = () => {
                                 ))}
                             </select>
                         </div>
+                    </div>
 
+                    <div className="flex items-right justify-between">
+                        {/* Upload and Cancel Buttons */}
+                        {isFileSelected && (
+                            <div className="self-end ml-auto">
+                                <button
+                                    onClick={handleUpload}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                                    aria-label="Upload document"
+                                >
+                                    Upload
+                                </button>
+                                <button
+                                    onClick={resetUploadState}
+                                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                                    aria-label="Cancel upload"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
@@ -472,16 +487,16 @@ const Documents = () => {
                         <div key={doc.id} className="flex items-center justify-between border-b border-gray-300 py-2">
                             <span className="text-lg text-white">{doc.custom_filename || doc.filename}</span>
                             <div className="flex items-center">
-                                {/* Download icon */}
-                                <button onClick={() => handleDownloadDocument(doc.id)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-2 rounded mx-1">
-                                    <img src="/download.svg" alt="Download" className="h-5 w-5" />
-                                </button>
                                 {/* View icon */}
-                                <button onClick={() => handleViewDocument(doc.id)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded mx-1">
+                                <button onClick={() => handleViewDocument(doc.id)} className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-2 rounded mx-1">
                                     <img src="/view.svg" alt="View" className="h-5 w-5" />
                                 </button>
+                                {/* Download icon */}
+                                <button onClick={() => handleDownloadDocument(doc.id)} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded mx-1">
+                                    <img src="/download.svg" alt="Download" className="h-5 w-5" />
+                                </button>
                                 {/* Delete icon */}
-                                <button onClick={() => handleDelete(doc.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded mx-1">
+                                <button onClick={() => handleDelete(doc.id)} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-2 rounded mx-1">
                                     <img src="/trash-can.svg" alt="Delete" className="h-5 w-5" />
                                 </button>
                             </div>
