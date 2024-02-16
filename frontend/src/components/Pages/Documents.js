@@ -7,16 +7,22 @@ import { getLeases } from '@/api/leaseService';
 import { getTenants } from '@/api/tenantService';
 import { getExpenses } from '@/api/expenseService';
 import { getPayments } from '@/api/paymentService';
-import { addDocument, getDocuments, getDocumentViewUrl, getDocumentDownloadUrl, deleteDocument } from '@/api/documentService';
+import { 
+    addDocument, 
+    getDocuments, 
+    getDocumentViewUrl, 
+    getDocumentDownloadUrl, 
+    deleteDocument 
+} from '@/api/documentService';
 
 const Documents = () => {
     const [documents, setDocuments] = useState([]);
     const [documentType, setDocumentType] = useState('');
-    const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [file, setFile] = useState(null);
     const [customFilename, setCustomFilename] = useState('');
+    const [searchFilename, setSearchFilename] = useState('');
     const [isFileSelected, setIsFileSelected] = useState(false);
     const hiddenFileInput = useRef(null);
 
@@ -38,18 +44,24 @@ const Documents = () => {
     const fetchDocuments = async () => {
         setIsLoading(true);
         try {
-            const data = await getDocuments();
-            const filteredDocuments = data.filter(doc => 
-                doc.filename.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                doc.custom_filename.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            setDocuments(filteredDocuments);
+            // Include filename in the filters
+            const documentsData = await getDocuments({ filename: searchFilename });
+            setDocuments(documentsData);
         } catch (error) {
             setError(error.message);
         } finally {
             setIsLoading(false);
         }
     };
+
+    // Effect hook to fetch documents when searchFilename changes, debounced
+    useEffect(() => {
+        const delayDebounce = setTimeout(() => {
+            fetchDocuments();
+        }, 300); // Delay for debounce
+
+        return () => clearTimeout(delayDebounce);
+    }, [searchFilename]);    
 
     // Fetch properties, units, leases, tenants, payments, and expenses for dropdowns
     const fetchProperties = async () => {
@@ -301,10 +313,10 @@ const Documents = () => {
                 <div className="flex flex-grow items-center rounded-full bg-gray-700 mr-3">
                     <input 
                         type="text" 
-                        placeholder="Search documents..." 
-                        value={searchTerm} 
-                        onChange={(e) => setSearchTerm(e.target.value)} 
-                        className="py-2 px-4 w-full leading-tight focus:outline-none text-white rounded-l-full"
+                        placeholder="Search by filename..." 
+                        value={searchFilename} 
+                        onChange={(e) => setSearchFilename(e.target.value)} 
+                        className="py-2 px-4 w-full leading-tight focus:outline-none text-black rounded-l-full"
                     />
                     <button className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-r-full">
                         {/* Search icon */}

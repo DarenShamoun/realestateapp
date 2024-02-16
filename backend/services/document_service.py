@@ -28,23 +28,27 @@ def get_documents(filters=None):
     query = Document.query
 
     if filters:
-        if 'document_id' in filters:
-            query = query.filter(Document.id == filters['document_id'])
-        if 'property_id' in filters:
-            query = query.filter(Document.property_id == filters['property_id'])
-        if 'unit_id' in filters:
-            query = query.filter(Document.unit_id == filters['unit_id'])
-        if 'lease_id' in filters:
-            query = query.filter(Document.lease_id == filters['lease_id'])
-        if 'tenant_id' in filters:
-            query = query.filter(Document.tenant_id == filters['tenant_id'])
-        if 'expense_id' in filters:
-            query = query.filter(Document.expense_id == filters['expense_id'])
-        if 'payment_id' in filters:
-            query = query.filter(Document.payment_id == filters['payment_id'])
-        if 'document_type' in filters:
-            query = query.filter(Document.document_type == filters['document_type'])
-    
+        for key, value in filters.items():
+            if key == 'document_id':
+                query = query.filter(Document.id == value)
+            elif key == 'property_id':
+                query = query.filter(Document.property_id == value)
+            elif key == 'unit_id':
+                query = query.filter(Document.unit_id == value)
+            elif key == 'lease_id':
+                query = query.filter(Document.lease_id == value)
+            elif key == 'tenant_id':
+                query = query.filter(Document.tenant_id == value)
+            elif key == 'expense_id':
+                query = query.filter(Document.expense_id == value)
+            elif key == 'payment_id':
+                query = query.filter(Document.payment_id == value)
+            elif key == 'document_type':
+                query = query.filter(Document.document_type == value)
+            elif key == 'filename':
+                search = f"%{value}%"
+                query = query.filter(Document.filename.ilike(search))
+
     return query.all()
 
 def get_document_file_path(document_id):
