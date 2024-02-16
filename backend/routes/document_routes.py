@@ -1,7 +1,8 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, send_file, jsonify
 from services.document_service import (
     add_document, 
     get_documents, 
+    get_document_file_path,
     update_document,
     delete_document, 
     document_to_json
@@ -30,6 +31,13 @@ def get_documents_route():
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
+
+@document_bp.route('/document/view/<int:document_id>')
+def view_document(document_id):
+    file_path = get_document_file_path(document_id)
+    if file_path:
+        return send_file(file_path, mimetype='application/pdf')
+    return jsonify({'error': 'Document not found'}), 404
     
 @document_bp.route('/document/<int:document_id>', methods=['PUT'])
 def update_document_route(document_id):

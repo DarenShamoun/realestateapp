@@ -7,7 +7,7 @@ import { getLeases } from '@/api/leaseService';
 import { getTenants } from '@/api/tenantService';
 import { getExpenses } from '@/api/expenseService';
 import { getPayments } from '@/api/paymentService';
-import { addDocument, getDocuments, deleteDocument } from '@/api/documentService';
+import { addDocument, getDocuments, getDocumentViewUrl, deleteDocument } from '@/api/documentService';
 
 const Documents = () => {
     const [documents, setDocuments] = useState([]);
@@ -274,6 +274,11 @@ const Documents = () => {
         } catch (error) {
             setError(error.message);
         }
+    };
+
+    const handleViewDocument = (documentId) => {
+        const viewUrl = getDocumentViewUrl(documentId);
+        window.open(viewUrl, '_blank');
     };
 
     return (

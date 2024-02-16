@@ -24,7 +24,6 @@ def add_document(data, file):
     db.session.commit()
     return new_document
 
-
 def get_documents(filters=None):
     query = Document.query
 
@@ -47,6 +46,12 @@ def get_documents(filters=None):
             query = query.filter(Document.document_type == filters['document_type'])
     
     return query.all()
+
+def get_document_file_path(document_id):
+    document = Document.query.get(document_id)
+    if document and os.path.exists(document.file_path):
+        return document.file_path
+    return None
 
 def update_document(document_id, data):
     document = Document.query.get(document_id)
