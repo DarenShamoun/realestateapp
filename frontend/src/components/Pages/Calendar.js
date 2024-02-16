@@ -2,10 +2,11 @@ import React from 'react';
 
 const Calendar = () => {
     return (
-        <div>
-            <h1>Calendar Page</h1>
-            {/* Add your calendar component here */}
-        </div>
+        <section>
+            <div className="flex justify-between items-center p-2">
+            <h2 className="text-2xl text-white font-bold">Calendar</h2>
+            </div>
+        </section>
     );
 };
 

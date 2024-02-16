@@ -2,10 +2,11 @@ import React from 'react';
 
 const Settings = () => {
     return (
-        <div>
-            <h1>Settings Page</h1>
-            {/* Add your settings components here */}
-        </div>
+        <section>
+            <div className="flex justify-between items-center p-2">
+            <h2 className="text-2xl text-white font-bold">Settings</h2>
+            </div>
+        </section>
     );
 };
 
