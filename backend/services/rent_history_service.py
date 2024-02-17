@@ -21,8 +21,6 @@ def get_rent_histories(filters=None):
     query = RentHistory.query.join(Lease, RentHistory.lease_id == Lease.id)
 
     if filters:
-        if 'unit_id' in filters:
-            query = query.filter(RentHistory.unit_id == filters['unit_id'])
         if 'lease_id' in filters:
             query = query.filter(RentHistory.lease_id == filters['lease_id'])
         if 'property_id' in filters:
@@ -53,7 +51,6 @@ def rent_history_to_json(rent_history):
     """Converts a RentHistory object to a JSON representation."""
     return {
         'id': rent_history.id,
-        'unit_id': rent_history.unit_id,
         'old_rent': rent_history.old_rent,
         'new_rent': rent_history.new_rent,
         'change_date': rent_history.change_date.strftime('%Y-%m-%d')

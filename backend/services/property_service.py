@@ -16,6 +16,14 @@ def get_properties(filters=None):
             query = query.filter(Property.name.ilike(f"%{filters['name']}%"))
         if 'property_type' in filters:
             query = query.filter(Property.property_type == filters['property_type'])
+        if 'address' in filters:
+            query = query.filter(Property.address.ilike(f"%{filters['address']}%"))
+        if 'purchase_price' in filters:
+            query = query.filter(Property.purchase_price == filters['purchase_price'])
+        if 'year_built' in filters:
+            query = query.filter(Property.year_built == filters['year_built'])
+        if 'square_footage' in filters:
+            query = query.filter(Property.square_footage == filters['square_footage'])
 
     return query.all()
 
