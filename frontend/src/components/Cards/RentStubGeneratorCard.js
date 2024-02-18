@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { getProperties } from '@/api/propertyService';
+import { generateRentStubs } from '@/api/documentService';
 
 const RentStubGeneratorCard = () => {
   const [properties, setProperties] = useState([]);
@@ -22,8 +23,14 @@ const RentStubGeneratorCard = () => {
     fetchProperties();
   }, []);
 
-  const handleGenerateClick = () => {
+  const handleGenerateClick = async () => {
     if (propertyId) {
+      try {
+        const response = await generateRentStubs(propertyId, month, year);
+        window.open(response.data.pdfUrl, '_blank');
+      } catch (error) {
+        console.error('Error generating rent stubs:', error);
+      }
     }
   };
 
