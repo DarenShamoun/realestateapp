@@ -24,15 +24,29 @@ const RentStubGeneratorCard = () => {
   }, []);
 
   const handleGenerateClick = async () => {
-    if (propertyId) {
+    if (propertyId && month && year) {
       try {
-        const response = await generateRentStubs(propertyId, month, year);
-        window.open(response.data.pdfUrl, '_blank');
+        const blob = await generateRentStubs(propertyId, month, year);
+        
+        // Ensure blob is not empty and has size
+        if (blob.size > 0) {
+            const fileURL = window.URL.createObjectURL(blob);
+            const fileLink = document.createElement('a');
+            fileLink.href = fileURL;
+            fileLink.setAttribute('download', `RentStubs_${propertyId}_${month}_${year}.pdf`);
+            document.body.appendChild(fileLink);
+            fileLink.click();
+            window.URL.revokeObjectURL(fileURL); // Clean up to avoid memory leaks
+            fileLink.parentNode.removeChild(fileLink);
+          } else {
+            console.error('Received empty file blob');
+          }
       } catch (error) {
         console.error('Error generating rent stubs:', error);
       }
     }
   };
+
 
   return (
     <div className="bg-gray-700 shadow rounded p-4 h-auto w-full relative">

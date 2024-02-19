@@ -1,4 +1,6 @@
 import os
+import tempfile
+from flask import current_app
 from reportlab.lib.pagesizes import letter, inch
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
@@ -13,7 +15,7 @@ from services.rent_service import get_rents
 from services.document_service import add_document
 
 def generate_rent_stubs_pdf(property_id, month, year):
-    # Fetch property, units, leases, tenants, and rents data
+    # Fetch data
     property_data = get_properties({'property_id': property_id})
     units = get_units({'property_id': property_id})
     leases = get_leases({'property_id': property_id})
@@ -21,7 +23,8 @@ def generate_rent_stubs_pdf(property_id, month, year):
     rents = get_rents({'property_id': property_id, 'month': month, 'year': year})
 
     # Initialize PDF
-    pdf_path = f"Rent_Stubs_{property_id}_{month}_{year}.pdf"
+    custom_filename = f"RentStubs_{property_id}_{month}_{year}.pdf"
+    pdf_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], custom_filename)
     pdf = SimpleDocTemplate(pdf_path, pagesize=letter)
 
     # Initialize styles
@@ -30,7 +33,7 @@ def generate_rent_stubs_pdf(property_id, month, year):
 
     # Process data and create PDF content
     for unit in units:
-        tenant = next((t for t in tenants if t.lease.unit_id == unit.id), None)
+        tenant = next((t for t in tenants for lease in t.leases if lease.unit_id == unit.id), None)
         rent_detail = next((r for r in rents if r.lease.unit_id == unit.id), None)
 
         if not tenant or not rent_detail:
@@ -59,20 +62,26 @@ def generate_rent_stubs_pdf(property_id, month, year):
         elements.append(table)
         elements.append(Spacer(1, 12))
 
-    # Generate PDF
-    pdf.build(elements)
+    # Initialize PDF with a temporary file
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp:
+        pdf = SimpleDocTemplate(temp.name, pagesize=letter)
+        pdf.build(elements)
 
-    # Save the generated PDF to the database as a document
-    data = {
-        'document_type': 'rent_stub',
-        'property_id': property_id,
-        'filename': os.path.basename(pdf_path),
-        'custom_filename': f"Rent Stubs for {property_id} - {month}/{year}"
-    }
-    with open(pdf_path, 'rb') as file:
+        # Set the filename for the temporary file
+        temp_filename = temp.name
+
+    # Reopen the temporary file to read its content and set the filename attribute
+    with open(temp_filename, 'rb') as file:
+        # Manually set the filename attribute
+        file.filename = os.path.basename(temp_filename)
+
+        # Now call add_document with both data and the file
+        data = {
+            'document_type': 'rent_stub',
+            'property_id': property_id,
+            # other fields as necessary
+        }
         add_document(data, file)
 
-    print(f"PDF generated and saved: {pdf_path}")
-
-    # Optionally, return the path or URL of the saved PDF
-    return pdf_path
+    # Return the path of the temporary file
+    return temp_filename

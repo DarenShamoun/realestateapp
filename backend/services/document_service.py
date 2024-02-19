@@ -4,9 +4,17 @@ import os
 from flask import current_app
 
 def add_document(data, file):
-    filename = secure_filename(file.filename)
-    file_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], filename)
-    file.save(file_path)
+    if hasattr(file, 'save'):
+        # If the file object has 'save' method (Flask FileStorage object)
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], filename)
+        file.save(file_path)
+    else:
+        # If it's a standard Python file object
+        filename = secure_filename(data.get('filename', 'default_filename.pdf'))
+        file_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], filename)
+        with open(file_path, 'wb') as f:
+            f.write(file.read())
 
     normalized_file_path = os.path.normpath(file_path)
 

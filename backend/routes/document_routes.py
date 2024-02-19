@@ -1,3 +1,4 @@
+import os
 from flask import Blueprint, request, send_file, jsonify
 from services.document_service import (
     add_document, 
@@ -20,6 +21,21 @@ def add_document_route():
         document = add_document(data, file)
         return jsonify(document_to_json(document)), 201
     except Exception as e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+    
+@document_bp.route('/generate-rent-stubs', methods=['POST'])
+def generate_rent_stubs_route():
+    data = request.json
+    property_id = data.get('propertyId')
+    month = data.get('month')
+    year = data.get('year')
+
+    try:
+        pdf_path = generate_rent_stubs_pdf(property_id, month, year)
+        return send_file(pdf_path, as_attachment=True, download_name=os.path.basename(pdf_path))
+    except Exception as e:
+        print("Error generating rent stubs:", e)
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
@@ -46,22 +62,6 @@ def download_document(document_id):
     if file_path:
         return send_file(file_path, as_attachment=True)
     return jsonify({'error': 'Document not found'}), 404
-
-@document_bp.route('/generate-rent-stubs', methods=['POST'])
-def generate_rent_stubs_route():
-    data = request.json
-    property_id = data.get('propertyId')
-    month = data.get('month')
-    year = data.get('year')
-
-    try:
-        pdf_path = generate_rent_stubs_pdf(property_id, month, year)
-        with open(pdf_path, 'rb') as file:
-            document = add_document({'document_type': 'rent_stub', 'property_id': property_id}, file)
-        return jsonify({'pdfUrl': f'/document/view/{document.id}'}), 201
-    except Exception as e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)}), 500
     
 @document_bp.route('/document/<int:document_id>', methods=['PUT'])
 def update_document_route(document_id):

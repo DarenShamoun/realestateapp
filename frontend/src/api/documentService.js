@@ -11,6 +11,21 @@ export const addDocument = async (formData) => {
     return response.json();
 };
 
+export const generateRentStubs = async (propertyId, month, year) => {
+    const response = await fetch(`${API_URL}/generate-rent-stubs`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ propertyId, month, year })
+    });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.blob();
+};
+
 export const getDocuments = async (filters = {}) => {
     const queryParams = new URLSearchParams(filters);
     const response = await fetch(`${API_URL}/documents?${queryParams}`);
@@ -26,20 +41,6 @@ export const getDocumentViewUrl = (documentId) => {
 
 export const getDocumentDownloadUrl = (documentId) => {
     return `${API_URL}/document/download/${documentId}`;
-};
-
-export const generateRentStubs = async (propertyId, month, year) => {
-    const response = await fetch(`${API_URL}/generate-rent-stubs`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ propertyId, month, year })
-    });
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    return response.json();
 };
 
 export const updateDocument = async (document_id, documentData) => {
