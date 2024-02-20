@@ -4,7 +4,8 @@ import os
 from flask import current_app
 
 def add_document(data, file):
-    filename = secure_filename(file.filename if hasattr(file, 'filename') else data.get('filename', 'default_filename.pdf'))
+    # Extract filename from data if present, otherwise from file object
+    filename = data.pop('filename', None) or secure_filename(file.filename if hasattr(file, 'filename') else 'default_filename.pdf')
     file_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], filename)
 
     # Check if a document with the same filename already exists

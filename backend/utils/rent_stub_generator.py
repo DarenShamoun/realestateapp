@@ -1,5 +1,7 @@
 import os
 import tempfile
+import shutil
+from models import db, Document
 from flask import current_app
 from reportlab.lib.pagesizes import letter, inch
 from reportlab.lib import colors
@@ -62,26 +64,27 @@ def generate_rent_stubs_pdf(property_id, month, year):
         elements.append(table)
         elements.append(Spacer(1, 12))
 
-    # Initialize PDF with a temporary file
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp:
+    # Construct the desired filename
+    desired_filename = f"RentStubs_{property_data[0].name}_{month}_{year}.pdf"
+    desired_file_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], desired_filename)
+
+    # Create a temporary file for the PDF
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf', prefix=desired_filename, dir=current_app.config['DOCUMENTS_FOLDER']) as temp:
         pdf = SimpleDocTemplate(temp.name, pagesize=letter)
         pdf.build(elements)
+        temp_filename = temp.name  # Preserve the temp file name
 
-        # Set the filename for the temporary file
-        temp_filename = temp.name
-
-    # Reopen the temporary file to read its content and set the filename attribute
+    # Now call add_document with both data and the file
     with open(temp_filename, 'rb') as file:
-        # Manually set the filename attribute
-        file.filename = os.path.basename(temp_filename)
-
-        # Now call add_document with both data and the file
         data = {
             'document_type': 'rent_stub',
             'property_id': property_id,
-            # other fields as necessary
+            'filename': desired_filename
         }
-        add_document(data, file)
+        document = add_document(data, file)
 
-    # Return the path of the temporary file
-    return temp_filename
+    # Optionally delete the temp file after adding to the database
+    os.remove(temp_filename)
+
+    # Return the path of the new file
+    return document.file_path
