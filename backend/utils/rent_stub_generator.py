@@ -52,7 +52,7 @@ def generate_rent_stubs_pdf(property_id, month, year):
     full_month_name = month_names.get(month_int, "Invalid_Month")
 
     # Construct the desired filename using the full month name
-    desired_filename = f"RentStubs_{property_name}_{full_month_name}_{year}.pdf"
+    desired_filename = f"Rent_Stubs_{full_month_name}_{year}_{property_name}.pdf"
 
     # Process data and create PDF content
     for unit in units:
