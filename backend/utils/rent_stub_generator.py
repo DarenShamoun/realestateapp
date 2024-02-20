@@ -15,6 +15,7 @@ from services.lease_service import get_leases
 from services.tenant_service import get_tenants
 from services.rent_service import get_rents
 from services.document_service import add_document
+from reportlab.platypus.flowables import KeepTogether
 
 def generate_rent_stubs_pdf(property_id, month, year):
     # Fetch data
@@ -59,11 +60,12 @@ def generate_rent_stubs_pdf(property_id, month, year):
 
         data = [
             [Paragraph(f"<b>Unit Number:</b> {unit.unit_number}, <b>Tenant:</b> {tenant.full_name}", styles['BodyText'])],
-            [Paragraph(f"<b>Rent Payment Breakdown for {full_month_name} / {year}</b>", styles['BodyText'])],
-            [f"Rent: ${rent_detail.rent}", f"Trash: ${rent_detail.trash}"],
-            [f"Water/Sewer: ${rent_detail.water_sewer}", f"Parking: ${rent_detail.parking}"],
-            [f"Debt: ${rent_detail.debt}", f"Breaks/Discounts: ${rent_detail.breaks}"],
-            [f"Total Rent: ${rent_detail.total_rent}", '']
+            [Paragraph(f"<b>Rent Payment Breakdown for {full_month_name} {year}</b>", styles['BodyText'])],
+            [f"Rent: ${rent_detail.rent}", f"Breaks/Discounts: ${rent_detail.breaks}"],
+            [f"Water/Sewer: ${rent_detail.water_sewer}", f"Previous Debts: ${rent_detail.debt}"],
+            [f"Trash: ${rent_detail.trash}"],
+            [f"Parking: ${rent_detail.parking}"],
+            [f"Total for the Month: ${(rent_detail.total_rent - rent_detail.debt)}", f"Total Balance Due: ${rent_detail.total_rent}"]
         ]
 
         table = Table(data, colWidths=[3.0 * inch] * 2)
@@ -73,12 +75,17 @@ def generate_rent_stubs_pdf(property_id, month, year):
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTSIZE', (0, 0), (-1, -1), 12),
             ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('SPAN', (0, 0), (1, 0)),  # Span for the header
+            ('SPAN', (0, 0), (1, 0)),
+            ('SPAN', (0, 1), (1, 1)),
             ('ALIGN', (0, 1), (-1, 1), 'CENTER'),  # Center align the header
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
         ]))
 
-        elements.append(table)
-        elements.append(Spacer(1, 12))
+        # Wrap the table in a KeepTogether to avoid splitting across pages
+        keep_table_together = KeepTogether([table, Spacer(1, 0.4 * inch)])
+
+        # Add KeepTogether (table and spacer) to elements list for PDF document
+        elements.append(keep_table_together)
 
     # Create a temporary file for the PDF
     with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf', prefix=desired_filename, dir=current_app.config['DOCUMENTS_FOLDER']) as temp:
