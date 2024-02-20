@@ -4,15 +4,21 @@ import os
 from flask import current_app
 
 def add_document(data, file):
+    filename = secure_filename(file.filename if hasattr(file, 'filename') else data.get('filename', 'default_filename.pdf'))
+    file_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], filename)
+
+    # Check if a document with the same filename already exists
+    existing_document = Document.query.filter_by(filename=filename).first()
+    if existing_document:
+        # Handle the duplicate file (e.g., return the existing document or update it)
+        # For example, return the existing document:
+        return existing_document
+
     if hasattr(file, 'save'):
         # If the file object has 'save' method (Flask FileStorage object)
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], filename)
         file.save(file_path)
     else:
         # If it's a standard Python file object
-        filename = secure_filename(data.get('filename', 'default_filename.pdf'))
-        file_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], filename)
         with open(file_path, 'wb') as f:
             f.write(file.read())
 
