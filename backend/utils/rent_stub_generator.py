@@ -1,11 +1,10 @@
 import os
+import re
 import tempfile
-import shutil
-from models import db, Document
 from flask import current_app
 from reportlab.lib.pagesizes import letter, inch
 from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, KeepTogether
 from reportlab.lib.styles import getSampleStyleSheet
 
 # Import the backend services
@@ -15,7 +14,6 @@ from services.lease_service import get_leases
 from services.tenant_service import get_tenants
 from services.rent_service import get_rents
 from services.document_service import add_document
-from reportlab.platypus.flowables import KeepTogether
 
 def generate_rent_stubs_pdf(property_id, month, year):
     # Fetch data
@@ -24,6 +22,13 @@ def generate_rent_stubs_pdf(property_id, month, year):
     leases = get_leases({'property_id': property_id})
     tenants = get_tenants({'property_id': property_id})
     rents = get_rents({'property_id': property_id, 'month': month, 'year': year})
+
+    # Function to split the unit number into parts of digits and non-digits
+    def natural_keys(text):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', text)]
+
+    # Sorting the units list using the natural_keys function
+    units.sort(key=lambda x: natural_keys(x.unit_number))
 
     # Initialize styles
     styles = getSampleStyleSheet()
@@ -48,7 +53,6 @@ def generate_rent_stubs_pdf(property_id, month, year):
 
     # Construct the desired filename using the full month name
     desired_filename = f"RentStubs_{property_name}_{full_month_name}_{year}.pdf"
-
 
     # Process data and create PDF content
     for unit in units:
