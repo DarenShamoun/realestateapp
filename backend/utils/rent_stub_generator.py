@@ -24,14 +24,30 @@ def generate_rent_stubs_pdf(property_id, month, year):
     tenants = get_tenants({'property_id': property_id})
     rents = get_rents({'property_id': property_id, 'month': month, 'year': year})
 
-    # Initialize PDF
-    custom_filename = f"RentStubs_{property_id}_{month}_{year}.pdf"
-    pdf_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], custom_filename)
-    pdf = SimpleDocTemplate(pdf_path, pagesize=letter)
-
     # Initialize styles
     styles = getSampleStyleSheet()
     elements = []
+
+    # Month number to name mapping
+    month_names = {
+        1: "January", 2: "February", 3: "March",
+        4: "April", 5: "May", 6: "June",
+        7: "July", 8: "August", 9: "September",
+        10: "October", 11: "November", 12: "December"
+    }
+
+    # Fetch property name and replace spaces with underscores
+    property_name = property_data[0].name.replace(" ", "_")
+
+    # Ensure the month is an integer
+    month_int = int(month)
+
+    # Get the full month name from the month number
+    full_month_name = month_names.get(month_int, "Invalid_Month")
+
+    # Construct the desired filename using the full month name
+    desired_filename = f"RentStubs_{property_name}_{full_month_name}_{year}.pdf"
+
 
     # Process data and create PDF content
     for unit in units:
@@ -43,7 +59,7 @@ def generate_rent_stubs_pdf(property_id, month, year):
 
         data = [
             [Paragraph(f"<b>Unit Number:</b> {unit.unit_number}, <b>Tenant:</b> {tenant.full_name}", styles['BodyText'])],
-            [Paragraph(f"<b>Rent Payment Breakdown for {month}/{year}</b>", styles['BodyText'])],
+            [Paragraph(f"<b>Rent Payment Breakdown for {full_month_name} / {year}</b>", styles['BodyText'])],
             [f"Rent: ${rent_detail.rent}", f"Trash: ${rent_detail.trash}"],
             [f"Water/Sewer: ${rent_detail.water_sewer}", f"Parking: ${rent_detail.parking}"],
             [f"Debt: ${rent_detail.debt}", f"Breaks/Discounts: ${rent_detail.breaks}"],
@@ -63,10 +79,6 @@ def generate_rent_stubs_pdf(property_id, month, year):
 
         elements.append(table)
         elements.append(Spacer(1, 12))
-
-    # Construct the desired filename
-    desired_filename = f"RentStubs_{property_data[0].name}_{month}_{year}.pdf"
-    desired_file_path = os.path.join(current_app.config['DOCUMENTS_FOLDER'], desired_filename)
 
     # Create a temporary file for the PDF
     with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf', prefix=desired_filename, dir=current_app.config['DOCUMENTS_FOLDER']) as temp:
