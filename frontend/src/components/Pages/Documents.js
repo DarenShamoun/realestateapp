@@ -71,7 +71,7 @@ const Documents = () => {
         }, 300); // Delay for debounce
 
         return () => clearTimeout(delayDebounce);
-    }, [searchFilename]);   
+    }, [searchFilename]);
     
     // Fetch documents with filters whenever a dropdown value changes
     useEffect(() => {
@@ -177,7 +177,7 @@ const Documents = () => {
         fetchDocuments();
         fetchProperties();
         fetchTenants();
-    }, []);
+    });
 
     // Fetch units when propertyId changes
     useEffect(() => {
