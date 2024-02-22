@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { useState } from 'react';
 import { formatDate } from '@/Utils/DateManagment';
 import EditPaymentModal from '@/components/Modals/EditPaymentModal';
@@ -73,7 +74,7 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
                       onClick={() => onOpenEditRent(rent)} 
                       className="ml-4"
                     >
-                      <img src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
+                      <Image src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
                     </button>
                   </li>
                 ))}
@@ -96,7 +97,7 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
                       onClick={() => onOpenEditPayment(payment)} 
                       className="ml-4"
                     >
-                      <img src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
+                      <Image src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
                     </button>
                   </li>
                 ))}

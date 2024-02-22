@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 import EditTenantModal from '@/components/Modals/EditTenantModal';
 
 const TenantDetails = ({ tenant }) => {
@@ -19,7 +20,7 @@ const TenantDetails = ({ tenant }) => {
         {/* Edit Tenant Button */}
         {tenant && (
           <button onClick={onOpenEditTenant} className="ml-4">
-            <img src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
+            <Image src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
           </button>
         )}
       </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { getProperties } from '@/api/propertyService';
 import { getUnits } from '@/api/unitService';
 import { getLeases } from '@/api/leaseService';
@@ -352,7 +353,7 @@ const Documents = () => {
                     />
                     {/* Filter button */}
                     <button onClick={toggleFilterDropdowns} className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-r-full">
-                        <img src="/filter.svg" alt="View" className="h-5 w-5" />
+                        <Image src="/filter.svg" alt="View" className="h-5 w-5" />
                     </button>
                 </div>
 
@@ -367,7 +368,7 @@ const Documents = () => {
 
                     <button onClick={handleClickUploadButton} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full">
                         {/* Custom File upload icon */}
-                        <img src="/upload-file.svg" alt="Upload" className="h-5 w-5" />
+                        <Image src="/upload-file.svg" alt="Upload" className="h-5 w-5" />
                     </button>
                 </div>
             </div>
@@ -629,15 +630,15 @@ const Documents = () => {
                             <div className="flex items-center">
                                 {/* View icon */}
                                 <button onClick={() => handleViewDocument(doc.id)} className="bg-gray-600 hover:bg-gray-800 text-white font-bold py-2 px-2 rounded mx-1">
-                                    <img src="/view.svg" alt="View" className="h-5 w-5" />
+                                    <Image src="/view.svg" alt="View" className="h-5 w-5" />
                                 </button>
                                 {/* Download icon */}
                                 <button onClick={() => handleDownloadDocument(doc.id)} className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-2 rounded mx-1">
-                                    <img src="/download.svg" alt="Download" className="h-5 w-5" />
+                                    <Image src="/download.svg" alt="Download" className="h-5 w-5" />
                                 </button>
                                 {/* Delete icon */}
                                 <button onClick={() => handleDelete(doc.id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded mx-1">
-                                    <img src="/trash-can.svg" alt="Delete" className="h-5 w-5" />
+                                    <Image src="/trash-can.svg" alt="Delete" className="h-5 w-5" />
                                 </button>
                             </div>
                         </div>

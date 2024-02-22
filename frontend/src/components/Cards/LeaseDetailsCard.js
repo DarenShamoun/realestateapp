@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { formatDate } from '@/Utils/DateManagment';
 import EditLeaseModal from '@/components/Modals/EditLeaseModal';
 
@@ -25,7 +26,7 @@ const LeaseDetails = ({ leases, onOpenCreateLease }) => {
             onClick={() => onOpenEditLease(leases[0])}
             className="ml-4"
           >
-            <img src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
+            <Image src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
           </button>
         )}
       </div>
