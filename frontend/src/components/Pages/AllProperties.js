@@ -91,7 +91,7 @@ const Properties = () => {
       <div className="flex justify-center pb-4">
         <button 
           onClick={openCreatePropertyModal} 
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4"
+          className="bg-green-400 hover:bg-green-500 text-black font-bold py-2 px-4 rounded mt-4"
         >
           Add Property
         </button>
@@ -99,7 +99,7 @@ const Properties = () => {
       <div className="w-4"></div>
         <button 
           onClick={openCreateExpenseModal} 
-          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-4"
+          className="bg-red-400 hover:bg-red-500 text-black font-bold py-2 px-4 rounded mt-4"
         >
           Add Expense
         </button>

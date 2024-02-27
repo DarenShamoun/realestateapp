@@ -108,7 +108,7 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
             {hasActiveLease && (
               <button
                 onClick={onOpenCreateRent}
-                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4"
+                className="bg-green-300 hover:bg-green-400 text-black font-bold py-2 px-4 rounded mt-4"
               >
                 Add Rent
               </button>
@@ -118,7 +118,7 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
             {hasActiveLease && (
               <button
                 onClick={onOpenCreatePayment}
-                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4"
+                className="bg-green-300 hover:bg-green-400 text-black font-bold py-2 px-4 rounded mt-4"
               >
                 Add Payment
               </button>
