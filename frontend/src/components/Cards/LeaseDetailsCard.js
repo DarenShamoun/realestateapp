@@ -26,7 +26,7 @@ const LeaseDetails = ({ leases, onOpenCreateLease }) => {
             onClick={() => onOpenEditLease(leases[0])}
             className="ml-4"
           >
-            <Image src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
+            <Image src="/edit-button.svg" alt="Edit" width={15} height={10}/>
           </button>
         )}
       </div>

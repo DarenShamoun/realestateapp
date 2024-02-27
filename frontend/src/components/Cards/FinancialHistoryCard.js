@@ -74,7 +74,7 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
                       onClick={() => onOpenEditRent(rent)} 
                       className="ml-4"
                     >
-                      <Image src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
+                      <Image src="/edit-button.svg" alt="Edit" width={15} height={10} />
                     </button>
                   </li>
                 ))}
@@ -97,7 +97,7 @@ const FinancialHistory = ({ payments, rentHistory, leases, onOpenCreatePayment, 
                       onClick={() => onOpenEditPayment(payment)} 
                       className="ml-4"
                     >
-                      <Image src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
+                      <Image src="/edit-button.svg" alt="Edit" width={15} height={10}/>
                     </button>
                   </li>
                 ))}

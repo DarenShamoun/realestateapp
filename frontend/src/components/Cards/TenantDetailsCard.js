@@ -20,7 +20,7 @@ const TenantDetails = ({ tenant }) => {
         {/* Edit Tenant Button */}
         {tenant && (
           <button onClick={onOpenEditTenant} className="ml-4">
-            <Image src="/edit-button.svg" alt="Edit" className="h-4 w-4" />
+            <Image src="/edit-button.svg" alt="Edit" width={15} height={10}/>
           </button>
         )}
       </div>
