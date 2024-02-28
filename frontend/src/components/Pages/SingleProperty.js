@@ -100,7 +100,7 @@ const PropertyDetails = ({ property_id }) => {
       <div className="flex justify-center pb-4">
         <button 
           onClick={openCreateUnitModal} 
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4"
+          className="bg-green-400 hover:bg-green-500 text-gray-800 font-bold py-2 px-4 rounded mt-4"
         >
           Add Unit
         </button>
@@ -108,7 +108,7 @@ const PropertyDetails = ({ property_id }) => {
       <div className="w-4"></div>
         <button 
           onClick={openCreateExpenseModal} 
-          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-4"
+          className="bg-red-400 hover:bg-red-500 text-gray-800 font-bold py-2 px-4 rounded mt-4"
         >
           Add Expense
         </button>
